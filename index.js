@@ -9,6 +9,7 @@ const app=express();
 let data;
 let raids;
 let key=process.env.API_KEY;
+let port=process.env.PORT || 3000;
 getRaidData();
 
 //fetch raids from warcraftLogs
@@ -41,8 +42,8 @@ function selectCorrectRaid(value){
 }
 
 
-//startup the socket at port 3000
-app.listen(3000, () => console.log("listening at port 3000"));
+//startup the socket at port from enviroment
+app.listen(port, () => console.log(`listening at port ${port}`));
 app.use(express.static("public"));
 app.use(express.json({limit: "3mb"}));
 
