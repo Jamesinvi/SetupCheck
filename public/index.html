@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+    <head>
+        <title>SetupCheck</title>
+        <meta charset="utf-8"/>
+        <script>var whTooltips = {colorLinks: true, iconizeLinks: true, renameLinks: true};</script>
+        <script src="http://wow.zamimg.com/widgets/power.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="style.css">
+        <link href="https://fonts.googleapis.com/css?family=Quicksand&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <h1>GEARCHECK</h1>
+        <div>
+            <form id="difficulty">
+                <input type="radio" name="class" value="1">LFR
+                <input type="radio" name="class" value="3">Normal
+                <input type="radio" name="class" value="4">Heroic
+                <input type="radio" name="class" value="5">Mythic
+            </form>
+            <br>
+            <form id="metric">
+                <input type="radio" name="class" value="dps">DPS
+                <input type="radio" name="class" value="hps">HPS
+            </form>
+            <br>
+            <form id="classes">
+                <input type="radio" name="class" value="1" >Death Knight
+                <input type="radio" name="class" value="2" >Druid
+                <input type="radio" name="class" value="3" >Hunter
+                <input type="radio" name="class" value="4" >Mage
+                <input type="radio" name="class" value="5" >Monk
+                <input type="radio" name="class" value="6" >Paladin
+                <input type="radio" name="class" value="7" >Priest
+                <input type="radio" name="class" value="8" >Rogue
+                <input type="radio" name="class" value="9" >Shaman
+                <input type="radio" name="class" value="10">Warlock
+                <input type="radio" name="class" value="11">Warrior
+                <input type="radio" name="class" value="12">Demon Hunter    
+            </form>
+        </div>
+        <div>
+            <form id="specs">
+            </form>
+            <br>
+
+            <button type="button"  id="submit-cos" value="crucible of storms">Crucible of Storms</button>
+            <button type="button"  id="submit-bod" value="battle of dazar'alor">Battle of Dazar'alor</button>
+            <br>
+            <form id="bosses">
+            </form>
+            <br>
+            <button type="button"  id="request" value="request-data">REQUEST DATA</button>
+        </div>
+
+
+
+
+
+        <div class="chart-container" style="position: relative; height:40vh; width:80vw">
+            <canvas id="talentChart" width="100" height="100"></canvas>
+        </div>
+        <div id="wowhead-spell">
+           <h1> TOP 5 Talent Combos found in the top 300 logs</h1>
+        </div>
+        <div class="chart-container" style="position: relative; height:40vh; width:80vw">
+            <canvas id="trinketChart" width="100" height="100"></canvas>
+        </div>
+        <div id="wowhead-item">
+            <h1>TOP 5 Trinket Combos found in the top 300 logs</h1>
+         </div>
+
+        <footer>
+            <script src="clientside.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" />
+    </body>
+
+</html>

@@ -1,0 +1,25 @@
+{
+  "name": "wow-gearcheck",
+  "version": "1.0.0",
+  "description": "gets and processes logs from Warcraftlogs.com to get statistics about gear and classes",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "wow",
+    "gear",
+    "gearcheck",
+    "world",
+    "of",
+    "warcraft"
+  ],
+  "author": "James Karran",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^8.0.0",
+    "express": "^4.17.1",
+    "node-fetch": "^2.6.0",
+    "nodemon": "^1.19.1"
+  }
+}
