@@ -68,12 +68,13 @@ app.post("/encounter", async (request,response)=>{
     const spec=value.spec;
     const metric=value.metric;
     const difficulty=value.difficulty;
-    let promise1=rankingData(boss,metric,difficulty,gameclass,spec,1,key);
-    let promise2=rankingData(boss,metric,difficulty,gameclass,spec,2,key);
-    let promise3=rankingData(boss,metric,difficulty,gameclass,spec,3,key);
-    //let promise4=rankingData(boss,metric,difficulty,gameclass,spec,4,key);
-    //let promise5=rankingData(boss,metric,difficulty,gameclass,spec,5,key);
-    let promises=[promise1,promise2,promise3];
+    const pages=value.pages;
+    let promises=[];
+
+    for(let i=0;i<pages;i++){
+        let promise=rankingData(boss,metric,difficulty,gameclass,spec,i,key);
+        promises.push(promise);
+    }
     Promise.all(promises).then((results)=>{
         for (let i=0;i<results.length;i++){
             dataToSendBack.push(results[i]);

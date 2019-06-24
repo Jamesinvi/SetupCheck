@@ -1,280 +1,313 @@
 let raid;
 let specRadios;
 let rankingsData;
-let talentNames=[];
-let trinketNames=[];
+let talentNames = [];
+let trinketNames = [];
 let talentCombinations;
 let trinketCombinations;
-let barColors=[];
-let internalBarColors=[];
-let talentLabels=[];
-let debug=false;
-function log(message){
-    if(debug){
-        // console.log(message);
+let barColors = [];
+let internalBarColors = [];
+let talentLabels = [];
+let debug = false;
+let classes;
+
+function log(message) {
+    if (debug) {
+        // // console.log(message);
     }
 }
-// #region buttons
+// #region buttons & HTML elements
 //get all buttons by ID
-let button_1=document.getElementById("submit-cos");
-let button_2=document.getElementById("submit-bod");
-let button_3=document.getElementById("request");
+let button_1 = document.getElementById("submit-cos");
+let button_2 = document.getElementById("submit-bod");
+let button_3 = document.getElementById("request");
+// button_3.setAttribute("disabled",true);
+let slider = document.getElementById("number-of-pages");
+let output = document.getElementById("number-of-pages-header");
+output.innerHTML = `Number of pages: ${slider.value}`; // Display the default slider value
+
 // #endregion
 
 // #region event listeners
 
+
+// Update the current slider value (each time you drag the slider handle)
+slider.oninput = function () {
+    output.innerHTML = `Number of pages: ${this.value}`
+}
+
 //get the classes form and add an event listener to all of the radio elements
-let classes=document.getElementById("classes");
-for (let i=0;i<classes.length;i++){
-    classes[i].addEventListener("click",function(evt){
-        updateRadioElements(this.value);
-    });
+classes = document.getElementById("classes");
+for (let gameClass of classes.childNodes) {
+    if (gameClass.nodeName == "DIV") {
+        gameClass.addEventListener("click", function (evt) {
+            updateRadioElements(gameClass.childNodes[1].value);
+        });
+    }
 }
 
 //add event listeners to all buttons
-button_1.addEventListener("click",function(evt){
+button_1.addEventListener("click", function (evt) {
+    // console.log("test");
     submitForm(this.value);
 });
 
-button_2.addEventListener("click",function(evt){
+button_2.addEventListener("click", function (evt) {
+    // console.log("test");
+
     submitForm(this.value);
 });
 
 //special listener to request encounter data
-button_3.addEventListener("click", async function(){
-    button_3.disabled=true;
-    let data=compileRequestData();
+button_3.addEventListener("click", async function () {
+    button_3.disabled = true;
+    let data = compileRequestData();
     requestRankings(data);
 
 })
 
 //based on what class is selected create radios and labels for specs
-function updateRadioElements(evt){
-    const gameclass=evt;
-    specRadios=document.getElementById("specs");
-    while(specRadios.hasChildNodes()){
+function updateRadioElements(evt) {
+    const gameclass = evt;
+    specRadios = document.getElementById("specs");
+    let specHeader = document.getElementById("spec-header2");
+    specHeader.style.visibility = "visible";
+    while (specRadios.hasChildNodes()) {
         specRadios.removeChild(specRadios.firstChild);
     }
-    if(gameclass=="1"){
-       createSpecElement(1,"Blood",specRadios);
-       createSpecElement(2,"Frost",specRadios);
-       createSpecElement(3,"Unholy",specRadios);
+    // console.log(evt);
+    if (gameclass == "1") {
+        createSpecElement(1, "Blood", specRadios, 19);
+        createSpecElement(2, "Frost", specRadios, 20);
+        createSpecElement(3, "Unholy", specRadios, 21);
     }
-    if(gameclass=="2"){
-       createSpecElement(1,"Balance",specRadios);
-       createSpecElement(2,"Feral",specRadios);
-       createSpecElement(3,"Guardian",specRadios);
-       createSpecElement(4,"Restoration",specRadios);
+    if (gameclass == "2") {
+        createSpecElement(1, "Balance", specRadios, 22);
+        createSpecElement(2, "Feral", specRadios, 23);
+        createSpecElement(3, "Guardian", specRadios, 24);
+        createSpecElement(4, "Restoration", specRadios, 25);
     }
-    if(gameclass=="3"){
-       createSpecElement(1,"Beast Mastery",specRadios);
-       createSpecElement(2,"Marksmanship",specRadios);
-       createSpecElement(3,"Survival",specRadios);
+    if (gameclass == "3") {
+        createSpecElement(1, "Beast Mastery", specRadios, 26);
+        createSpecElement(2, "Marksmanship", specRadios, 27);
+        createSpecElement(3, "Survival", specRadios, 28);
     }
-    if(gameclass=="4"){
-       createSpecElement(1,"Arcane",specRadios);
-       createSpecElement(2,"Fire",specRadios);
-       createSpecElement(3,"Frost",specRadios);
+    if (gameclass == "4") {
+        createSpecElement(1, "Arcane", specRadios, 29);
+        createSpecElement(2, "Fire", specRadios, 30);
+        createSpecElement(3, "Frost", specRadios, 31);
     }
-    if(gameclass=="5"){
-       createSpecElement(1,"Brewmaster",specRadios);
-       createSpecElement(2,"Mistweaver",specRadios);
-       createSpecElement(3,"Windwalker",specRadios);
+    if (gameclass == "5") {
+        createSpecElement(1, "Brewmaster", specRadios, 32);
+        createSpecElement(2, "Mistweaver", specRadios, 33);
+        createSpecElement(3, "Windwalker", specRadios, 34);
     }
-    if(gameclass=="6"){
-       createSpecElement(1,"Holy",specRadios);
-       createSpecElement(2,"Protection",specRadios);
-       createSpecElement(3,"Retribution",specRadios);
+    if (gameclass == "6") {
+        createSpecElement(1, "Holy", specRadios, 35);
+        createSpecElement(2, "Protection", specRadios, 36);
+        createSpecElement(3, "Retribution", specRadios, 37);
     }
-    if(gameclass=="7"){
-       createSpecElement(1,"Discipline",specRadios);
-       createSpecElement(2,"Holy",specRadios);
-       createSpecElement(3,"Shadow",specRadios);
+    if (gameclass == "7") {
+        createSpecElement(1, "Discipline", specRadios, 38);
+        createSpecElement(2, "Holy", specRadios, 39);
+        createSpecElement(3, "Shadow", specRadios, 40);
     }
-    if(gameclass=="8"){
-       createSpecElement(1,"Assassination",specRadios);
-       createSpecElement(2,"Combat",specRadios);
-       createSpecElement(3,"Shadow",specRadios);
-       createSpecElement(3,"Outlaw",specRadios);
+    if (gameclass == "8") {
+        createSpecElement(1, "Assassination", specRadios, 41);
+        createSpecElement(2, "Combat", specRadios, 42);
+        createSpecElement(3, "Shadow", specRadios, 43);
+        createSpecElement(3, "Outlaw", specRadios, 44);
     }
-    if(gameclass=="9"){
-       createSpecElement(1,"Elemental",specRadios);
-       createSpecElement(2,"Enhancement",specRadios);
-       createSpecElement(3,"Restoration",specRadios);
+    if (gameclass == "9") {
+        createSpecElement(1, "Elemental", specRadios, 45);
+        createSpecElement(2, "Enhancement", specRadios, 46);
+        createSpecElement(3, "Restoration", specRadios, 47);
     }
-    if(gameclass=="10"){
-       createSpecElement(1,"Affliction",specRadios);
-       createSpecElement(2,"Demonology",specRadios);
-       createSpecElement(3,"Destruction",specRadios);
+    if (gameclass == "10") {
+        createSpecElement(1, "Affliction", specRadios, 48);
+        createSpecElement(2, "Demonology", specRadios, 49);
+        createSpecElement(3, "Destruction", specRadios, 50);
     }
-    if(gameclass=="11"){
-       createSpecElement(1,"Arms",specRadios);
-       createSpecElement(2,"Fury",specRadios);
-       createSpecElement(3,"Protection",specRadios);
+    if (gameclass == "11") {
+        createSpecElement(1, "Arms", specRadios, 51);
+        createSpecElement(2, "Fury", specRadios, 52);
+        createSpecElement(3, "Protection", specRadios, 53);
     }
-    if(gameclass=="12"){
-       createSpecElement(1,"Havoc",specRadios);
-       createSpecElement(2,"Vengeance",specRadios);
+    if (gameclass == "12") {
+        createSpecElement(1, "Havoc", specRadios, 54);
+        createSpecElement(2, "Vengeance", specRadios, 55);
     }
 }
 
-function submitForm(evt){
-    const value=evt;
-    let toSend={
-        val:value
+function submitForm(evt) {
+    const value = evt;
+    let toSend = {
+        val: value
     }
     requestFights(toSend);
 }
 // #endregion
 
 // #region request server for data
-async function requestRankings(data){
-    let timeleft=4;
+async function requestRankings(data) {
+    let timeleft = 4;
     //timer to prevent spammin the server
-    const options={
+    const options = {
         method: "POST",
-        headers:{
-            "Content-Type" : "application/json"
+        headers: {
+            "Content-Type": "application/json"
         },
         body: JSON.stringify(data)
     };
-    const response = await fetch("/encounter",options);
-    const json = await response.json().then(button_3.disabled=false);
-    // console.log("rankings from server:");
-    // console.log(json);
-    rankingsData=json;
+    const response = await fetch("/encounter", options);
+    const json = await response.json().then(button_3.disabled = false);
+    // // console.log("rankings from server:");
+    // // console.log(json);
+    rankingsData = json;
     showData();
 
 }
-async function requestFights(data){
-    const options={
+async function requestFights(data) {
+    const options = {
         method: "POST",
-        headers:{
-            "Content-Type" : "application/json"
+        headers: {
+            "Content-Type": "application/json"
         },
         body: JSON.stringify(data)
     };
     const response = await fetch("/raid", options);
     const json = await response.json();
-    // console.log(json);
-    raid=json;
+    // // console.log(json);
+    raid = json;
     refreshBossHTML();
 }
-function compileRequestData(){
-    let data={};
-    const bosses=document.getElementById("bosses");
-    const classes=document.getElementById("classes");
-    const specs=document.getElementById("specs");
-    const difficulty=document.getElementById("difficulty");
-    const metric=document.getElementById("metric");
-    for (let i=0;i<bosses.childNodes.length;i++){
-        if (bosses.childNodes[i].checked){
-            data.boss= bosses.childNodes[i].id;
+function compileRequestData() {
+    let data = {};
+    const bosses = document.getElementById("bosses");
+    const specs = document.getElementById("specs");
+    const difficulty = document.getElementById("difficulty");
+    const metric = document.getElementById("metric");
+    for (let i = 1; i < bosses.children.length; i++) {
+        if (bosses.children[i].children[0].checked) {
+            data.boss = bosses.children[i].id;
         }
     }
-    for (let j=0;j<classes.childNodes.length;j++){
-        if (classes.childNodes[j].checked){
-            data.class= classes.childNodes[j].value;
+    for (let j = 0; j < classes.children.length; j++) {
+        if (classes.children[j].children[0].checked) {
+            data.class = classes.children[j].children[0].value;
 
         }
     }
-    for (let k=0;k<specs.childNodes.length;k++){
-        if (specs.childNodes[k].checked){
-            data.spec= specs.childNodes[k].id;
+    for (let k = 0; k < specs.children.length; k++) {
+        if (specs.children[k].children[0].checked) {
+            data.spec = specs.children[k].children[0].value;
         }
     }
-    for (let p=0;p<difficulty.childNodes.length;p++){
-        if(difficulty.childNodes[p].checked){
-            data.difficulty=difficulty.childNodes[p].value;
+    for (let p = 0; p < difficulty.children.length; p++) {
+        if (difficulty.children[p].children[0].checked) {
+            data.difficulty = difficulty.children[p].children[0].value;
         }
     }
-    for (let t=0;t<metric.childNodes.length;t++){
-        if(metric.childNodes[t].checked){
-            data.metric=metric.childNodes[t].value;
+    for (let t = 0; t < metric.children.length; t++) {
+        if (metric.children[t].children[0].checked) {
+            data.metric = metric.children[t].children[0].value;
         }
     }
+    data.pages = document.getElementById("number-of-pages").value;
     // console.log(data);
     return data;
 }
 // #endregion
 
 // #region create HTML elements
-function createSpecElement(spec,specName,parent){
-    let elmnt1=createRadioElement("spec",spec,spec);
-    let label1=createLabelElement(specName);
-    specRadios.appendChild(elmnt1);
-    specRadios.appendChild(label1);
-    parent.appendChild(elmnt1);
-    parent.appendChild(label1);
+function createSpecElement(spec, specName, parent, idNumber) {
+    let parentDiv = document.createElement("div");
+    parentDiv.className = "custom-control custom-radio custom-control-inline";
+    let elmnt1 = createRadioElement("spec", spec, "customRadioInline", idNumber);
+    let label1 = createLabelElement(specName, idNumber);
+    parentDiv.appendChild(elmnt1);
+    parentDiv.appendChild(label1);
+    parent.appendChild(parentDiv);
+
 }
 
-function createLabelElement(text){
-    let element=document.createElement("label");
-    element.innerHTML=text;
+function createLabelElement(text, idNumber) {
+    let element = document.createElement("label");
+    element.className = "custom-control-label";
+    element.setAttribute("for", `customRadioInline${idNumber}`);
+    element.innerHTML = text;
     return element;
 }
 
-function createRadioElement(name,value,id){
-    let element=document.createElement("input");
-    element.type="radio";
-    element.name=name;
-    element.value=value;
-    element.id=id;
+function createRadioElement(name, value, id, idNumber) {
+    let element = document.createElement("input");
+    element.className = "custom-control-input";
+    element.type = "radio";
+    element.name = name;
+    element.value = value;
+    element.id = `${id}${idNumber}`;
     return element;
 }
 
-function refreshBossHTML(){
-    const bosses=document.getElementById("bosses");
-    while(bosses.hasChildNodes()){
+function refreshBossHTML() {
+    const bosses = document.getElementById("bosses");
+    while (bosses.hasChildNodes()) {
         bosses.removeChild(bosses.firstChild);
     }
-    const encounters=raid.raid.encounters;
-    for (let i=0;i<encounters.length;i++){
-        let id=encounters[i].id;
-        let boss=createRadioElement("encounter",encounters[i].name, id);
-        let bossLabel = createLabelElement(encounters[i].name);
-        bosses.appendChild(boss);
-        bosses.appendChild(bossLabel);
+    const encounters = raid.raid.encounters;
+    let label = document.createElement("h2");
+    label.innerHTML = "Boss";
+    bosses.appendChild(label);
+    for (let i = 0; i < encounters.length; i++) {
+        let parentDiv = document.createElement("div");
+        parentDiv.className = "custom-control custom-radio custom-control-inline";
+        let id = encounters[i].id;
+        parentDiv.id = id;
+        let boss = createRadioElement("encounter", encounters[i].name, "customRadioInline", id);
+        let bossLabel = createLabelElement(encounters[i].name, id);
+        parentDiv.appendChild(boss);
+        parentDiv.appendChild(bossLabel);
+        bosses.appendChild(parentDiv);
     }
 }
-function createWowheadDiv(elements,parentID, type){
+function createWowheadDiv(elements, parentID, type) {
     //get the wowhead div
-    let checkType=type;
-    let div=document.getElementById(`${checkType}`);
+    let checkType = type;
+    let div = document.getElementById(`${checkType}`);
     //if not found create one
-    if(div==null){
-        div=document.createElement("div");
-        div.id=`${checkType}`;
-    }else{
+    if (div == null) {
+        div = document.createElement("div");
+        div.id = `${checkType}`;
+    } else {
         //clear all entries to avoid talent from multiple classes to accumulate
-        for (let i=0;i<div.childNodes.length;i++){
-            div.childNodes[i].innerHTML="";
-            div.childNodes[i].href="";
+        for (let i = 0; i < div.childNodes.length; i++) {
+            div.childNodes[i].innerHTML = "";
+            div.childNodes[i].href = "";
         }
     }
-    let occurences=Object.values(elements).sort((a,b) => b-a).slice(0,5);
-    for (let n=0;n<Object.keys(elements).length;n++){
-        let IDs=Object.keys(elements)[n].split(",");
-        let talentSet=document.createElement("div");
-        let occurence=Object.values(elements)[n];
-        if(occurences.includes(occurence)){
-            for(let value of IDs){
-                let wowheadLink=document.createElement("a");
-                wowheadLink.href=`https://www.wowhead.com/${checkType}=${value}`;
-                if(checkType=="spell")
-                wowheadLink.innerHTML=getTalentNameByID(value) + ", ";
+    let occurences = Object.values(elements).sort((a, b) => b - a).slice(0, 5);
+    for (let n = 0; n < Object.keys(elements).length; n++) {
+        let IDs = Object.keys(elements)[n].split(",");
+        let talentSet = document.createElement("div");
+        let occurence = Object.values(elements)[n];
+        if (occurences.includes(occurence)) {
+            for (let value of IDs) {
+                let wowheadLink = document.createElement("a");
+                wowheadLink.href = `https://www.wowhead.com/${checkType}=${value}`;
+                if (checkType == "spell")
+                    wowheadLink.innerHTML = getTalentNameByID(value) + ", ";
                 else
-                wowheadLink.innerHTML=getTrinketNameByID(value) + ", ";
+                    wowheadLink.innerHTML = getTrinketNameByID(value) + ", ";
 
-                let wowString=`${checkType}=${value}`
+                let wowString = `${checkType}=${value}`
                 wowheadLink.setAttribute = wowString;
                 talentSet.appendChild(wowheadLink);
             }
             div.appendChild(talentSet);
-        }   
+        }
 
     }
-    let parent=document.getElementById(parentID);
+    let parent = document.getElementById(parentID);
     parent.appendChild(div);
 }
 // #endregion
@@ -287,7 +320,7 @@ var ctx = document.getElementById('talentChart').getContext('2d');
 let talentChart;
 var ctx2 = document.getElementById('trinketChart').getContext('2d');
 let trinketChart;
-window.onload=function(){
+window.onload = function () {
     randomBarColors();
     talentChart = new Chart(ctx, {
         type: 'bar',
@@ -314,7 +347,7 @@ window.onload=function(){
                     }
                 }]
             },
-            responsive : true,
+            responsive: true,
             maintainAspectRatio: false
         }
     });
@@ -343,79 +376,82 @@ window.onload=function(){
                     }
                 }]
             },
-            responsive : true,
-            maintainAspectRatio: false
+            responsive: true,
+            maintainAspectRatio: false,
+
+
         }
+
     });
 }
-function showData(){
-    talentCombinations=getTalentCombos();
-    talentLabels=getTalentLabels();
-    talentChart.data.labels=talentLabels;
-    talentChart.data.datasets[0].data=Object.values(talentCombinations);
-    createWowheadDiv(talentCombinations,"wowhead-spell","spell");
+function showData() {
+    talentCombinations = getTalentCombos();
+    talentLabels = getTalentLabels();
+    talentChart.data.labels = talentLabels;
+    talentChart.data.datasets[0].data = Object.values(talentCombinations);
+    createWowheadDiv(talentCombinations, "wowhead-spell", "spell");
     talentChart.update();
-    trinketCombinations=getTrinketCombos();
-    trinketLabels=getTrinketLabels();
-    trinketChart.data.labels=trinketLabels;
-    trinketChart.data.datasets[0].data=Object.values(trinketCombinations);
+    trinketCombinations = getTrinketCombos();
+    trinketLabels = getTrinketLabels();
+    trinketChart.data.labels = trinketLabels;
+    trinketChart.data.datasets[0].data = Object.values(trinketCombinations);
     trinketChart.update();
-    createWowheadDiv(trinketCombinations,"wowhead-item","item");
-    // console.log("trinket combos:");
-    // console.log(trinketCombinations);
-    // console.log("trinketNames:");
-    // console.log(trinketNames);
-    // console.log("trinketLabels:");
-    // console.log(trinketLabels);
-    // console.log("talent combos:");
-    // console.log(talentCombinations);
-    // console.log("talentNames:");
-    // console.log(talentNames);
-    // console.log("talentLabels:");
-    // console.log(talentLabels);
+    createWowheadDiv(trinketCombinations, "wowhead-item", "item");
+    // // console.log("trinket combos:");
+    // // console.log(trinketCombinations);
+    // // console.log("trinketNames:");
+    // // console.log(trinketNames);
+    // // console.log("trinketLabels:");
+    // // console.log(trinketLabels);
+    // // console.log("talent combos:");
+    // // console.log(talentCombinations);
+    // // console.log("talentNames:");
+    // // console.log(talentNames);
+    // // console.log("talentLabels:");
+    // // console.log(talentLabels);
 
 }
 
 
-function getTalentCombos(){
-    let combos={};
-    for (let i=0;i<rankingsData.length;i++){
-        for(let j=0;j<rankingsData[i].rankings.length;j++){
-            let rank=rankingsData[i].rankings[j];
-            let talentCombo=[];
-            rank.talents.forEach(function (talent){              
+function getTalentCombos() {
+    let combos = {};
+    for (let i = 0; i < rankingsData.length; i++) {
+        for (let j = 0; j < rankingsData[i].rankings.length; j++) {
+            let rank = rankingsData[i].rankings[j];
+            let talentCombo = [];
+            rank.talents.forEach(function (talent) {
                 talentCombo.push(talent.id);
                 talentNames.push(talent);
             });
-            if(!(talentCombo in combos)){
-                combos[talentCombo]=1;
-            }else{
+            if (!(talentCombo in combos)) {
+                combos[talentCombo] = 1;
+            } else {
                 combos[talentCombo]++;
             }
         }
     }
-    let unique = getUnique(talentNames,'name');
-    talentNames=unique;
+    let unique = getUnique(talentNames, 'name');
+    talentNames = unique;
     clean(combos);
     return combos;
 
 }
-function getTrinketCombos(){
-    let combos={};
-    for (let i=0;i<rankingsData.length;i++){
-        for(let j=0;j<rankingsData[i].rankings.length;j++){
-            let rank=rankingsData[i].rankings[j];
-            let trinketCombo=[];
-            for(let k=12;k<14;k++){         
+function getTrinketCombos() {
+    let combos = {};
+    for (let i = 0; i < rankingsData.length; i++) {
+        for (let j = 0; j < rankingsData[i].rankings.length; j++) {
+            let rank = rankingsData[i].rankings[j];
+            let trinketCombo = [];
+            for (let k = 12; k < 14; k++) {
                 trinketCombo.push(rank.gear[k].id);
                 trinketNames.push(rank.gear[k])
             }
-            trinketComboPermutations=permutations(trinketCombo);
-            let presentFlag=false;
-            for(let permutation of trinketComboPermutations){
-                if(permutation in combos){
+            trinketComboPermutations = permutations(trinketCombo);
+            let presentFlag = false;
+            for (let permutation of trinketComboPermutations) {
+                if (permutation in combos) {
                     combos[permutation]++;
-                    presentFlag=true;
+                    presentFlag = true;
                 }
                 // if(!(trinketCombo in combos)){
                 //     combos[trinketCombo]=1;
@@ -423,50 +459,50 @@ function getTrinketCombos(){
                 //     combos[trinketCombo]++;
                 // }
             }
-            if(presentFlag==false){
-                combos[trinketComboPermutations[0]]=1;
+            if (presentFlag == false) {
+                combos[trinketComboPermutations[0]] = 1;
             }
-            
+
         }
-        
+
     }
-    let unique=getUnique(trinketNames,"name");
-    trinketNames=unique;
+    let unique = getUnique(trinketNames, "name");
+    trinketNames = unique;
     clean(combos);
     return combos;
 
 }
 
 
-  
-function getTalentLabels(){
-    let privateLabels=[];
-    for(let combo of Object.keys(talentCombinations)){
-        let individualTalents=combo.split(",");
-        let individualLabel=[];
-        for(let talent of individualTalents){
-            for(let nameRef of talentNames){
-                if(talent == nameRef.id){
+
+function getTalentLabels() {
+    let privateLabels = [];
+    for (let combo of Object.keys(talentCombinations)) {
+        let individualTalents = combo.split(",");
+        let individualLabel = [];
+        for (let talent of individualTalents) {
+            for (let nameRef of talentNames) {
+                if (talent == nameRef.id) {
                     individualLabel.push(nameRef.name);
                 }
             }
         }
         privateLabels.push(individualLabel);
     }
-    privateLabels=privateLabels.filter(n => n)
+    privateLabels = privateLabels.filter(n => n)
     return privateLabels;
 }
-function getTrinketLabels(){
-    let privateLabels=[];
+function getTrinketLabels() {
+    let privateLabels = [];
 
-    for (let combo of Object.keys(trinketCombinations)){
-        let individualTrinkets=combo.split(",");
-        let individualLabel=[];
-        for(let trinket of individualTrinkets){
-            for(nameRef of trinketNames){
-                if(trinket ==nameRef.id){
+    for (let combo of Object.keys(trinketCombinations)) {
+        let individualTrinkets = combo.split(",");
+        let individualLabel = [];
+        for (let trinket of individualTrinkets) {
+            for (nameRef of trinketNames) {
+                if (trinket == nameRef.id) {
                     individualLabel.push(nameRef.name);
-                    if(trinket==166418){
+                    if (trinket == 166418) {
                         individualLabel.push("Crest of Pa'ku");
                     }
                 }
@@ -476,26 +512,26 @@ function getTrinketLabels(){
     }
     return privateLabels;
 }
-function getTalentNameByID(id){
-    for (let name of Object.values(talentNames)){
-        if(name.id==id){
+function getTalentNameByID(id) {
+    for (let name of Object.values(talentNames)) {
+        if (name.id == id) {
             return name.name;
         }
     }
     return null;
 }
-function getTrinketNameByID(id){
-    for (let name of Object.values(trinketNames)){
-        if(name.id==id){
+function getTrinketNameByID(id) {
+    for (let name of Object.values(trinketNames)) {
+        if (name.id == id) {
             return name.name;
         }
     }
     return null;
 }
-function randomBarColors(){
-    for (let i=0;i<255;i++){
+function randomBarColors() {
+    for (let i = 0; i < 255; i++) {
         var hue = 'rgba(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + 1 + ')';
-        var lowAlphaHue=hue.replace(",1)", ",0.33)");
+        var lowAlphaHue = hue.replace(",1)", ",0.33)");
         barColors.push(hue);
         internalBarColors.push(lowAlphaHue);
     }
@@ -503,55 +539,52 @@ function randomBarColors(){
 function getUnique(arr, comp) {
 
     const unique = arr
-         .map(e => e[comp])
-  
-       // store the keys of the unique objects
-      .map((e, i, final) => final.indexOf(e) === i && i)
-  
-      // eliminate the dead keys & store unique objects
-      .filter(e => arr[e]).map(e => arr[e]);
-  
-     return unique;
-  }
-  function removeNull(elt) {
-    return elt != null;
-  }
-  function permutations(list)
-{
-	// Empty list has one permutation
-	if (list.length == 0)
-		return [[]];
-		
-		
-	var result = [];
-	
-	for (var i=0; i<list.length; i++)
-	{
-		// Clone list (kind of)
-		var copy = Object.create(list);
+        .map(e => e[comp])
 
-		// Cut one element from list
-		var head = copy.splice(i, 1);
-		
-		// Permute rest of list
-		var rest = permutations(copy);
-		
-		// Add head to each permutation of rest of list
-		for (var j=0; j<rest.length; j++)
-		{
-			var next = head.concat(rest[j]);
-			result.push(next);
-		}
-	}
-	
-	return result;
+        // store the keys of the unique objects
+        .map((e, i, final) => final.indexOf(e) === i && i)
+
+        // eliminate the dead keys & store unique objects
+        .filter(e => arr[e]).map(e => arr[e]);
+
+    return unique;
+}
+function removeNull(elt) {
+    return elt != null;
+}
+function permutations(list) {
+    // Empty list has one permutation
+    if (list.length == 0)
+        return [[]];
+
+
+    var result = [];
+
+    for (var i = 0; i < list.length; i++) {
+        // Clone list (kind of)
+        var copy = Object.create(list);
+
+        // Cut one element from list
+        var head = copy.splice(i, 1);
+
+        // Permute rest of list
+        var rest = permutations(copy);
+
+        // Add head to each permutation of rest of list
+        for (var j = 0; j < rest.length; j++) {
+            var next = head.concat(rest[j]);
+            result.push(next);
+        }
+    }
+
+    return result;
 }
 function clean(obj) {
     for (var propName in obj) {
-      if (propName === null || propName === undefined || propName ==",,,,,," || propName==",") {
-        delete obj[propName];
-      }
+        if (propName === null || propName === undefined || propName == ",,,,,," || propName == ",") {
+            delete obj[propName];
+        }
     }
-  }
-  
+}
+
 // #endregion

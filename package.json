@@ -18,6 +18,7 @@
   "author": "James Karran",
   "license": "MIT",
   "dependencies": {
+    "chartjs-plugin-zoom": "^0.7.0",
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
     "node-fetch": "^2.6.0",
