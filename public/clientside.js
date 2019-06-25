@@ -169,6 +169,7 @@ async function requestRankings(data) {
     // // console.log("rankings from server:");
     // // console.log(json);
     rankingsData = json;
+    console.log(rankingsData);
     showData();
 
 }
@@ -325,8 +326,8 @@ var ctx = document.getElementById('talentChart').getContext('2d');
 let talentChart;
 var ctx2 = document.getElementById('trinketChart').getContext('2d');
 let trinketChart;
-var ctx3 = document.getElementById('azeriteOneChart').getContext('2d');
-let azeriteOneChart;
+// var ctx3 = document.getElementById('azeriteOneChart').getContext('2d');
+// let azeriteOneChart;
 window.onload = function () {
     randomBarColors();
     talentChart = new Chart(ctx, {
@@ -390,38 +391,38 @@ window.onload = function () {
         }
 
     });
-    azeriteOneChart=new Chart(ctx3, {
-        type: 'bar',
-        data: {
-            labels: [],
-            datasets: [{
-                label: '# of Logs',
-                data: [],
-                backgroundColor: internalBarColors,
-                borderColor: barColors,
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }],
-                xAxes: [{
-                    ticks: {
-                        display: false //this will remove only the label
-                    }
-                }]
-            },
-            responsive: true,
-            maintainAspectRatio: false,
+    // azeriteOneChart=new Chart(ctx3, {
+    //     type: 'bar',
+    //     data: {
+    //         labels: [],
+    //         datasets: [{
+    //             label: '# of Logs',
+    //             data: [],
+    //             backgroundColor: internalBarColors,
+    //             borderColor: barColors,
+    //             borderWidth: 1
+    //         }]
+    //     },
+    //     options: {
+    //         scales: {
+    //             yAxes: [{
+    //                 ticks: {
+    //                     beginAtZero: true
+    //                 }
+    //             }],
+    //             xAxes: [{
+    //                 ticks: {
+    //                     display: false //this will remove only the label
+    //                 }
+    //             }]
+    //         },
+    //         responsive: true,
+    //         maintainAspectRatio: false,
 
 
-        }
+    //     }
 
-    });
+    // });
 }
 function showData() {
     talentCombinations = getTalentCombos();
