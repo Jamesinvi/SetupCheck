@@ -82,9 +82,10 @@ app.post("/encounter", async (request,response)=>{
         response.end(JSON.stringify(dataToSendBack));
     }).catch((err) => console.log(err));
 
+
 })
 async function rankingData(boss,metric,difficulty,gameclass,spec,page,key){
-    let api_url=`https://www.warcraftlogs.com:443/v1/rankings/encounter/${boss}?metric=${metric}&difficulty=${difficulty}&class=${gameclass}&spec=${spec}&page=${page}&api_key=${key}`;
+    let api_url=`https://www.warcraftlogs.com:443/v1/rankings/encounter/${boss}?metric=${metric}&difficulty=${difficulty}&class=${gameclass}&spec=${spec}&page=${page}&api_key=${key}&partition=2`;
     let fetchResponse=await fetch(api_url);
     let json=await fetchResponse.json();
     return json;
