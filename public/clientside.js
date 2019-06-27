@@ -350,6 +350,7 @@ function createWowheadDiv(elements, parentID, type) {
             if (occurenceCheck == occurence) {
                 let IDs = Object.keys(elements)[n].split(",");
                 let talentSet = document.createElement("div");
+                if(type!="wowhead-item")
                 talentSet.setAttribute("class","btn-group");
                 if (occurences.includes(occurence)) {
                     for (let value of IDs) {
