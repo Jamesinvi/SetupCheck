@@ -1,203 +1,252 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html>
 
-<head>
-    <title>SetupCheck</title>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <script>var whTooltips = { colorLinks: true, iconizeLinks: true, renameLinks: true };</script>
-    <script src="//wow.zamimg.com/widgets/power.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css?family=Questrial&display=swap" rel="stylesheet">
-    <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/superhero/bootstrap.min.css" rel="stylesheet" integrity="sha384-LS4/wo5Z/8SLpOLHs0IbuPAGOWTx30XSoZJ8o7WKH0UJhRpjXXTpODOjfVnNjeHu" crossorigin="anonymous">
-</head>
+    <head>
+        <title>SetupCheck</title>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <script>var whTooltips = { colorLinks: true, iconizeLinks: true, renameLinks: true };</script>
+        <script src="//wow.zamimg.com/widgets/power.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-<body>
-    <div class="container-fluid text-center">
-        <div class="row content">
-            <div class="navbar/header">
-                <h1>SetupCheck</h1>
-                <br>
-                <br>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="style.css">
+        <link href="https://fonts.googleapis.com/css?family=Questrial&amp;display=swap" rel="stylesheet">
+        <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/superhero/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-LS4/wo5Z/8SLpOLHs0IbuPAGOWTx30XSoZJ8o7WKH0UJhRpjXXTpODOjfVnNjeHu" crossorigin="anonymous">
+    </head>
+
+    <body>
+        <div class="container-fluid text-center">
+            <div class="row content">
+                <div class="navbar/header">
+                    <h1 class="display-3">SetupCheck</h1>
+                    <br>
+                    <br>
+                </div>
             </div>
+            <div class="row content">
+                <div class="col-md-2">
+                    <div class="well">
+
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="jumbotron">
+                        <p class="lead">Insert the difficulty, metric, class, spec, boss and raid to get information on
+                            what the best-parsing players are using! <br>
+                            All the data is kindly provided by <a href="https://www.warcraftlogs.com/">WarcraftLogs</a>
+                        </p>
+                        <h5>Difficulty</h5>
+
+                        <div id="difficulty">
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="customRadioInline1" name="difficulty"
+                                    class="custom-control-input" value="1">
+                                <label class="custom-control-label" for="customRadioInline1">LFR</label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="customRadioInline2" name="difficulty"
+                                    class="custom-control-input" value="3">
+                                <label class="custom-control-label" for="customRadioInline2">Normal</label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="customRadioInline3" name="difficulty"
+                                    class="custom-control-input" value="4">
+                                <label class="custom-control-label" for="customRadioInline3">Heroic</label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="customRadioInline4" name="difficulty"
+                                    class="custom-control-input" value="5">
+                                <label class="custom-control-label" for="customRadioInline4">Mythic</label>
+                            </div>
+                        </div>
+
+                        <br>
+                        <h5>Metric</h5>
+                        <div id="metric">
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="customRadioInline5" name="metric" class="custom-control-input"
+                                    value="dps">
+                                <label class="custom-control-label" for="customRadioInline5">DPS</label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="customRadioInline6" name="metric" class="custom-control-input"
+                                    value="hps">
+                                <label class="custom-control-label" for="customRadioInline6">HPS</label>
+                            </div>
+                        </div>
+                        <br>
+                        <h5>Class</h5>
+                        <div id="classes">
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="customRadioInline7" name="class" class="custom-control-input"
+                                    value="1">
+                                <label class="custom-control-label" for="customRadioInline7">Death Knight</label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="customRadioInline8" name="class" class="custom-control-input"
+                                    value="2">
+                                <label class="custom-control-label" for="customRadioInline8">Druid</label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="customRadioInline9" name="class" class="custom-control-input"
+                                    value="3">
+                                <label class="custom-control-label" for="customRadioInline9">Hunter</label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="customRadioInline10" name="class" class="custom-control-input"
+                                    value="4">
+                                <label class="custom-control-label" for="customRadioInline10">Mage</label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="customRadioInline11" name="class" class="custom-control-input"
+                                    value="5">
+                                <label class="custom-control-label" for="customRadioInline11">Monk</label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="customRadioInline12" name="class" class="custom-control-input"
+                                    value="6">
+                                <label class="custom-control-label" for="customRadioInline12">Paladin</label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="customRadioInline13" name="class" class="custom-control-input"
+                                    value="7">
+                                <label class="custom-control-label" for="customRadioInline13">Priest</label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="customRadioInline14" name="class" class="custom-control-input"
+                                    value="8">
+                                <label class="custom-control-label" for="customRadioInline14">Rogue</label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="customRadioInline15" name="class" class="custom-control-input"
+                                    value="9">
+                                <label class="custom-control-label" for="customRadioInline15">Shaman</label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="customRadioInline16" name="class" class="custom-control-input"
+                                    value="10">
+                                <label class="custom-control-label" for="customRadioInline16">Warlock</label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="customRadioInline17" name="class" class="custom-control-input"
+                                    value="11">
+                                <label class="custom-control-label" for="customRadioInline17">Warrior</label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="customRadioInline18" name="class" class="custom-control-input"
+                                    value="12">
+                                <label class="custom-control-label" for="customRadioInline18">Demon Hunter</label>
+                            </div>
+                        </div>
+                        <br>
+
+                        <h5 id="spec-header2" style="visibility: hidden">Spec</h5>
+                        <form id="specs">
+                        </form>
+                        <br>
+                        <button type="button" class="btn btn-primary btn-lg btn-block" id="submit-bod"
+                            value="battle of dazar'alor">Battle of Dazar'Alor</button>
+                        <button type="button" class="btn btn-primary btn-lg btn-block" id="submit-cos"
+                            value="crucible of storms">Crucible of Storms</button>
+
+
+                        <br>
+                        <form id="bosses">
+                        </form>
+
+                        <br>
+
+                        <br>
+                        <h5 for="number-of-pages-header" id="number-of-pages-header">Number of pages: </h5>
+                        <input type="range" class="custom-range" min="1" max="9" id="number-of-pages">
+
+                        <button type="button" id="request" class="btn btn-success btn-lg btn-block"
+                            value="request-data">REQUEST DATA</button>
+                    </div>
+                    
+                    <div class="jumbotron" id="talentsDiv">
+                        <h1 class="display-3">Talents</h1>
+                        <p class="lead">These are the most frequent talent combinatinos found in the pages of logs you requested:</p>
+                        <div class="chart-container" style="position: relative; height:40vh; width:60vw">
+                            <canvas id="talentChart" width="100" height="100"></canvas>
+                        </div>
+                        <div id="wowhead-spell">
+                            <h3> TOP 5 Talent Combos found</h3>
+                        </div>
+                    </div>
+                    <div class="jumbotron" id="trinketsDiv">
+                        <p class="lead">These are the most frequent trinket combinatinos found in the pages of logs you requested:</p>
+
+                        <h1 class="display-3">Trinkets</h1>
+                        <div class="chart-container" style="position: relative; height:40vh; width:60vw">
+                            <canvas id="trinketChart" width="100" height="100"></canvas>
+                        </div>
+                        <div id="wowhead-item">
+                            <h3>TOP 5 Trinket Combos found</h3>
+                        </div>
+
+                    </div>
+                    <div class="jumbotron" id="azeriteDiv">
+                        <h1 class="display-3">Azerite</h1>
+                        <p class="lead">These are the most frequent azerite traits found in the pages of logs you requested:</p>
+
+                        <div class="d-inline-block">
+                            <div class="chart-container" style="position: relative; height:45vh; width:30vw">
+                                <h3>Ring 1</h3>
+                                <canvas id="azeriteOneChart" width="50" height="100"></canvas>
+                            </div>
+                        </div>
+                        <div class="d-inline-block">
+                            <h3>Ring 2</h3>
+                            <div class="chart-container" style="position: relative; height:45vh; width:30vw">
+                                <canvas id="azeriteTwoChart" width="50" height="100"></canvas>
+                            </div>
+                        </div>
+                        <div class="d-inline-block">
+                            <h3>Ring 3/4</h3>
+                            <div class="chart-container" style="position: relative; height:45vh; width:60vw">
+                                <canvas id="azeriteThreeChart" width="50" height="100"></canvas>
+                            </div>
+                        </div>
+                        <!-- <div id="wowhead-item">
+                        <h3>TOP 5 Azerite Combos found</h3>
+                    </div> -->
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="well">
+                    </div>
+                    <div class="well">
+                    </div>
+                </div>
+            </div>
+
         </div>
-        <div class="row content">
-            <div class="col-sm-2 sidenav">
-                <div class="well">
-
-                </div>
-            </div>
-
-            <div class="col-sm-8">
-                <p>Insert the difficulty, metric, class, spec, boss and raid to get information on how to better perform with your character! <br>
-                    All the data is kindly provided by <a href="https://www.warcraftlogs.com/">WarcraftLogs</a> </p>
-                <h5>Difficulty</h5>
-
-                <div id="difficulty">
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="customRadioInline1" name="difficulty" class="custom-control-input"
-                            value="1">
-                        <label class="custom-control-label" for="customRadioInline1">LFR</label>
-                    </div>
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="customRadioInline2" name="difficulty" class="custom-control-input"
-                            value="3">
-                        <label class="custom-control-label" for="customRadioInline2">Normal</label>
-                    </div>
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="customRadioInline3" name="difficulty" class="custom-control-input"
-                            value="4">
-                        <label class="custom-control-label" for="customRadioInline3">Heroic</label>
-                    </div>
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="customRadioInline4" name="difficulty" class="custom-control-input"
-                            value="5">
-                        <label class="custom-control-label" for="customRadioInline4">Mythic</label>
-                    </div>
-                </div>
-                <br>
-                <h5>Metric</h5>
-                <div id="metric">
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="customRadioInline5" name="metric" class="custom-control-input"
-                            value="dps">
-                        <label class="custom-control-label" for="customRadioInline5">DPS</label>
-                    </div>
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="customRadioInline6" name="metric" class="custom-control-input"
-                            value="hps">
-                        <label class="custom-control-label" for="customRadioInline6">HPS</label>
-                    </div>
-                </div>
-                <br>
-                <h5>Class</h5>
-                <div id="classes">
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="customRadioInline7" name="class" class="custom-control-input" value="1">
-                        <label class="custom-control-label" for="customRadioInline7">Death Knight</label>
-                    </div>
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="customRadioInline8" name="class" class="custom-control-input" value="2">
-                        <label class="custom-control-label" for="customRadioInline8">Druid</label>
-                    </div>
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="customRadioInline9" name="class" class="custom-control-input" value="3">
-                        <label class="custom-control-label" for="customRadioInline9">Hunter</label>
-                    </div>
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="customRadioInline10" name="class" class="custom-control-input"
-                            value="4">
-                        <label class="custom-control-label" for="customRadioInline10">Mage</label>
-                    </div>
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="customRadioInline11" name="class" class="custom-control-input"
-                            value="5">
-                        <label class="custom-control-label" for="customRadioInline11">Monk</label>
-                    </div>
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="customRadioInline12" name="class" class="custom-control-input"
-                            value="6">
-                        <label class="custom-control-label" for="customRadioInline12">Paladin</label>
-                    </div>
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="customRadioInline13" name="class" class="custom-control-input"
-                            value="7">
-                        <label class="custom-control-label" for="customRadioInline13">Priest</label>
-                    </div>
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="customRadioInline14" name="class" class="custom-control-input"
-                            value="8">
-                        <label class="custom-control-label" for="customRadioInline14">Rogue</label>
-                    </div>
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="customRadioInline15" name="class" class="custom-control-input"
-                            value="9">
-                        <label class="custom-control-label" for="customRadioInline15">Shaman</label>
-                    </div>
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="customRadioInline16" name="class" class="custom-control-input"
-                            value="10">
-                        <label class="custom-control-label" for="customRadioInline16">Warlock</label>
-                    </div>
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="customRadioInline17" name="class" class="custom-control-input"
-                            value="11">
-                        <label class="custom-control-label" for="customRadioInline17">Warrior</label>
-                    </div>
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="customRadioInline18" name="class" class="custom-control-input"
-                            value="12">
-                        <label class="custom-control-label" for="customRadioInline18">Demon Hunter</label>
-                    </div>
-                </div>
-                <br>
-
-                <h5 id="spec-header2" style="visibility: hidden">Spec</h5>
-                <form id="specs">
-                </form>
-                <br>
-                <button type="button" class="btn btn-primary btn-lg btn-block" id="submit-bod"
-                    value="battle of dazar'alor">Battle of Dazar'Alor</button>
-                <button type="button" class="btn btn-primary btn-lg btn-block" id="submit-cos"
-                    value="crucible of storms">Crucible of Storms</button>
-
-
-                <br>
-                <form id="bosses">
-                </form>
-
-                <br>
-
-                <br>
-
-                <h5 for="number-of-pages-header" id="number-of-pages-header">Number of pages: </h5>
-                <input type="range" class="custom-range" min="1" max="9" id="number-of-pages">
-                <button type="button" id="request" class="btn btn-success btn-lg btn-block" value="request-data">REQUEST DATA</button>
-
-                <div class="chart-container" style="position: relative; height:40vh; width:60vw">
-                    <canvas id="talentChart" width="100" height="100"></canvas>
-                </div>
-                <div id="wowhead-spell">
-                    <h1> TOP 5 Talent Combos found</h1>
-                </div>
-                <div class="chart-container" style="position: relative; height:40vh; width:60vw">
-                    <canvas id="trinketChart" width="100" height="100"></canvas>
-                </div>
-                <div id="wowhead-item">
-                    <h1>TOP 5 Trinket Combos found</h1>
-                </div>
-                <!-- <div class="chart-container" style="position: relative; height:40vh; width:60vw">
-                    <canvas id="azeriteOneChart" width="100" height="100"></canvas>
-                </div> -->
-            </div>
 
 
 
+        <footer>
+            <script src="clientside.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+            <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
+            <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@0.7.0"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/randomcolor/0.5.4/randomColor.js"
+                integrity="sha256-M2r6Q8LKhLE3OlvaHmi69IDLEKSBQ+RQuILS9bNStFY=" crossorigin="anonymous"></script>
+            <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+                integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+                crossorigin="anonymous"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+                integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+                crossorigin="anonymous"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+                integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+                crossorigin="anonymous"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" />
 
-            <div class="col-sm-2 sidenav">
-                <div class="well">
-                </div>
-                <div class="well">
-                </div>
-            </div>
-        </div>
-    </div>
-    <footer>
-        <script src="clientside.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-            crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-            crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-            crossorigin="anonymous"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" />
-        
-    </footer>
-</body>
+        </footer>
+    </body>
 
-</html>
+    </html>

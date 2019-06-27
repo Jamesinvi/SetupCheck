@@ -4,6 +4,8 @@ let rankingsData;
 let talentNames = [];
 let trinketNames = [];
 let azeriteNames = [];
+let talentScore = [];
+let trinketScore = [];
 let talentCombinations;
 let trinketCombinations;
 let azeriteOccurences;
@@ -15,6 +17,11 @@ let internalBarColors = [];
 let talentLabels = [];
 let debug = false;
 let classes;
+let difficultyFlag = false;
+let classFlag = false;
+let metricFlag = false;
+let specFlag = false;
+let bossFlag = false;
 
 function log(message) {
     if (debug) {
@@ -26,16 +33,59 @@ function log(message) {
 let button_1 = document.getElementById("submit-cos");
 let button_2 = document.getElementById("submit-bod");
 let button_3 = document.getElementById("request");
-// button_3.setAttribute("disabled",true);
+
+button_3.setAttribute("disabled", true);
+
 let slider = document.getElementById("number-of-pages");
 let output = document.getElementById("number-of-pages-header");
+let talentsDiv = document.getElementById("talentsDiv");
+let trinektsDiv = document.getElementById("trinketsDiv");
+let azeriteDiv = document.getElementById("azeriteDiv");
+classes = document.getElementById("classes");
+
+for (let difficultyChild of difficulty.children) {
+    difficultyChild.children[0].addEventListener("click", completeDataTest);
+}
+for (let metricChild of metric.children) {
+    metricChild.children[0].addEventListener("click", completeDataTest);
+}
+for (let individualClass of classes.children) {
+    individualClass.children[0].addEventListener("click", completeDataTest);
+}
+
+talentsDiv.style.display = "none";
+trinektsDiv.style.display = "none";
+azeriteDiv.style.display = "none";
 output.innerHTML = `Number of pages: ${slider.value}`; // Display the default slider value
+
+
 
 // #endregion
 
 // #region event listeners
 
+function completeDataTest() {
+    if (this.name == "difficulty") {
+        //console.log("difficulty added: ", this.value);
+        difficultyFlag = true;
+    } else if (this.name == "class") {
+        //console.log("class added: ", this.value);
+        classFlag = true;
+    } else if (this.name == "metric") {
+        //console.log("metric added: ", this.value);
+        metricFlag = true;
+    } else if (this.name == "spec") {
+        //console.log("spec added: ", this.value);
+        specFlag = true;
+    } else if (this.name == "encounter") {
+        //console.log("boss added: ", this.id);
+        bossFlag = true;
+    }
+    if (difficultyFlag && classFlag && metricFlag && specFlag && bossFlag) {
+        button_3.disabled = false;
+    }
 
+}
 // Update the current slider value (each time you drag the slider handle)
 slider.oninput = function () {
     output.innerHTML = `Number of pages: ${this.value}`
@@ -62,6 +112,7 @@ button_2.addEventListener("click", function (evt) {
 
     submitForm(this.value);
 });
+
 
 //special listener to request encounter data
 button_3.addEventListener("click", async function () {
@@ -155,7 +206,6 @@ function submitForm(evt) {
 
 // #region request server for data
 async function requestRankings(data) {
-    let timeleft = 4;
     //timer to prevent spammin the server
     const options = {
         method: "POST",
@@ -252,6 +302,7 @@ function createRadioElement(name, value, id, idNumber) {
     element.name = name;
     element.value = value;
     element.id = `${id}${idNumber}`;
+    element.addEventListener("click", completeDataTest);
     return element;
 }
 
@@ -286,33 +337,46 @@ function createWowheadDiv(elements, parentID, type) {
         div.id = `${checkType}`;
     } else {
         //clear all entries to avoid talent from multiple classes to accumulate
-        for (let i = 0; i < div.childNodes.length; i++) {
-            div.childNodes[i].innerHTML = "";
-            div.childNodes[i].href = "";
+        var child = div.lastElementChild;  
+        while (child) { 
+            div.removeChild(child); 
+            child = div.lastElementChild; 
         }
     }
     let occurences = Object.values(elements).sort((a, b) => b - a).slice(0, 5);
-    for (let n = 0; n < Object.keys(elements).length; n++) {
-        let IDs = Object.keys(elements)[n].split(",");
-        let talentSet = document.createElement("div");
-        let occurence = Object.values(elements)[n];
-        if (occurences.includes(occurence)) {
-            for (let value of IDs) {
-                let wowheadLink = document.createElement("a");
-                wowheadLink.href = `https://www.wowhead.com/${checkType}=${value}`;
-                if (checkType == "spell")
-                    wowheadLink.innerHTML = getTalentNameByID(value) + ", ";
-                else
-                    wowheadLink.innerHTML = getTrinketNameByID(value) + ", ";
+    for (let occurenceCheck of occurences) {
+        for (let n = 0; n < Object.keys(elements).length; n++) {
+            let occurence = Object.values(elements)[n];
+            if (occurenceCheck == occurence) {
+                let IDs = Object.keys(elements)[n].split(",");
+                let talentSet = document.createElement("div");
+                talentSet.setAttribute("class","btn-group");
+                if (occurences.includes(occurence)) {
+                    for (let value of IDs) {
+                        let wowheadLink = document.createElement("a");
+                        wowheadLink.href = `https://www.wowhead.com/${checkType}=${value}`;
+                        wowheadLink.type = "button";
+                        wowheadLink.className = "btn btn-info";
+                        if (checkType == "spell")
+                            wowheadLink.innerHTML = getTalentNameByID(value);
+                        else
+                            wowheadLink.innerHTML = getTrinketNameByID(value);
 
-                let wowString = `${checkType}=${value}`
-                wowheadLink.setAttribute = wowString;
-                talentSet.appendChild(wowheadLink);
+                        let wowString = `${checkType}=${value}`
+                        wowheadLink.setAttribute = wowString;
+                        talentSet.appendChild(wowheadLink);
+                    }
+                    if (div.childElementCount > 4) {
+                        //console.log("called");
+                        break;
+                    }
+                    div.appendChild(talentSet);
+
+                }
             }
-            div.appendChild(talentSet);
         }
-
     }
+
     let parent = document.getElementById(parentID);
     parent.appendChild(div);
 }
@@ -326,27 +390,26 @@ var ctx = document.getElementById('talentChart').getContext('2d');
 let talentChart;
 var ctx2 = document.getElementById('trinketChart').getContext('2d');
 let trinketChart;
-// var ctx3 = document.getElementById('azeriteOneChart').getContext('2d');
-// let azeriteOneChart;
+var ctx3 = document.getElementById('azeriteOneChart').getContext('2d');
+let azeriteOneChart;
+var ctx4 = document.getElementById('azeriteTwoChart').getContext('2d');
+let azeriteTwoChart;
+var ctx5 = document.getElementById('azeriteThreeChart').getContext('2d');
+let azeriteThreeChart;
 window.onload = function () {
     randomBarColors();
     talentChart = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: [],
-            datasets: [{
-                label: '# of Logs',
-                data: [],
-                backgroundColor: internalBarColors,
-                borderColor: barColors,
-                borderWidth: 1
-            }]
+            datasets: []
         },
         options: {
             scales: {
                 yAxes: [{
                     ticks: {
-                        beginAtZero: true
+                        beginAtZero: true, //this will remove only the label
+                        fontColor: 'white'
                     }
                 }],
                 xAxes: [{
@@ -354,6 +417,11 @@ window.onload = function () {
                         display: false //this will remove only the label
                     }
                 }]
+            },
+            legend: {
+                labels: {
+                    fontColor: 'white' //set your desired color
+                }
             },
             responsive: true,
             maintainAspectRatio: false
@@ -372,10 +440,15 @@ window.onload = function () {
             }]
         },
         options: {
+            pan: {
+                enabled: true,
+                mode: 'x',
+             },
             scales: {
                 yAxes: [{
                     ticks: {
-                        beginAtZero: true
+                        beginAtZero: true, //this will remove only the label
+                        fontColor: 'white'
                     }
                 }],
                 xAxes: [{
@@ -384,6 +457,11 @@ window.onload = function () {
                     }
                 }]
             },
+            legend: {
+                labels: {
+                    fontColor: 'white' //set your desired color
+                }
+            },
             responsive: true,
             maintainAspectRatio: false,
 
@@ -391,59 +469,169 @@ window.onload = function () {
         }
 
     });
-    // azeriteOneChart=new Chart(ctx3, {
-    //     type: 'bar',
-    //     data: {
-    //         labels: [],
-    //         datasets: [{
-    //             label: '# of Logs',
-    //             data: [],
-    //             backgroundColor: internalBarColors,
-    //             borderColor: barColors,
-    //             borderWidth: 1
-    //         }]
-    //     },
-    //     options: {
-    //         scales: {
-    //             yAxes: [{
-    //                 ticks: {
-    //                     beginAtZero: true
-    //                 }
-    //             }],
-    //             xAxes: [{
-    //                 ticks: {
-    //                     display: false //this will remove only the label
-    //                 }
-    //             }]
-    //         },
-    //         responsive: true,
-    //         maintainAspectRatio: false,
+    azeriteOneChart = new Chart(ctx3, {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: [],
+                backgroundColor: internalBarColors,
+            }],
+            labels: [],
+        },
+        options: {
+            pan: {
+                enabled: true,
+                mode: 'x',
+             },
+            legend: {
+                labels: {
+                    // This more specific font property overrides the global property
+                    fontColor: 'white',
+                    usePointStyle: true
+                },
+                position: 'left',
+            },
+            responsive: true,
+            maintainAspectRatio: false,
+        }
 
+    });
+    azeriteTwoChart = new Chart(ctx4, {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: [],
+                backgroundColor: internalBarColors,
+            }],
+            labels: [],
+        },
+        options: {
+            legend: {
+                pan: {
+                    enabled: true,
+                    mode: 'x',
+                 },
+                labels: {
+                    // This more specific font property overrides the global property
+                    fontColor: 'white',
+                    usePointStyle: true
+                },
+                position: 'right',
+            },
+            responsive: true,
+            maintainAspectRatio: false,
+        }
 
-    //     }
+    });
+    azeriteThreeChart = new Chart(ctx5, {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: [],
+                backgroundColor: internalBarColors,
+            }],
+            labels: [],
+        },
+        options: {
+            pan: {
+                enabled: true,
+                mode: 'x',
+             },
+            legend: {
+                labels: {
+                    // This more specific font property overrides the global property
+                    fontColor: 'white',
+                    usePointStyle: true
+                },
+                position: 'bottom',
+            },
+            responsive: true,
+            maintainAspectRatio: false,
+        }
 
-    // });
+    });
 }
 function showData() {
+    talentsDiv.style.display = "block";
+    trinektsDiv.style.display = "block";
+    azeriteDiv.style.display = "block";
     talentCombinations = getTalentCombos();
     talentLabels = getTalentLabels();
     talentChart.data.labels = talentLabels;
-    talentChart.data.datasets[0].data = Object.values(talentCombinations);
+    talentChart.data.datasets = [];
+    let barDataSet = {
+        label: 'Number of Logs',
+        data: Object.values(talentCombinations),
+        backgroundColor: internalBarColors,
+        borderColor: barColors,
+        borderWidth: 1
+    };
+    talentChart.data.datasets.push(barDataSet);
+    let lineDataSet = {
+        label: "Score",
+        data: talentScore,
+        type: "line",
+        pointBackgroundColor: barColors,
+        pointBorderColor: barColors,
+        borderColor: "white",
+        lineTension: 0.5,
+        fill: false
+    };
+    talentChart.data.datasets.push(lineDataSet);
     createWowheadDiv(talentCombinations, "wowhead-spell", "spell");
     talentChart.update();
+
+
     trinketCombinations = getTrinketCombos();
     trinketLabels = getTrinketLabels();
     trinketChart.data.labels = trinketLabels;
-    trinketChart.data.datasets[0].data = Object.values(trinketCombinations);
+    trinketChart.data.datasets = [];
+    barDataSet = {
+        label: 'Number of Logs',
+        data: Object.values(trinketCombinations),
+        backgroundColor: internalBarColors,
+        borderColor: barColors,
+        borderWidth: 1
+    };
+    trinketChart.data.datasets.push(barDataSet);
+    lineDataSet = {
+        label: "Score",
+        data: trinketScore,
+        type: "line",
+        pointBackgroundColor: barColors,
+        pointBorderColor: barColors,
+        borderColor: "white",
+        lineTension: 0.5,
+        fill: false
+    };
+    trinketChart.data.datasets.push(lineDataSet);
     trinketChart.update();
+
+
     createWowheadDiv(trinketCombinations, "wowhead-item", "item");
-    // azeriteOccurences = getAzeriteOccurences();
-    // azeriteRingOneCombinations=azeriteOccurences[0];
-    // azeriteRingOneLabels=getAzeriteLabels(1);
-    // azeriteOneChart.data.labels=azeriteRingOneLabels;
-    // azeriteOneChart.data.datasets[0].data=Object.values(azeriteRingOneCombinations);
-    // azeriteOneChart.update();
-    
+    azeriteOccurences = getAzeriteOccurences();
+    azeriteRingThreeCombinations = azeriteOccurences[2];
+    azeriteRingThreeLabels = getAzeriteLabels(2);
+
+    azeriteThreeChart.data.datasets[0].data = Object.values(azeriteRingThreeCombinations);
+    azeriteThreeChart.data.labels = azeriteRingThreeLabels;
+    azeriteThreeChart.update();
+
+    azeriteRingTwoCombinations = azeriteOccurences[1];
+    azeriteRingTwoLabels = getAzeriteLabels(1);
+    azeriteTwoChart.data.datasets[0].data = Object.values(azeriteRingTwoCombinations);
+    azeriteTwoChart.data.labels = azeriteRingTwoLabels;
+    azeriteTwoChart.update();
+
+    azeriteRingOneCombinations = azeriteOccurences[0];
+    azeriteRingOneLabels = getAzeriteLabels(0);
+    azeriteOneChart.data.datasets[0].data = Object.values(azeriteRingOneCombinations);
+    azeriteOneChart.data.labels = azeriteRingOneLabels;
+    azeriteOneChart.update();
+
+
+
+
     // // console.log("trinket combos:");
     // // console.log(trinketCombinations);
     // // console.log("trinketNames:");
@@ -459,9 +647,10 @@ function showData() {
 
 }
 
-
 function getTalentCombos() {
     let combos = {};
+    let scoreValues = [];
+    talentScore = [];
     for (let i = 0; i < rankingsData.length; i++) {
         for (let j = 0; j < rankingsData[i].rankings.length; j++) {
             let rank = rankingsData[i].rankings[j];
@@ -472,6 +661,8 @@ function getTalentCombos() {
             });
             if (!(talentCombo in combos)) {
                 combos[talentCombo] = 1;
+                let score = rank.total;
+                scoreValues.push(score);
             } else {
                 combos[talentCombo]++;
             }
@@ -480,11 +671,20 @@ function getTalentCombos() {
     let unique = getUnique(talentNames, 'name');
     talentNames = unique;
     clean(combos);
+    let max = Math.max(...scoreValues);
+    let min = Math.min(...scoreValues);
+    let newMax = Math.max(...Object.values(combos));
+    for (let value of scoreValues) {
+        let comboRemapped = map_range(value, min, max, 0, newMax);
+        talentScore.push(comboRemapped);
+    }
     return combos;
 
 }
 function getTrinketCombos() {
     let combos = {};
+    let trinketValues = [];
+    trinketScore=[];
     for (let i = 0; i < rankingsData.length; i++) {
         for (let j = 0; j < rankingsData[i].rankings.length; j++) {
             let rank = rankingsData[i].rankings[j];
@@ -508,6 +708,7 @@ function getTrinketCombos() {
             }
             if (presentFlag == false) {
                 combos[trinketComboPermutations[0]] = 1;
+                trinketValues.push(rank.total);
             }
 
         }
@@ -516,59 +717,66 @@ function getTrinketCombos() {
     let unique = getUnique(trinketNames, "name");
     trinketNames = unique;
     clean(combos);
+    let max = Math.max(...trinketValues);
+    let min = Math.min(...trinketValues);
+    let newMax = Math.max(...Object.values(combos));
+    for (let value of trinketValues) {
+        let comboRemapped = map_range(value, min, max, 0, newMax);
+        trinketScore.push(comboRemapped);
+    }
     return combos;
 
 }
-// function getAzeriteOccurences() {
-//     let ringOneOccurences = {};
-//     let ringTwoOccurences = {};
-//     let ringThreeOccurences = {};
-//     for (let i = 0; i < rankingsData.length; i++) {
-//         for (let j = 0; j < rankingsData[i].rankings.length; j++) {
-//             let rank = rankingsData[i].rankings[j];
-//             for (let k of rank.azeritePowers) {
-//                 if (k.ring == 1) {
-//                     if (!(k.id in ringOneOccurences)) {
-//                         ringOneOccurences[k.id] = 1;
-//                     } else {
-//                         ringOneOccurences[k.id]++;
-//                     }
-//                 }
-//                 else if (k.ring == 2) {
-//                     if (!(k.id in ringTwoOccurences)) {
-//                         ringTwoOccurences[k.id] = 1;
-//                     } else {
-//                         ringTwoOccurences[k.id]++;
-//                     }
-//                 }
-//                 else if (k.ring == 3) {
-//                     if (!(k.id in ringThreeOccurences)) {
-//                         ringThreeOccurences[k.id] = 1;
-//                     } else {
-//                         ringThreeOccurences[k.id]++;
-//                     }
-//                 }
+function getAzeriteOccurences() {
+    let ringOneOccurences = {};
+    let ringTwoOccurences = {};
+    let ringThreeOccurences = {};
+    for (let i = 0; i < rankingsData.length; i++) {
+        for (let j = 0; j < rankingsData[i].rankings.length; j++) {
+            let rank = rankingsData[i].rankings[j];
+            for (let k of rank.azeritePowers) {
+                if (k.ring == 1) {
+                    if (!(k.id in ringOneOccurences)) {
+                        ringOneOccurences[k.id] = 1;
+                    } else {
+                        ringOneOccurences[k.id]++;
+                    }
+                }
+                else if (k.ring == 2) {
+                    if (!(k.id in ringTwoOccurences)) {
+                        ringTwoOccurences[k.id] = 1;
+                    } else {
+                        ringTwoOccurences[k.id]++;
+                    }
+                }
+                else if (k.ring == 3) {
+                    if (!(k.id in ringThreeOccurences)) {
+                        ringThreeOccurences[k.id] = 1;
+                    } else {
+                        ringThreeOccurences[k.id]++;
+                    }
+                }
 
-//                 azeriteNames.push(k);
-//             }
-//         }
+                azeriteNames.push(k);
+            }
+        }
 
-//     }
-//     const unique = getUnique(azeriteNames, "name");
-//     azeriteNames = unique;
-//     clean(ringOneOccurences);
-//     clean(ringTwoOccurences);
-//     clean(ringTwoOccurences);
-//     const occurences=[ringOneOccurences,ringTwoOccurences,ringThreeOccurences];
-//     return occurences;
+    }
+    const unique = getUnique(azeriteNames, "name");
+    azeriteNames = unique;
+    clean(ringOneOccurences);
+    clean(ringTwoOccurences);
+    clean(ringTwoOccurences);
+    const occurences = [ringOneOccurences, ringTwoOccurences, ringThreeOccurences];
+    return occurences;
 
-// }
+}
 
 function getAzeriteLabels(ring) {
-    let privateLabels=[];
-    for(let occurence of Object.keys(azeriteOccurences[ring])){
-        for (let nameRef of azeriteNames){
-            if(occurence==nameRef.id){
+    let privateLabels = [];
+    for (let occurence of Object.keys(azeriteOccurences[ring])) {
+        for (let nameRef of azeriteNames) {
+            if (occurence == nameRef.id) {
                 privateLabels.push(nameRef.name);
             }
         }
@@ -631,8 +839,11 @@ function getTrinketNameByID(id) {
 }
 function randomBarColors() {
     for (let i = 0; i < 255; i++) {
-        var hue = 'rgba(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + 1 + ')';
-        var lowAlphaHue = hue.replace(",1)", ",0.33)");
+        let hue = randomColor({
+            format: 'rgba',
+            alpha: 1
+        })
+        var lowAlphaHue = hue.replace(", 1)", ", 0.7)");
         barColors.push(hue);
         internalBarColors.push(lowAlphaHue);
     }
@@ -687,5 +898,8 @@ function clean(obj) {
         }
     }
 }
-
+function map_range(value, low1, high1, low2, high2) {
+    let remapped = low2 + (high2 - low2) * (value - low1) / (high1 - low1);
+    return remapped;
+}
 // #endregion

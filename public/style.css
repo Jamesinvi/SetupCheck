@@ -9,6 +9,9 @@ button{
     font-family: 'Questrial', sans-serif;
     font-size: 125%
 }
+canvas{
+    background: #858e97;
+}
 div{
     margin: auto;
 }
