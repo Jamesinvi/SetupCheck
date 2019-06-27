@@ -43,13 +43,13 @@ let trinektsDiv = document.getElementById("trinketsDiv");
 let azeriteDiv = document.getElementById("azeriteDiv");
 classes = document.getElementById("classes");
 
-for (let difficultyChild of difficulty.children) {
+for (let difficultyChild of Array.from(difficulty.children)) {
     difficultyChild.children[0].addEventListener("click", completeDataTest);
 }
-for (let metricChild of metric.children) {
+for (let metricChild of Array.from(metric.children)) {
     metricChild.children[0].addEventListener("click", completeDataTest);
 }
-for (let individualClass of classes.children) {
+for (let individualClass of Array.from(classes.children)) {
     individualClass.children[0].addEventListener("click", completeDataTest);
 }
 
@@ -219,7 +219,7 @@ async function requestRankings(data) {
     // // console.log("rankings from server:");
     // // console.log(json);
     rankingsData = json;
-    console.log(rankingsData);
+    //console.log(rankingsData);
     showData();
 
 }
