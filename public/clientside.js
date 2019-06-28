@@ -337,12 +337,13 @@ function createWowheadDiv(elements, parentID, type) {
         div.id = `${checkType}`;
     } else {
         //clear all entries to avoid talent from multiple classes to accumulate
-        var child = div.lastElementChild;  
-        while (child) { 
-            div.removeChild(child); 
-            child = div.lastElementChild; 
+        var child = div.lastElementChild;
+        while (child) {
+            div.removeChild(child);
+            child = div.lastElementChild;
         }
     }
+
     let occurences = Object.values(elements).sort((a, b) => b - a).slice(0, 5);
     for (let occurenceCheck of occurences) {
         for (let n = 0; n < Object.keys(elements).length; n++) {
@@ -350,8 +351,8 @@ function createWowheadDiv(elements, parentID, type) {
             if (occurenceCheck == occurence) {
                 let IDs = Object.keys(elements)[n].split(",");
                 let talentSet = document.createElement("div");
-                if(type!="item"){
-                    talentSet.setAttribute("class","btn-group");
+                if (type != "item") {
+                    talentSet.setAttribute("class", "btn-group");
                 }
                 if (occurences.includes(occurence)) {
                     for (let value of IDs) {
@@ -382,6 +383,7 @@ function createWowheadDiv(elements, parentID, type) {
     let parent = document.getElementById(parentID);
     parent.appendChild(div);
 }
+
 // #endregion
 
 // #region process the data we got
@@ -398,6 +400,7 @@ var ctx4 = document.getElementById('azeriteTwoChart').getContext('2d');
 let azeriteTwoChart;
 var ctx5 = document.getElementById('azeriteThreeChart').getContext('2d');
 let azeriteThreeChart;
+
 window.onload = function () {
     randomBarColors();
     talentChart = new Chart(ctx, {
@@ -445,7 +448,7 @@ window.onload = function () {
             pan: {
                 enabled: true,
                 mode: 'x',
-             },
+            },
             scales: {
                 yAxes: [{
                     ticks: {
@@ -484,12 +487,13 @@ window.onload = function () {
             pan: {
                 enabled: true,
                 mode: 'x',
-             },
+            },
             legend: {
                 labels: {
                     // This more specific font property overrides the global property
                     fontColor: 'white',
-                    usePointStyle: true
+                    usePointStyle: true,
+                    padding: 5
                 },
                 position: 'left',
             },
@@ -512,11 +516,12 @@ window.onload = function () {
                 pan: {
                     enabled: true,
                     mode: 'x',
-                 },
+                },
                 labels: {
                     // This more specific font property overrides the global property
                     fontColor: 'white',
-                    usePointStyle: true
+                    usePointStyle: true,
+                    padding: 5
                 },
                 position: 'right',
             },
@@ -525,6 +530,7 @@ window.onload = function () {
         }
 
     });
+
     azeriteThreeChart = new Chart(ctx5, {
         type: 'pie',
         data: {
@@ -535,15 +541,12 @@ window.onload = function () {
             labels: [],
         },
         options: {
-            pan: {
-                enabled: true,
-                mode: 'x',
-             },
             legend: {
                 labels: {
                     // This more specific font property overrides the global property
                     fontColor: 'white',
-                    usePointStyle: true
+                    usePointStyle: true,
+                    padding: 5
                 },
                 position: 'bottom',
             },
@@ -633,20 +636,6 @@ function showData() {
 
 
 
-
-    // // console.log("trinket combos:");
-    // // console.log(trinketCombinations);
-    // // console.log("trinketNames:");
-    // // console.log(trinketNames);
-    // // console.log("trinketLabels:");
-    // // console.log(trinketLabels);
-    // // console.log("talent combos:");
-    // // console.log(talentCombinations);
-    // // console.log("talentNames:");
-    // // console.log(talentNames);
-    // // console.log("talentLabels:");
-    // // console.log(talentLabels);
-
 }
 
 function getTalentCombos() {
@@ -686,7 +675,7 @@ function getTalentCombos() {
 function getTrinketCombos() {
     let combos = {};
     let trinketValues = [];
-    trinketScore=[];
+    trinketScore = [];
     for (let i = 0; i < rankingsData.length; i++) {
         for (let j = 0; j < rankingsData[i].rankings.length; j++) {
             let rank = rankingsData[i].rankings[j];
@@ -752,10 +741,24 @@ function getAzeriteOccurences() {
                     }
                 }
                 else if (k.ring == 3) {
-                    if (!(k.id in ringThreeOccurences)) {
+                    let stackCount = countInArray(rank.azeritePowers, k);
+                    if (!(k.id in ringThreeOccurences) && stackCount == 1) {
                         ringThreeOccurences[k.id] = 1;
-                    } else {
-                        ringThreeOccurences[k.id]++;
+                    } else if (!(k.id in ringThreeOccurences) && stackCount == 2) {
+                        let testString = Number(k.id.toString().concat("222222"));
+                        ringThreeOccurences[testString] = 1;
+                    } else if (!(k.id in ringThreeOccurences) && stackCount == 3) {
+                        let testString = Number(k.id.toString().concat("333333"));
+                        ringThreeOccurences[testString] = 1;
+                    }
+                    else if ((k.id in ringThreeOccurences) && stackCount == 1) {
+                        ringThreeOccurences[k.id] += 1;
+                    } else if ((Number(k.id.toString().concat("222222")) in ringThreeOccurences) && stackCount == 2) {
+                        let testString = Number(k.id.toString().concat("222222"));
+                        ringThreeOccurences[testString] += 1;
+                    } else if ((Number(k.id.toString().concat("333333")) in ringThreeOccurences) && stackCount == 3) {
+                        let testString = Number(k.id.toString().concat("333333"));
+                        ringThreeOccurences[testString] += 1;
                     }
                 }
 
@@ -776,10 +779,14 @@ function getAzeriteOccurences() {
 
 function getAzeriteLabels(ring) {
     let privateLabels = [];
-    for (let occurence of Object.keys(azeriteOccurences[ring])) {
+    for (let occurence of Object.entries(azeriteOccurences[ring])) {
         for (let nameRef of azeriteNames) {
-            if (occurence == nameRef.id) {
-                privateLabels.push(nameRef.name);
+            if (occurence[0] == nameRef.id) {
+                privateLabels.push(nameRef.name.concat(" x1"));
+            } else if (occurence[0] == (Number(nameRef.id.toString().concat("222222")))) {
+                privateLabels.push(nameRef.name.concat(" x2"));
+            } else if (occurence[0] == (Number(nameRef.id.toString().concat("333333")))) {
+                privateLabels.push(nameRef.name.concat(" x3"));
             }
         }
     }
@@ -903,5 +910,14 @@ function clean(obj) {
 function map_range(value, low1, high1, low2, high2) {
     let remapped = low2 + (high2 - low2) * (value - low1) / (high1 - low1);
     return remapped;
+}
+function countInArray(array, what) {
+    var count = 0;
+    for (var i = 0; i < array.length; i++) {
+        if (array[i].name == what.name) {
+            count++;
+        }
+    }
+    return count;
 }
 // #endregion
