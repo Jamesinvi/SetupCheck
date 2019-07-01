@@ -456,7 +456,8 @@ window.onload = function () {
                 }
             },
             responsive: true,
-            maintainAspectRatio: false
+            maintainAspectRatio: false,
+            
         }
     });
     trinketChart = new Chart(ctx2, {
