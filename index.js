@@ -1,10 +1,12 @@
 //imports
 const express = require("express");
 const fetch = require("node-fetch");
+const compression = require('compression')
 require("dotenv").config();
 
 //init server
 const app = express();
+app.use(compression());
 //get raids at startup from warcraftLogs
 let data;
 let raids;

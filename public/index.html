@@ -160,7 +160,7 @@
 
                     <br>
                     <h5 for="number-of-pages-header" id="number-of-pages-header">Number of pages: </h5>
-                    <input type="range" class="custom-range" min="1" max="9" id="number-of-pages">
+                    <input type="range" class="custom-range" min="1" max="20" id="number-of-pages">
 
                     <button type="button" id="request" class="btn btn-success btn-lg btn-block"
                         value="request-data">REQUEST DATA</button>
@@ -168,7 +168,7 @@
 
                 <div class="jumbotron" id="talentsDiv">
                     <h1 class="display-3">Talents</h1>
-                    <p class="lead">These are the most frequent talent combinatinos found in the pages of logs you
+                    <p class="lead">These are the most frequent talent combinations found in the pages of logs you
                         requested:</p>
                     <div class="chart-container" style="position: relative; height:40vh; width:60vw">
                         <canvas id="talentChart" width="100" height="100"></canvas>
@@ -178,7 +178,7 @@
                     </div>
                 </div>
                 <div class="jumbotron" id="trinketsDiv">
-                    <p class="lead">These are the most frequent trinket combinatinos found in the pages of logs you
+                    <p class="lead">These are the most frequent trinket combinations found in the pages of logs you
                         requested:</p>
 
                     <h1 class="display-3">Trinkets</h1>
@@ -213,9 +213,62 @@
                             <canvas id="azeriteThreeChart" width="50" height="100"></canvas>
                         </div>
                     </div>
-                    <!-- <div id="wowhead-item">
-                        <h3>TOP 5 Azerite Combos found</h3>
-                    </div> -->
+                </div>
+                <div class="jumbotron" id="talentSelectionDiv">
+                    <form id="talent-selection">
+                        <fieldset>
+                            <div class="form-group">
+                                <label for="talent-row-1">Row 1</label>
+                                <select class="form-control" id="talent-row-1">
+                                </select>
+                                <label for="talent-row-2">Row 2</label>
+                                <select class="form-control" id="talent-row-2">
+                                </select>
+                                <label for="talent-row-3">Row 3</label>
+                                <select class="form-control" id="talent-row-3">
+                                </select>
+                                <label for="talent-row-4">Row 4</label>
+                                <select class="form-control" id="talent-row-4">
+                                </select>
+                                <label for="talent-row-5">Row 5</label>
+                                <select class="form-control" id="talent-row-5">
+                                </select>
+                                <label for="talent-row-6">Row 6</label>
+                                <select class="form-control" id="talent-row-6">
+                                </select>
+                                <label for="talent-row-7">Row 7</label>
+                                <select class="form-control" id="talent-row-7">
+                                </select>
+                            </div>
+                        </fieldset>
+                    </form>
+                    <button type="button" class="btn btn-primary btn-lg btn-block" id="trinkets-with-talents"
+                        value="trinkets-with-talents">Get Trinkets for this talent Combo</button>
+                </div>
+                <div class="jumbotron" id="trinketsWithTalentsDiv">
+                    <h1 class="display-3">Trinkets used by specified talent setup</h1>
+                    <p class="lead">These are the most frequent and high-scoring trinkets combinations found using the
+                        specified talent setup.</p>
+                    <div class="chart-container" style="position: relative; height:40vh; width:60vw">
+                        <canvas id="trinketsWithTalentsChart" width="100" height="100"></canvas>
+                    </div>
+                    <div id="wowhead-trinkets-with-talents">
+                        <h3> TOP 5 Talent Combos found</h3>
+                    </div>
+                </div>
+                <div class="jumbotron" id="azeriteWithTalentsDiv">
+                    <h1 class="display-3">Azerite used by specified talent setup</h1>
+                    <p class="lead">These are the most frequent and high-scoring azerite trait combinations found using the
+                        specified talent setup.</p>
+                    <div class="chart-container" style="position: relative; height:40vh; width:30vW">
+                        <canvas id="azeriteWTalentsThreeChart" width="100" height="100"></canvas>
+                    </div>
+                    <div class="chart-container" style="position: relative; height:40vh; width:30vW">
+                        <canvas id="azeriteWTalentsTwoChart" width="100" height="100"></canvas>
+                    </div>
+                    <div class="chart-container" style="position: relative; height:40vh; width:60vW">
+                        <canvas id="azeriteWTalentsOneChart" width="100" height="100"></canvas>
+                    </div>
                 </div>
             </div>
             <div class="col-md-2">
