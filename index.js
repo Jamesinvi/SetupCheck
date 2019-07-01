@@ -2,28 +2,28 @@
 const express = require("express");
 const fetch = require("node-fetch");
 const compression = require('compression');
-const cluster = require('cluster');
+// const cluster = require('cluster');
 require("dotenv").config();
 
 // Listen for dying workers
-cluster.on('exit', function (worker) {
+// cluster.on('exit', function (worker) {
 
-    // Replace the dead worker,
-    // we're not sentimental
-    console.log('Worker %d died :(', worker.id);
-    cluster.fork();
+//     // Replace the dead worker,
+//     // we're not sentimental
+//     console.log('Worker %d died :(', worker.id);
+//     cluster.fork();
 
-});
+// });
 
-if(cluster.isMaster){
-    // Count the machine's CPUs
-    var cpuCount = require('os').cpus().length;
+// if(cluster.isMaster){
+    // // Count the machine's CPUs
+    // var cpuCount = require('os').cpus().length;
 
-    // Create a worker for each CPU
-    for (var i = 0; i < cpuCount; i += 1) {
-        cluster.fork();
-    }
-}else{
+    // // Create a worker for each CPU
+    // for (var i = 0; i < cpuCount; i += 1) {
+    //     cluster.fork();
+    // }
+// }else{
     //init server
     const app = express();
     app.use(compression());
@@ -113,4 +113,4 @@ if(cluster.isMaster){
         return json;
     }
 
-}
+// }
