@@ -5,6 +5,16 @@ const compression = require('compression');
 const cluster = require('cluster');
 require("dotenv").config();
 
+// Listen for dying workers
+cluster.on('exit', function (worker) {
+
+    // Replace the dead worker,
+    // we're not sentimental
+    console.log('Worker %d died :(', worker.id);
+    cluster.fork();
+
+});
+
 if(cluster.isMaster){
     // Count the machine's CPUs
     var cpuCount = require('os').cpus().length;
