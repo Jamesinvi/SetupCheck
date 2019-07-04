@@ -1,47 +1,67 @@
 let raid;
-let specRadios;
 let rankingsData;
+let talentsSelectedIDs = "";
 let talentNames = [];
 let trinketNames = [];
 let azeriteNames = [];
 let talentScore = [];
+let trinketScoreWithTalents = [];
 let trinketScore = [];
 let talentCombinations;
 let trinketCombinations;
+let trinketCombosWithTalents;
 let azeriteOccurences;
+let azeriteOccurencesWithTalents;
 let azeriteRingOneCombinations;
 let azeriteRingTwoCombinations;
 let azeriteRingThreeCombinations;
 let barColors = [];
 let internalBarColors = [];
 let talentLabels = [];
+let trinketsWithTalentsLabels = [];
 let debug = false;
-let classes;
 let difficultyFlag = false;
 let classFlag = false;
 let metricFlag = false;
 let specFlag = false;
 let bossFlag = false;
 
-function log(message) {
-    if (debug) {
-        // // console.log(message);
-    }
-}
 // #region buttons & HTML elements
 //get all buttons by ID
 let button_1 = document.getElementById("submit-cos");
 let button_2 = document.getElementById("submit-bod");
 let button_3 = document.getElementById("request");
 
+let button_4 = document.getElementById("trinkets-with-talents");
 button_3.setAttribute("disabled", true);
 
+let specRadios;
 let slider = document.getElementById("number-of-pages");
 let output = document.getElementById("number-of-pages-header");
 let talentsDiv = document.getElementById("talentsDiv");
-let trinektsDiv = document.getElementById("trinketsDiv");
+let trinketsDiv = document.getElementById("trinketsDiv");
 let azeriteDiv = document.getElementById("azeriteDiv");
-classes = document.getElementById("classes");
+let classes = document.getElementById("classes");
+let talentsSelected = document.getElementById("talent-selection");
+let talentSelectionDiv = document.getElementById("talentSelectionDiv");
+let trinketsWithTalentsDiv = document.getElementById("trinketsWithTalentsDiv");
+let azeriteWithTalentsDiv = document.getElementById("azeriteWithTalentsDiv");
+
+
+talentsDiv.style.display = "none";
+trinketsDiv.style.display = "none";
+azeriteDiv.style.display = "none";
+talentSelectionDiv.style.display = "none";
+trinketsWithTalentsDiv.style.display = "none";
+azeriteWithTalentsDiv.style.display = "none";
+output.innerHTML = `Number of pages: ${slider.value}`; // Display the default slider value
+
+
+
+// #endregion
+
+// #region event listeners
+
 
 for (let difficultyChild of Array.from(difficulty.children)) {
     difficultyChild.children[0].addEventListener("click", completeDataTest);
@@ -52,18 +72,16 @@ for (let metricChild of Array.from(metric.children)) {
 for (let individualClass of Array.from(classes.children)) {
     individualClass.children[0].addEventListener("click", completeDataTest);
 }
+button_4.addEventListener("click", function () {
+    talentsSelectedIDs = "";
+    for (let i = 1; i < talentsSelected.length; i++) {
+        talentsSelectedIDs += talentsSelected[i].value + (",");
+    }
+    talentsSelectedIDs = talentsSelectedIDs.slice(0, -1);
+    trinketCombosWithTalents = getTrinketCombosWithTalents(talentsSelectedIDs);
 
-talentsDiv.style.display = "none";
-trinektsDiv.style.display = "none";
-azeriteDiv.style.display = "none";
-output.innerHTML = `Number of pages: ${slider.value}`; // Display the default slider value
-
-
-
-// #endregion
-
-// #region event listeners
-
+    createDataWithTalentsChart();
+});
 function completeDataTest() {
     if (this.name == "difficulty") {
         //console.log("difficulty added: ", this.value);
@@ -219,6 +237,7 @@ async function requestRankings(data) {
     // // console.log("rankings from server:");
     // // console.log(json);
     rankingsData = json;
+    talentNames = [];
     //console.log(rankingsData);
     showData();
 
@@ -400,6 +419,14 @@ var ctx4 = document.getElementById('azeriteTwoChart').getContext('2d');
 let azeriteTwoChart;
 var ctx5 = document.getElementById('azeriteThreeChart').getContext('2d');
 let azeriteThreeChart;
+var ctx6 = document.getElementById('trinketsWithTalentsChart').getContext('2d');
+let trinketsWithTalentsChart;
+var ctx7 = document.getElementById('azeriteWTalentsThreeChart').getContext('2d');
+let azeriteWTalentsThreeChart;
+var ctx8 = document.getElementById('azeriteWTalentsTwoChart').getContext('2d');
+let azeriteWTalentsTwoChart;
+var ctx9 = document.getElementById('azeriteWTalentsOneChart').getContext('2d');
+let azeriteWTalentsOneChart;
 
 window.onload = function () {
     randomBarColors();
@@ -429,7 +456,8 @@ window.onload = function () {
                 }
             },
             responsive: true,
-            maintainAspectRatio: false
+            maintainAspectRatio: false,
+            
         }
     });
     trinketChart = new Chart(ctx2, {
@@ -530,8 +558,108 @@ window.onload = function () {
         }
 
     });
-
     azeriteThreeChart = new Chart(ctx5, {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: [],
+                backgroundColor: internalBarColors,
+            }],
+            labels: [],
+        },
+        options: {
+            legend: {
+                labels: {
+                    // This more specific font property overrides the global property
+                    fontColor: 'white',
+                    usePointStyle: true,
+                    padding: 5
+                },
+                position: 'bottom',
+            },
+            responsive: true,
+            maintainAspectRatio: false,
+        }
+
+    });
+    trinketsWithTalentsChart = new Chart(ctx6, {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: []
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true, //this will remove only the label
+                        fontColor: 'white'
+                    }
+                }],
+                xAxes: [{
+                    ticks: {
+                        display: false //this will remove only the label
+                    }
+                }]
+            },
+            legend: {
+                labels: {
+                    fontColor: 'white' //set your desired color
+                }
+            },
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+    azeriteWTalentsThreeChart = new Chart(ctx7, {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: [],
+                backgroundColor: internalBarColors,
+            }],
+            labels: [],
+        },
+        options: {
+            legend: {
+                labels: {
+                    // This more specific font property overrides the global property
+                    fontColor: 'white',
+                    usePointStyle: true,
+                    padding: 5
+                },
+                position: 'bottom',
+            },
+            responsive: true,
+            maintainAspectRatio: false,
+        }
+
+    });
+    azeriteWTalentsTwoChart = new Chart(ctx8, {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: [],
+                backgroundColor: internalBarColors,
+            }],
+            labels: [],
+        },
+        options: {
+            legend: {
+                labels: {
+                    // This more specific font property overrides the global property
+                    fontColor: 'white',
+                    usePointStyle: true,
+                    padding: 5
+                },
+                position: 'bottom',
+            },
+            responsive: true,
+            maintainAspectRatio: false,
+        }
+
+    });
+    azeriteWTalentsOneChart = new Chart(ctx9, {
         type: 'pie',
         data: {
             datasets: [{
@@ -558,10 +686,10 @@ window.onload = function () {
 }
 function showData() {
     talentsDiv.style.display = "block";
-    trinektsDiv.style.display = "block";
+    trinketsDiv.style.display = "block";
     azeriteDiv.style.display = "block";
     talentCombinations = getTalentCombos();
-    talentLabels = getTalentLabels();
+    talentLabels = getTalentLabels(talentCombinations);
     talentChart.data.labels = talentLabels;
     talentChart.data.datasets = [];
     let barDataSet = {
@@ -588,7 +716,7 @@ function showData() {
 
 
     trinketCombinations = getTrinketCombos();
-    trinketLabels = getTrinketLabels();
+    trinketLabels = getTrinketLabels(trinketCombinations);
     trinketChart.data.labels = trinketLabels;
     trinketChart.data.datasets = [];
     barDataSet = {
@@ -616,28 +744,102 @@ function showData() {
     createWowheadDiv(trinketCombinations, "wowhead-item", "item");
     azeriteOccurences = getAzeriteOccurences();
     azeriteRingThreeCombinations = azeriteOccurences[2];
-    azeriteRingThreeLabels = getAzeriteLabels(2);
+    azeriteRingThreeLabels = getAzeriteLabels(azeriteOccurences, 2);
 
-    azeriteThreeChart.data.datasets[0].data = Object.values(azeriteRingThreeCombinations);
-    azeriteThreeChart.data.labels = azeriteRingThreeLabels;
+    azeriteThreeChart.data.datasets[0].data = Object.values(azeriteRingThreeCombinations).slice(0, 25);
+    azeriteThreeChart.data.labels = azeriteRingThreeLabels.slice(0, 25);
     azeriteThreeChart.update();
 
     azeriteRingTwoCombinations = azeriteOccurences[1];
-    azeriteRingTwoLabels = getAzeriteLabels(1);
-    azeriteTwoChart.data.datasets[0].data = Object.values(azeriteRingTwoCombinations);
-    azeriteTwoChart.data.labels = azeriteRingTwoLabels;
+    azeriteRingTwoLabels = getAzeriteLabels(azeriteOccurences, 1);
+    azeriteTwoChart.data.datasets[0].data = Object.values(azeriteRingTwoCombinations).slice(0, 15);
+    azeriteTwoChart.data.labels = azeriteRingTwoLabels.slice(0, 15);
     azeriteTwoChart.update();
 
     azeriteRingOneCombinations = azeriteOccurences[0];
-    azeriteRingOneLabels = getAzeriteLabels(0);
-    azeriteOneChart.data.datasets[0].data = Object.values(azeriteRingOneCombinations);
-    azeriteOneChart.data.labels = azeriteRingOneLabels;
+    azeriteRingOneLabels = getAzeriteLabels(azeriteOccurences, 0);
+    azeriteOneChart.data.datasets[0].data = Object.values(azeriteRingOneCombinations).slice(0, 20);
+    azeriteOneChart.data.labels = azeriteRingOneLabels.slice(0, 20);;
     azeriteOneChart.update();
 
 
 
-}
 
+
+    fillTalentSelectionForm();
+    talentSelectionDiv.style.display = "block";
+
+}
+function createDataWithTalentsChart() {
+    trinketsWithTalentsLabels = getTrinketLabels(trinketCombosWithTalents);
+    trinketsWithTalentsChart.data.labels = trinketsWithTalentsLabels;
+    trinketsWithTalentsChart.data.datasets = [];
+    barDataSet = {
+        label: 'Number of Logs',
+        data: Object.values(trinketCombosWithTalents),
+        backgroundColor: internalBarColors,
+        borderColor: barColors,
+        borderWidth: 1
+    };
+    trinketsWithTalentsChart.data.datasets.push(barDataSet);
+    lineDataSet = {
+        label: "Score",
+        data: trinketScoreWithTalents,
+        type: "line",
+        pointBackgroundColor: barColors,
+        pointBorderColor: barColors,
+        borderColor: "white",
+        lineTension: 0.5,
+        fill: false
+    };
+    trinketsWithTalentsChart.data.datasets.push(lineDataSet);
+    trinketsWithTalentsChart.update();
+    createWowheadDiv(trinketCombosWithTalents, "wowhead-trinkets-with-talents", "item");
+    let azeriteWithTalentsOccurences = getAzeriteOccurencesWithTalents(talentsSelectedIDs);
+
+    let azeriteWithTalentsRingThreeCombinations = azeriteWithTalentsOccurences[2];
+    let azeriteWithTalentsRingThreeLabels = getAzeriteLabels(azeriteWithTalentsOccurences, 2);
+
+    azeriteWTalentsThreeChart.data.datasets[0].data = Object.values(azeriteWithTalentsRingThreeCombinations).slice(0, 25);
+    azeriteWTalentsThreeChart.data.labels = azeriteWithTalentsRingThreeLabels.slice(0, 25);
+    azeriteWTalentsThreeChart.update();
+
+    let azeriteWithTalentsRingTwoCombinations = azeriteWithTalentsOccurences[1];
+    let azeriteWithTalentsRingTwoLabels = getAzeriteLabels(azeriteWithTalentsOccurences, 1);
+
+    azeriteWTalentsTwoChart.data.datasets[0].data = Object.values(azeriteWithTalentsRingTwoCombinations).slice(0, 25);
+    azeriteWTalentsTwoChart.data.labels = azeriteWithTalentsRingTwoLabels.slice(0, 25);
+    azeriteWTalentsTwoChart.update();
+
+    let azeriteWithTalentsRingOneCombinations = azeriteWithTalentsOccurences[0];
+    let azeriteWithTalentsRingOneLabels = getAzeriteLabels(azeriteWithTalentsOccurences, 0);
+
+    azeriteWTalentsOneChart.data.datasets[0].data = Object.values(azeriteWithTalentsRingOneCombinations).slice(0, 25);
+    azeriteWTalentsOneChart.data.labels = azeriteWithTalentsRingOneLabels.slice(0, 25);
+    azeriteWTalentsOneChart.update();
+
+    trinketsWithTalentsDiv.style.display = "block";
+    azeriteWithTalentsDiv.style.display = "block";
+
+
+}
+function fillTalentSelectionForm() {
+    for (let i = 1; i < talentsSelected.length; i++) {
+        while (talentsSelected[i].firstChild) {
+            talentsSelected[i].removeChild(talentsSelected[i].firstChild);
+
+        }
+    }
+    for (let i = 1; i < talentsSelected.length; i++) {
+        for (talent of talentNames) {
+            let option = document.createElement("option");
+            option.value = talent.id;
+            option.innerText = talent.name;
+            talentsSelected[i].appendChild(option);
+        }
+    }
+
+}
 function getTalentCombos() {
     let combos = {};
     let scoreValues = [];
@@ -648,7 +850,8 @@ function getTalentCombos() {
             let talentCombo = [];
             rank.talents.forEach(function (talent) {
                 talentCombo.push(talent.id);
-                talentNames.push(talent);
+                if (talent.id != null)
+                    talentNames.push(talent);
             });
             if (!(talentCombo in combos)) {
                 combos[talentCombo] = 1;
@@ -718,6 +921,50 @@ function getTrinketCombos() {
     return combos;
 
 }
+function getTrinketCombosWithTalents(talentComboSelected) {
+    let combos = {};
+    let trinketValuesByTalents = [];
+    trinketScoreWithTalents = [];
+    for (let i = 0; i < rankingsData.length; i++) {
+        for (let j = 0; j < rankingsData[i].rankings.length; j++) {
+            let rank = rankingsData[i].rankings[j];
+            let trinketCombo = [];
+            if (checkEqualTalents(talentComboSelected, rank.talents)) {
+                for (let k = 12; k < 14; k++) {
+                    trinketCombo.push(rank.gear[k].id);
+                }
+                trinketComboPermutations = permutations(trinketCombo);
+                let presentFlag = false;
+                for (let permutation of trinketComboPermutations) {
+                    if (permutation in combos) {
+                        combos[permutation]++;
+                        presentFlag = true;
+                    }
+                }
+                if (presentFlag == false) {
+                    combos[trinketComboPermutations[0]] = 1;
+                    trinketValuesByTalents.push(rank.total);
+                }
+            }
+
+
+
+        }
+
+    }
+    let unique = getUnique(trinketNames, "name");
+    trinketNames = unique;
+    clean(combos);
+    let max = Math.max(...trinketValuesByTalents);
+    let min = Math.min(...trinketValuesByTalents);
+    let newMax = Math.max(...Object.values(combos));
+    for (let value of trinketValuesByTalents) {
+        let comboRemapped = map_range(value, min, max, 0, newMax);
+        trinketScoreWithTalents.push(comboRemapped);
+    }
+    return combos;
+
+}
 function getAzeriteOccurences() {
     let ringOneOccurences = {};
     let ringTwoOccurences = {};
@@ -776,10 +1023,70 @@ function getAzeriteOccurences() {
     return occurences;
 
 }
+function getAzeriteOccurencesWithTalents() {
+    let ringOneOccurences = {};
+    let ringTwoOccurences = {};
+    let ringThreeOccurences = {};
+    for (let i = 0; i < rankingsData.length; i++) {
+        for (let j = 0; j < rankingsData[i].rankings.length; j++) {
+            let rank = rankingsData[i].rankings[j];
+            if (checkEqualTalents(talentsSelectedIDs, rank.talents)) {
+                for (let k of rank.azeritePowers) {
+                    if (k.ring == 1) {
+                        if (!(k.id in ringOneOccurences)) {
+                            ringOneOccurences[k.id] = 1;
+                        } else {
+                            ringOneOccurences[k.id]++;
+                        }
+                    }
+                    else if (k.ring == 2) {
+                        if (!(k.id in ringTwoOccurences)) {
+                            ringTwoOccurences[k.id] = 1;
+                        } else {
+                            ringTwoOccurences[k.id]++;
+                        }
+                    }
+                    else if (k.ring == 3) {
+                        let stackCount = countInArray(rank.azeritePowers, k);
+                        if (!(k.id in ringThreeOccurences) && stackCount == 1) {
+                            ringThreeOccurences[k.id] = 1;
+                        } else if (!(k.id in ringThreeOccurences) && stackCount == 2) {
+                            let testString = Number(k.id.toString().concat("222222"));
+                            ringThreeOccurences[testString] = 1;
+                        } else if (!(k.id in ringThreeOccurences) && stackCount == 3) {
+                            let testString = Number(k.id.toString().concat("333333"));
+                            ringThreeOccurences[testString] = 1;
+                        }
+                        else if ((k.id in ringThreeOccurences) && stackCount == 1) {
+                            ringThreeOccurences[k.id] += 1;
+                        } else if ((Number(k.id.toString().concat("222222")) in ringThreeOccurences) && stackCount == 2) {
+                            let testString = Number(k.id.toString().concat("222222"));
+                            ringThreeOccurences[testString] += 1;
+                        } else if ((Number(k.id.toString().concat("333333")) in ringThreeOccurences) && stackCount == 3) {
+                            let testString = Number(k.id.toString().concat("333333"));
+                            ringThreeOccurences[testString] += 1;
+                        }
+                    }
 
-function getAzeriteLabels(ring) {
+                    azeriteNames.push(k);
+                }
+            }
+        }
+
+    }
+    const unique = getUnique(azeriteNames, "name");
+    azeriteNames = unique;
+    clean(ringOneOccurences);
+    clean(ringTwoOccurences);
+    clean(ringTwoOccurences);
+    const occurences = [ringOneOccurences, ringTwoOccurences, ringThreeOccurences];
+    return occurences;
+
+}
+
+function getAzeriteLabels(toCheck, ring) {
     let privateLabels = [];
-    for (let occurence of Object.entries(azeriteOccurences[ring])) {
+    for (let occurence of Object.entries(toCheck[ring])) {
         for (let nameRef of azeriteNames) {
             if (occurence[0] == nameRef.id) {
                 privateLabels.push(nameRef.name.concat(" x1"));
@@ -793,38 +1100,27 @@ function getAzeriteLabels(ring) {
     return privateLabels;
 }
 
-function getTalentLabels() {
+function getTalentLabels(combos) {
     let privateLabels = [];
-    for (let combo of Object.keys(talentCombinations)) {
+    for (let combo of Object.keys(combos)) {
         let individualTalents = combo.split(",");
         let individualLabel = [];
         for (let talent of individualTalents) {
-            for (let nameRef of talentNames) {
-                if (talent == nameRef.id) {
-                    individualLabel.push(nameRef.name);
-                }
-            }
+            individualLabel.push(getTalentNameByID(talent));
         }
         privateLabels.push(individualLabel);
     }
     privateLabels = privateLabels.filter(n => n)
     return privateLabels;
 }
-function getTrinketLabels() {
+function getTrinketLabels(combos) {
     let privateLabels = [];
 
-    for (let combo of Object.keys(trinketCombinations)) {
+    for (let combo of Object.keys(combos)) {
         let individualTrinkets = combo.split(",");
         let individualLabel = [];
         for (let trinket of individualTrinkets) {
-            for (nameRef of trinketNames) {
-                if (trinket == nameRef.id) {
-                    individualLabel.push(nameRef.name);
-                    if (trinket == 166418) {
-                        individualLabel.push("Crest of Pa'ku");
-                    }
-                }
-            }
+            individualLabel.push(getTrinketNameByID(trinket));
         }
         privateLabels.push(individualLabel);
     }
@@ -845,6 +1141,20 @@ function getTrinketNameByID(id) {
         }
     }
     return null;
+}
+function checkEqualTalents(talentIDs, talentObject) {
+    let talentsOne = talentIDs.split(",");
+    let talentsTwo = [];
+    talentObject.forEach((element) => {
+        let elementValue = Object.values(element)[1];
+        if (elementValue != null)
+            talentsTwo.push(elementValue.toString());
+    });
+    for (let i = 0; i < talentsOne.length; i++) {
+        if (!(talentsOne[i] == talentsTwo[i]))
+            return false;
+    }
+    return true;
 }
 function randomBarColors() {
     for (let i = 0; i < 255; i++) {
@@ -902,7 +1212,7 @@ function permutations(list) {
 }
 function clean(obj) {
     for (var propName in obj) {
-        if (propName === null || propName === undefined || propName == ",,,,,," || propName == "," || propName == "") {
+        if (propName === null || propName === undefined || propName == ",,,,,," || propName == "," || propName == "" || propName == "Unknown Ability") {
             delete obj[propName];
         }
     }
