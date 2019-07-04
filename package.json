@@ -17,6 +17,9 @@
   ],
   "author": "James Karran",
   "license": "MIT",
+  "engines": { 
+    "node": "12.4.0" 
+   },
   "dependencies": {
     "chartjs-plugin-zoom": "^0.7.0",
     "dotenv": "^8.0.0",
