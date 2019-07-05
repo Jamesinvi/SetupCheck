@@ -52,7 +52,6 @@ require("dotenv").config();
                 raids.push(data[i]);
             }
         }
-        console.log(raids);
     }
     //return correct raid based on the name
     function selectCorrectRaid(value) {
@@ -72,8 +71,6 @@ require("dotenv").config();
 
     //post and get endpoints
     app.post("/raid", (request, response) => {
-        console.log("got a raid request");
-        console.log(request.body);
         let value = request.body.val;
         const selectedRaid = selectCorrectRaid(value);
         response.json({
@@ -81,8 +78,6 @@ require("dotenv").config();
         });
     })
     app.post("/encounter", async (request, response) => {
-        console.log("got a fight request: ");
-        console.log(request.body);
         let dataToSendBack = [];
         let value = request.body;
         const boss = value.boss;

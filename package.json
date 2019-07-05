@@ -17,15 +17,16 @@
   ],
   "author": "James Karran",
   "license": "MIT",
-  "engines": { 
-    "node": "12.4.0" 
-   },
+  "engines": {
+    "node": "12.4.0"
+  },
   "dependencies": {
     "chartjs-plugin-zoom": "^0.7.0",
     "compression": "^1.7.4",
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
     "node-fetch": "^2.6.0",
-    "nodemon": "^1.19.1"
+    "nodemon": "^1.19.1",
+    "siege": "^0.2.0"
   }
 }
