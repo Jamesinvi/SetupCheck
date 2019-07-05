@@ -30,6 +30,7 @@ let bossFlag = false;
 //get all buttons by ID
 let button_1 = document.getElementById("submit-cos");
 let button_2 = document.getElementById("submit-bod");
+let button_5 = document.getElementById("submit-ep");
 let button_3 = document.getElementById("request");
 
 let button_4 = document.getElementById("trinkets-with-talents");
@@ -159,6 +160,12 @@ button_1.addEventListener("click", function (evt) {
 });
 
 button_2.addEventListener("click", function (evt) {
+    // console.log("test");
+
+    submitForm(this.value);
+});
+
+button_5.addEventListener("click", function (evt) {
     // console.log("test");
 
     submitForm(this.value);

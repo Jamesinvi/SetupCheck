@@ -48,7 +48,7 @@ require("dotenv").config();
     function getRaids(data) {
         raids = [];
         for (let i = 0; i < data.length; i++) {
-            if (data[i].name.toLowerCase() == "battle of dazar'alor" || data[i].name.toLowerCase() == "crucible of storms") {
+            if (data[i].name.toLowerCase() == "battle of dazar'alor" || data[i].name.toLowerCase() == "crucible of storms" || data[i].name.toLowerCase() == "the eternal palace") {
                 raids.push(data[i]);
             }
         }
