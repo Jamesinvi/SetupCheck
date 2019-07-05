@@ -78,9 +78,11 @@ for (let individualClass of Array.from(classes.children)) {
 button_4.addEventListener("click", function () {
     talentsSelectedIDs = "";
     for (let i = 1; i < talentsSelected.length; i++) {
+        if(talentsSelected[i].type=="select-one")
         talentsSelectedIDs += talentsSelected[i].value + (",");
     }
     talentsSelectedIDs = talentsSelectedIDs.slice(0, -1);
+    console.log(talentsSelectedIDs);
     trinketCombosWithTalents = getTrinketCombosWithTalents(talentsSelectedIDs);
 
     createDataWithTalentsChart();
