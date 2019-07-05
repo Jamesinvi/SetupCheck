@@ -5,6 +5,8 @@ let talentNames = [];
 let trinketNames = [];
 let azeriteNames = [];
 let talentScore = [];
+let ilvlScore=[];
+let ilvlWithTalents=[];
 let trinketScoreWithTalents = [];
 let trinketScore = [];
 let talentCombinations;
@@ -48,7 +50,12 @@ let talentSelectionDiv = document.getElementById("talentSelectionDiv");
 let trinketsWithTalentsDiv = document.getElementById("trinketsWithTalentsDiv");
 let azeriteWithTalentsDiv = document.getElementById("azeriteWithTalentsDiv");
 let talentPresetSelection=document.getElementById("presetSelection");
-
+let talentGraphResetZoom=document.getElementById("talentGraphReset");
+let trinketGraphResetZoom=document.getElementById("trinketGraphReset");
+let trinketWTalentsGraphResetZoom=document.getElementById("TrinketWTalentsGraphReset");
+talentGraphResetZoom.addEventListener("click",resetZoom);
+trinketGraphResetZoom.addEventListener("click",resetZoom);
+trinketWTalentsGraphResetZoom.addEventListener("click",resetZoom);
 
 talentsDiv.style.display = "none";
 trinketsDiv.style.display = "none";
@@ -83,7 +90,6 @@ button_4.addEventListener("click", function () {
         talentsSelectedIDs += talentsSelected[i].value + (",");
     }
     talentsSelectedIDs = talentsSelectedIDs.slice(0, -1);
-    console.log(talentsSelectedIDs);
     trinketCombosWithTalents = getTrinketCombosWithTalents(talentsSelectedIDs);
 
     createDataWithTalentsChart();
@@ -480,17 +486,24 @@ window.onload = function () {
             datasets: []
         },
         options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            legend: {
+                position: 'top',
+            },
             scales: {
                 yAxes: [{
                     ticks: {
                         beginAtZero: true, //this will remove only the label
                         fontColor: 'white'
-                    }
+                    },
+                    type: "linear"
                 }],
                 xAxes: [{
                     ticks: {
-                        display: false //this will remove only the label
-                    }
+                        display: false
+                    },
+                    type: "category"
                 }]
             },
             legend: {
@@ -498,27 +511,33 @@ window.onload = function () {
                     fontColor: 'white' //set your desired color
                 }
             },
-            responsive: true,
-            maintainAspectRatio: false,
-            
+            plugins: {
+                zoom: {
+                    pan: {
+                        enabled: false,
+                        mode: 'xy',
+                        speed:1
+                    },
+                    zoom: {
+                        enabled: true,
+                        mode: 'xy',
+                        drag: true
+                    }
+                }
+            }
         }
     });
     trinketChart = new Chart(ctx2, {
         type: 'bar',
         data: {
             labels: [],
-            datasets: [{
-                label: '# of Logs',
-                data: [],
-                backgroundColor: internalBarColors,
-                borderColor: barColors,
-                borderWidth: 1
-            }]
+            datasets: []
         },
         options: {
-            pan: {
-                enabled: true,
-                mode: 'x',
+            responsive: true,
+            maintainAspectRatio: false,
+            legend: {
+                position: 'top',
             },
             scales: {
                 yAxes: [{
@@ -529,7 +548,7 @@ window.onload = function () {
                 }],
                 xAxes: [{
                     ticks: {
-                        display: false //this will remove only the label
+                        display: false
                     }
                 }]
             },
@@ -538,10 +557,20 @@ window.onload = function () {
                     fontColor: 'white' //set your desired color
                 }
             },
-            responsive: true,
-            maintainAspectRatio: false,
-
-
+            plugins: {
+                zoom: {
+                    pan: {
+                        enabled: false,
+                        mode: 'y',
+                        speed:1
+                    },
+                    zoom: {
+                        enabled: true,
+                        mode: 'xy',
+                        drag: true
+                    }
+                }
+            }
         }
 
     });
@@ -555,10 +584,6 @@ window.onload = function () {
             labels: [],
         },
         options: {
-            pan: {
-                enabled: true,
-                mode: 'x',
-            },
             legend: {
                 labels: {
                     // This more specific font property overrides the global property
@@ -566,10 +591,24 @@ window.onload = function () {
                     usePointStyle: true,
                     padding: 5
                 },
-                position: 'left',
+                position: 'bottom',
             },
             responsive: true,
             maintainAspectRatio: false,
+        },
+        plugins: {
+            zoom: {
+                pan: {
+                    enabled: false,
+                    mode: 'xy',
+                    speed:1
+                },
+                zoom: {
+                    enabled: false,
+                    mode: 'xy',
+                    drag: true
+                }
+            }
         }
 
     });
@@ -584,17 +623,13 @@ window.onload = function () {
         },
         options: {
             legend: {
-                pan: {
-                    enabled: true,
-                    mode: 'x',
-                },
                 labels: {
                     // This more specific font property overrides the global property
                     fontColor: 'white',
                     usePointStyle: true,
                     padding: 5
                 },
-                position: 'right',
+                position: 'bottom',
             },
             responsive: true,
             maintainAspectRatio: false,
@@ -632,17 +667,24 @@ window.onload = function () {
             datasets: []
         },
         options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            legend: {
+                position: 'top',
+            },
             scales: {
                 yAxes: [{
                     ticks: {
                         beginAtZero: true, //this will remove only the label
                         fontColor: 'white'
-                    }
+                    },
+                    type: "linear"
                 }],
                 xAxes: [{
                     ticks: {
-                        display: false //this will remove only the label
-                    }
+                        display: false
+                    },
+                    type: "category"
                 }]
             },
             legend: {
@@ -650,8 +692,20 @@ window.onload = function () {
                     fontColor: 'white' //set your desired color
                 }
             },
-            responsive: true,
-            maintainAspectRatio: false
+            plugins: {
+                zoom: {
+                    pan: {
+                        enabled: false,
+                        mode: 'xy',
+                        speed:1
+                    },
+                    zoom: {
+                        enabled: true,
+                        mode: 'xy',
+                        drag: true
+                    }
+                }
+            }
         }
     });
     azeriteWTalentsThreeChart = new Chart(ctx7, {
@@ -751,9 +805,21 @@ function showData() {
         pointBorderColor: barColors,
         borderColor: "white",
         lineTension: 0.5,
-        fill: false
+        fill: true
     };
     talentChart.data.datasets.push(lineDataSet);
+    let ilvlDataSet = {
+        label: "ItemLevel",
+        data: ilvlScore,
+        type: "line",
+        pointBackgroundColor: barColors,
+        pointBorderColor: barColors,
+        borderColor: "white",
+        lineTension: 0.5,
+        pointStyle: "star",
+        fill: false
+    };
+    talentChart.data.datasets.push(ilvlDataSet);
     createWowheadDiv(talentCombinations, "wowhead-spell", "spell");
     talentChart.update();
 
@@ -778,11 +844,24 @@ function showData() {
         pointBorderColor: barColors,
         borderColor: "white",
         lineTension: 0.5,
+        fill: true
+    };   
+    trinketChart.data.datasets.push(lineDataSet);
+    let ilvlTrinketDataSet = {
+        label: "ItemLevel / 10",
+        data: ilvlScore,
+        type: "line",
+        pointBackgroundColor: barColors,
+        pointBorderColor: barColors,
+        borderColor: "white",
+        lineTension: 0.5,
+        pointStyle: "star",
         fill: false
     };
-    trinketChart.data.datasets.push(lineDataSet);
-    trinketChart.update();
+    trinketChart.data.datasets.push(ilvlTrinketDataSet);
 
+    trinketChart.update();
+    
 
     createWowheadDiv(trinketCombinations, "wowhead-item", "item");
     azeriteOccurences = getAzeriteOccurences();
@@ -833,9 +912,21 @@ function createDataWithTalentsChart() {
         pointBorderColor: barColors,
         borderColor: "white",
         lineTension: 0.5,
+        fill: true
+    };
+    ilvlTrinketDataSet = {
+        label: "ItemLevel / 10",
+        data: ilvlWithTalents,
+        type: "line",
+        pointBackgroundColor: barColors,
+        pointBorderColor: barColors,
+        borderColor: "white",
+        lineTension: 0.5,
+        pointStyle: "star",
         fill: false
     };
     trinketsWithTalentsChart.data.datasets.push(lineDataSet);
+    trinketsWithTalentsChart.data.datasets.push(ilvlTrinketDataSet);
     trinketsWithTalentsChart.update();
     createWowheadDiv(trinketCombosWithTalents, "wowhead-trinkets-with-talents", "item");
     let azeriteWithTalentsOccurences = getAzeriteOccurencesWithTalents(talentsSelectedIDs);
@@ -887,6 +978,8 @@ function getTalentCombos() {
     let combos = {};
     let scoreValues = [];
     talentScore = [];
+    ilvlScore=[];
+
     for (let i = 0; i < rankingsData.length; i++) {
         for (let j = 0; j < rankingsData[i].rankings.length; j++) {
             let rank = rankingsData[i].rankings[j];
@@ -896,6 +989,7 @@ function getTalentCombos() {
                 if (talent.id != null)
                     talentNames.push(talent);
             });
+            ilvlScore.push(rank.itemLevel/10);
             if (!(talentCombo in combos)) {
                 combos[talentCombo] = 1;
                 let score = rank.total;
@@ -968,6 +1062,7 @@ function getTrinketCombosWithTalents(talentComboSelected) {
     let combos = {};
     let trinketValuesByTalents = [];
     trinketScoreWithTalents = [];
+    ilvlWithTalents=[];
     for (let i = 0; i < rankingsData.length; i++) {
         for (let j = 0; j < rankingsData[i].rankings.length; j++) {
             let rank = rankingsData[i].rankings[j];
@@ -988,6 +1083,7 @@ function getTrinketCombosWithTalents(talentComboSelected) {
                     combos[trinketComboPermutations[0]] = 1;
                     trinketValuesByTalents.push(rank.total);
                 }
+                ilvlWithTalents.push(rank.itemLevel/10);
             }
 
 
@@ -1272,5 +1368,13 @@ function countInArray(array, what) {
         }
     }
     return count;
+}
+function resetZoom(){
+    if (this.value==1)
+    talentChart.resetZoom();
+    if (this.value==2)
+    trinketChart.resetZoom();
+    if (this.value==3)
+    trinketsWithTalentsChart.resetZoom();
 }
 // #endregion
