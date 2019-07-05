@@ -46,6 +46,7 @@ let talentsSelected = document.getElementById("talent-selection");
 let talentSelectionDiv = document.getElementById("talentSelectionDiv");
 let trinketsWithTalentsDiv = document.getElementById("trinketsWithTalentsDiv");
 let azeriteWithTalentsDiv = document.getElementById("azeriteWithTalentsDiv");
+let talentPresetSelection=document.getElementById("presetSelection");
 
 
 talentsDiv.style.display = "none";
@@ -62,7 +63,9 @@ output.innerHTML = `Number of pages: ${slider.value}`; // Display the default sl
 
 // #region event listeners
 
-
+for(let talentPreset of Array.from(talentPresetSelection.children)){
+    talentPreset.addEventListener("click", selectTalentPreset);
+}
 for (let difficultyChild of Array.from(difficulty.children)) {
     difficultyChild.children[0].addEventListener("click", completeDataTest);
 }
@@ -82,6 +85,34 @@ button_4.addEventListener("click", function () {
 
     createDataWithTalentsChart();
 });
+function selectTalentPreset(){
+    let talents=document.getElementById("spell");
+    let selectedTalents;
+    for(let talentCombo of Array.from(talents.children)){
+        if(talentCombo.id==this.children[0].value){
+            selectedTalents=talentCombo;
+        }
+    }
+    let formParent=Array.from(document.getElementById("talentSelectFormGroup").children).filter(elt=>{return elt.type=="select-one"});
+    loop2:
+    for(let k=0;k<formParent.length;k++){
+        let row=formParent[k];
+        for(let i=k;i<selectedTalents.children.length;i++){
+            loop1:
+            for(let j=0;j<row.options.length;j++){
+                let index=-1;
+                if(row.options[j].value==selectedTalents.children[i].href.replace(/\D/g, '')){
+                    index=row.options[j].index;
+                }
+                if(index>=0){
+                    row.options[index].selected=true;
+                    continue loop2;
+                }
+            }
+        }
+    }
+}
+
 function completeDataTest() {
     if (this.name == "difficulty") {
         //console.log("difficulty added: ", this.value);
@@ -364,6 +395,7 @@ function createWowheadDiv(elements, parentID, type) {
     }
 
     let occurences = Object.values(elements).sort((a, b) => b - a).slice(0, 5);
+    let counterVal=1;
     for (let occurenceCheck of occurences) {
         for (let n = 0; n < Object.keys(elements).length; n++) {
             let occurence = Object.values(elements)[n];
@@ -372,6 +404,8 @@ function createWowheadDiv(elements, parentID, type) {
                 let talentSet = document.createElement("div");
                 if (type != "item") {
                     talentSet.setAttribute("class", "btn-group");
+                    talentSet.setAttribute("id", counterVal);
+                    counterVal++;
                 }
                 if (occurences.includes(occurence)) {
                     for (let value of IDs) {

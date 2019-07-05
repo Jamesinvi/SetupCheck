@@ -220,7 +220,25 @@
                 <div class="jumbotron" id="talentSelectionDiv">
                     <form id="talent-selection">
                         <fieldset>
-                            <div class="form-group">
+                            <p class="lead">Selected your talent setup to get stats on that particular setup, alternatively you can choose one of the 5 most used.</p>
+                            <div class="btn-group btn-group-toggle" data-toggle="buttons" id="presetSelection">
+                                    <label class="btn btn-primary">
+                                        <input type="radio" name="options" id="preset1" value=1 autocomplete="off" checked=""> Preset1
+                                    </label>
+                                    <label class="btn btn-primary active">
+                                        <input type="radio" name="options" id="preset2" value=2 autocomplete="off"> Preset2
+                                    </label>
+                                    <label class="btn btn-primary">
+                                        <input type="radio" name="options" id="preset3" value=3 autocomplete="off"> Preset3
+                                    </label>
+                                    <label class="btn btn-primary">
+                                        <input type="radio" name="options" id="preset4" value=4 autocomplete="off"> Preset4
+                                    </label>
+                                    <label class="btn btn-primary">
+                                        <input type="radio" name="options" id="preset5" value=5 autocomplete="off"> Preset5
+                                    </label>
+                            </div>
+                            <div class="form-group" id="talentSelectFormGroup">
                                 <label for="talent-row-1">Row 1</label>
                                 <select class="form-control" id="talent-row-1">
                                 </select>
