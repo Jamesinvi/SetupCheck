@@ -124,7 +124,7 @@ function selectTalentPreset() {
                 let talentValue=talent.children[0].value;
                 talent.children[0].checked=false;
                 talent.className="btn btn-danger  mr-1";
-                for(let presetTalent of selectedTalents.children){
+                for(let presetTalent of Array.from(selectedTalents.children)){
                     let presetTalentValue=presetTalent.href.replace(/\D/g, "");
                     if(talentValue== presetTalentValue){
                         talent.children[0].checked=true;
@@ -345,7 +345,6 @@ function compileRequestData() {
         if (specs.children[k].children[0].checked) {
             data.spec = specs.children[k].children[0].value;
             spec = specs.children[k].children[0].value;
-            console.log(specs.children[k].children[1]);
             specName=specs.children[k].children[1].getAttribute("specnamereference");
         }
     }
