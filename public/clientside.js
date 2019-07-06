@@ -497,7 +497,18 @@ window.onload = function () {
                         beginAtZero: true, //this will remove only the label
                         fontColor: 'white'
                     },
+                    id: 'A',
+                    type: 'linear',
+                    position: 'left',
                     type: "linear"
+                },{
+                    ticks: {
+                        beginAtZero: false, //this will remove only the label
+                        fontColor: 'white'
+                    },
+                    id: 'B',
+                    type: 'linear',
+                    position: 'right',
                 }],
                 xAxes: [{
                     ticks: {
@@ -544,18 +555,26 @@ window.onload = function () {
                     ticks: {
                         beginAtZero: true, //this will remove only the label
                         fontColor: 'white'
-                    }
+                    },
+                    id: 'A',
+                    type: 'linear',
+                    position: 'left',
+                    type: "linear"
+                },{
+                    ticks: {
+                        beginAtZero: false, //this will remove only the label
+                        fontColor: 'white'
+                    },
+                    id: 'B',
+                    type: 'linear',
+                    position: 'right',
                 }],
                 xAxes: [{
                     ticks: {
                         display: false
-                    }
+                    },
+                    type: "category"
                 }]
-            },
-            legend: {
-                labels: {
-                    fontColor: 'white' //set your desired color
-                }
             },
             plugins: {
                 zoom: {
@@ -678,7 +697,18 @@ window.onload = function () {
                         beginAtZero: true, //this will remove only the label
                         fontColor: 'white'
                     },
+                    id: 'A',
+                    type: 'linear',
+                    position: 'left',
                     type: "linear"
+                },{
+                    ticks: {
+                        beginAtZero: false, //this will remove only the label
+                        fontColor: 'white'
+                    },
+                    id: 'B',
+                    type: 'linear',
+                    position: 'right',
                 }],
                 xAxes: [{
                     ticks: {
@@ -791,6 +821,7 @@ function showData() {
     talentChart.data.datasets = [];
     let barDataSet = {
         label: 'Number of Logs',
+        yAxisID: 'A',
         data: Object.values(talentCombinations),
         backgroundColor: internalBarColors,
         borderColor: barColors,
@@ -803,18 +834,19 @@ function showData() {
         type: "line",
         pointBackgroundColor: barColors,
         pointBorderColor: barColors,
-        borderColor: "white",
+        borderColor: "rgba(255,0,0,0.6)",
         lineTension: 0.5,
         fill: true
     };
     talentChart.data.datasets.push(lineDataSet);
     let ilvlDataSet = {
         label: "ItemLevel",
+        yAxisID: 'B',
         data: ilvlScore,
         type: "line",
         pointBackgroundColor: barColors,
         pointBorderColor: barColors,
-        borderColor: "white",
+        borderColor: "rgba(0,0,255,0.6)",
         lineTension: 0.5,
         pointStyle: "star",
         fill: false
@@ -830,6 +862,7 @@ function showData() {
     trinketChart.data.datasets = [];
     barDataSet = {
         label: 'Number of Logs',
+        yAxisID: 'A',
         data: Object.values(trinketCombinations),
         backgroundColor: internalBarColors,
         borderColor: barColors,
@@ -842,18 +875,19 @@ function showData() {
         type: "line",
         pointBackgroundColor: barColors,
         pointBorderColor: barColors,
-        borderColor: "white",
+        borderColor: "rgba(255,0,0,0.6)",
         lineTension: 0.5,
         fill: true
     };   
     trinketChart.data.datasets.push(lineDataSet);
     let ilvlTrinketDataSet = {
-        label: "ItemLevel / 10",
+        label: "ItemLevel",
+        yAxisID: 'B',
         data: ilvlScore,
         type: "line",
         pointBackgroundColor: barColors,
         pointBorderColor: barColors,
-        borderColor: "white",
+        borderColor: "rgba(0,0,255,0.6)",
         lineTension: 0.5,
         pointStyle: "star",
         fill: false
@@ -898,6 +932,7 @@ function createDataWithTalentsChart() {
     trinketsWithTalentsChart.data.datasets = [];
     barDataSet = {
         label: 'Number of Logs',
+        yAxisID: 'A',
         data: Object.values(trinketCombosWithTalents),
         backgroundColor: internalBarColors,
         borderColor: barColors,
@@ -910,17 +945,18 @@ function createDataWithTalentsChart() {
         type: "line",
         pointBackgroundColor: barColors,
         pointBorderColor: barColors,
-        borderColor: "white",
+        borderColor: "rgba(255,0,0,0.6)",
         lineTension: 0.5,
         fill: true
     };
     ilvlTrinketDataSet = {
-        label: "ItemLevel / 10",
+        label: "ItemLevel",
+        yAxisID: 'B',
         data: ilvlWithTalents,
         type: "line",
         pointBackgroundColor: barColors,
         pointBorderColor: barColors,
-        borderColor: "white",
+        borderColor: "rgba(0,0,255,0.6)",
         lineTension: 0.5,
         pointStyle: "star",
         fill: false
@@ -989,7 +1025,7 @@ function getTalentCombos() {
                 if (talent.id != null)
                     talentNames.push(talent);
             });
-            ilvlScore.push(rank.itemLevel/10);
+            ilvlScore.push(rank.itemLevel);
             if (!(talentCombo in combos)) {
                 combos[talentCombo] = 1;
                 let score = rank.total;
@@ -1083,7 +1119,7 @@ function getTrinketCombosWithTalents(talentComboSelected) {
                     combos[trinketComboPermutations[0]] = 1;
                     trinketValuesByTalents.push(rank.total);
                 }
-                ilvlWithTalents.push(rank.itemLevel/10);
+                ilvlWithTalents.push(rank.itemLevel);
             }
 
 
