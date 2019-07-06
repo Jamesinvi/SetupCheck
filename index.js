@@ -2,9 +2,25 @@
 const express = require("express");
 const fetch = require("node-fetch");
 const compression = require('compression');
+const passport=require("passport");
 //const cluster = require('cluster');
+var BnetStrategy = require('passport-bnet').Strategy;
 require("dotenv").config();
 
+var BNET_ID = process.env.BNET_ID
+var BNET_SECRET = process.env.BNET_SECRET
+
+// Use the BnetStrategy within Passport.
+let token;
+passport.use(new BnetStrategy({
+    clientID: BNET_ID,
+    clientSecret: BNET_SECRET,
+    callbackURL: "https://localhost:3000/auth/bnet/callback",
+    region: "eu"
+}, function(accessToken, refreshToken, profile, done) {
+    token=accessToken;
+    return done(null, profile);
+}));
 // // Listen for dying workers
 // cluster.on('exit', function (worker) {
 
@@ -29,10 +45,12 @@ require("dotenv").config();
     app.use(compression());
     //get raids at startup from warcraftLogs
     let data;
-    let raids;
+    let raids=[];
+    let talentDataToSend=[];
     let key = process.env.API_KEY;
     let port = process.env.PORT || 3000;
     getRaidData();
+    getTalentsData();
 
     //fetch raids from warcraftLogs
     async function getRaidData() {
@@ -40,13 +58,25 @@ require("dotenv").config();
         data = await response.json();
         getRaids(data);
     }
-    //fetch rankings data from warcraftLogs
-    async function getEncounterData() {
-
+    //fetch talents from wowAPI
+    async function getTalentsData(){
+        let response = await fetch(`https://eu.api.blizzard.com/data/wow/playable-specialization/index?namespace=static-eu&locale=en_GB&access_token=US0Fhz98OuSBdRZI2q9w2agYeBGdmi4EzI`);
+        let json= await response.json();
+        talentDataToSend.length=0;
+        for(let spec of json.character_specializations){
+            let specData=await fetch(`https://eu.api.blizzard.com/data/wow/playable-specialization/${spec.id}?namespace=static-eu&locale=en_GB&access_token=US0Fhz98OuSBdRZI2q9w2agYeBGdmi4EzI`);
+            let jsonSpecData=await specData.json();
+            talentDataToSend.push({
+                "class_name" : jsonSpecData.playable_class.name,
+                "spec_name" : jsonSpecData.name,
+                "class_id" : jsonSpecData.playable_class.id,
+                "talents" : jsonSpecData.talent_tiers
+            });
+        }
     }
     //put all the raids in a variable
     function getRaids(data) {
-        raids = [];
+        raids.length = 0;
         for (let i = 0; i < data.length; i++) {
             if (data[i].name.toLowerCase() == "battle of dazar'alor" || data[i].name.toLowerCase() == "crucible of storms" || data[i].name.toLowerCase() == "the eternal palace") {
                 raids.push(data[i]);
@@ -66,7 +96,7 @@ require("dotenv").config();
     //startup the socket at port from enviroment
     app.listen(port, () => console.log(`listening at port ${port}`));
     app.use(express.static("public"));
-    app.use(express.json({ limit: "3mb" }));
+    app.use(express.json({ limit: "6mb" }));
 
 
     //post and get endpoints
@@ -77,6 +107,9 @@ require("dotenv").config();
             raid: selectedRaid
         });
     })
+    app.get("/talents", (request,response)=>{
+        response.end(JSON.stringify(talentDataToSend));
+    });
     app.post("/encounter", async (request, response) => {
         let dataToSendBack = [];
         let value = request.body;

@@ -5,8 +5,8 @@ let talentNames = [];
 let trinketNames = [];
 let azeriteNames = [];
 let talentScore = [];
-let ilvlScore=[];
-let ilvlWithTalents=[];
+let ilvlScore = [];
+let ilvlWithTalents = [];
 let trinketScoreWithTalents = [];
 let trinketScore = [];
 let talentCombinations;
@@ -27,7 +27,13 @@ let classFlag = false;
 let metricFlag = false;
 let specFlag = false;
 let bossFlag = false;
-
+let talentsFromBlizzard;
+let gameClass;
+let boss;
+let spec;
+let selectedDifficulty;
+let selectedMetric;
+let specName;
 // #region buttons & HTML elements
 //get all buttons by ID
 let button_1 = document.getElementById("submit-cos");
@@ -45,17 +51,17 @@ let talentsDiv = document.getElementById("talentsDiv");
 let trinketsDiv = document.getElementById("trinketsDiv");
 let azeriteDiv = document.getElementById("azeriteDiv");
 let classes = document.getElementById("classes");
-let talentsSelected = document.getElementById("talent-selection");
+let talentsSelected = document.getElementById("talentSelectFormGroup");
 let talentSelectionDiv = document.getElementById("talentSelectionDiv");
 let trinketsWithTalentsDiv = document.getElementById("trinketsWithTalentsDiv");
 let azeriteWithTalentsDiv = document.getElementById("azeriteWithTalentsDiv");
-let talentPresetSelection=document.getElementById("presetSelection");
-let talentGraphResetZoom=document.getElementById("talentGraphReset");
-let trinketGraphResetZoom=document.getElementById("trinketGraphReset");
-let trinketWTalentsGraphResetZoom=document.getElementById("TrinketWTalentsGraphReset");
-talentGraphResetZoom.addEventListener("click",resetZoom);
-trinketGraphResetZoom.addEventListener("click",resetZoom);
-trinketWTalentsGraphResetZoom.addEventListener("click",resetZoom);
+let talentPresetSelection = document.getElementById("presetSelection");
+let talentGraphResetZoom = document.getElementById("talentGraphReset");
+let trinketGraphResetZoom = document.getElementById("trinketGraphReset");
+let trinketWTalentsGraphResetZoom = document.getElementById("TrinketWTalentsGraphReset");
+talentGraphResetZoom.addEventListener("click", resetZoom);
+trinketGraphResetZoom.addEventListener("click", resetZoom);
+trinketWTalentsGraphResetZoom.addEventListener("click", resetZoom);
 
 talentsDiv.style.display = "none";
 trinketsDiv.style.display = "none";
@@ -64,14 +70,14 @@ talentSelectionDiv.style.display = "none";
 trinketsWithTalentsDiv.style.display = "none";
 azeriteWithTalentsDiv.style.display = "none";
 output.innerHTML = `Number of pages: ${slider.value}`; // Display the default slider value
-
+button_3.disabled = true;
 
 
 // #endregion
 
 // #region event listeners
 
-for(let talentPreset of Array.from(talentPresetSelection.children)){
+for (let talentPreset of Array.from(talentPresetSelection.children)) {
     talentPreset.addEventListener("click", selectTalentPreset);
 }
 for (let difficultyChild of Array.from(difficulty.children)) {
@@ -85,37 +91,45 @@ for (let individualClass of Array.from(classes.children)) {
 }
 button_4.addEventListener("click", function () {
     talentsSelectedIDs = "";
-    for (let i = 1; i < talentsSelected.length; i++) {
-        if(talentsSelected[i].type=="select-one")
-        talentsSelectedIDs += talentsSelected[i].value + (",");
+    for (let i = 0; i < talentsSelected.children.length; i++) {
+        for(let j=0;j<talentsSelected.children[i].children.length;j++){
+            let talentRow=talentsSelected.children[i].children[j];
+            for(let n=0;n<talentRow.children.length;n++){
+                if(talentRow.children[n].children[0].checked){
+                    let idValue=talentRow.children[n].children[0].value;
+                    talentsSelectedIDs += idValue + (",");
+                }
+            }
+        }
+ 
     }
     talentsSelectedIDs = talentsSelectedIDs.slice(0, -1);
     trinketCombosWithTalents = getTrinketCombosWithTalents(talentsSelectedIDs);
-
     createDataWithTalentsChart();
 });
-function selectTalentPreset(){
-    let talents=document.getElementById("spell");
+function selectTalentPreset() {
+    let talents = document.getElementById("spell");
     let selectedTalents;
-    for(let talentCombo of Array.from(talents.children)){
-        if(talentCombo.id==this.children[0].value){
-            selectedTalents=talentCombo;
+    for (let talentCombo of Array.from(talents.children)) {
+        if (talentCombo.id == this.children[0].value) {
+            selectedTalents = talentCombo;
         }
     }
-    let formParent=Array.from(document.getElementById("talentSelectFormGroup").children).filter(elt=>{return elt.type=="select-one"});
-    loop2:
-    for(let k=0;k<formParent.length;k++){
-        let row=formParent[k];
-        for(let i=k;i<selectedTalents.children.length;i++){
-            loop1:
-            for(let j=0;j<row.options.length;j++){
-                let index=-1;
-                if(row.options[j].value==selectedTalents.children[i].href.replace(/\D/g, '')){
-                    index=row.options[j].index;
-                }
-                if(index>=0){
-                    row.options[index].selected=true;
-                    continue loop2;
+
+    let formParent = Array.from(document.getElementById("talentSelectFormGroup").children).filter(elt => { return elt.nodeName == "DIV" && elt.className=="btn-group" });
+    for (let k = 0; k < formParent.length; k++) {
+        let rowParent = formParent[k];
+        for(let row of Array.from(rowParent.children)){
+            for (let talent of Array.from(row.children)){
+                let talentValue=talent.children[0].value;
+                talent.children[0].checked=false;
+                talent.className="btn btn-danger  mr-1";
+                for(let presetTalent of selectedTalents.children){
+                    let presetTalentValue=presetTalent.href.replace(/\D/g, "");
+                    if(talentValue== presetTalentValue){
+                        talent.children[0].checked=true;
+                        talent.className="btn btn-danger  mr-1 active";
+                    }
                 }
             }
         }
@@ -151,10 +165,10 @@ slider.oninput = function () {
 
 //get the classes form and add an event listener to all of the radio elements
 classes = document.getElementById("classes");
-for (let gameClass of classes.childNodes) {
-    if (gameClass.nodeName == "DIV") {
-        gameClass.addEventListener("click", function (evt) {
-            updateRadioElements(gameClass.childNodes[1].value);
+for (let loopGameClass of classes.childNodes) {
+    if (loopGameClass.nodeName == "DIV") {
+        loopGameClass.addEventListener("click", function (evt) {
+            updateRadioElements(loopGameClass.childNodes[1].value);
         });
     }
 }
@@ -267,8 +281,14 @@ function submitForm(evt) {
     requestFights(toSend);
 }
 // #endregion
-
 // #region request server for data
+requestTalents();
+async function requestTalents() {
+    const response = await fetch("/talents");
+    const json = await response.json();
+    talentsFromBlizzard = json;
+
+}
 async function requestRankings(data) {
     //timer to prevent spammin the server
     const options = {
@@ -311,27 +331,34 @@ function compileRequestData() {
     for (let i = 1; i < bosses.children.length; i++) {
         if (bosses.children[i].children[0].checked) {
             data.boss = bosses.children[i].id;
+            boss = bosses.children[i].id;
         }
     }
     for (let j = 0; j < classes.children.length; j++) {
         if (classes.children[j].children[0].checked) {
             data.class = classes.children[j].children[0].value;
+            gameClass = classes.children[j].children[0].value
 
         }
     }
     for (let k = 0; k < specs.children.length; k++) {
         if (specs.children[k].children[0].checked) {
             data.spec = specs.children[k].children[0].value;
+            spec = specs.children[k].children[0].value;
+            console.log(specs.children[k].children[1]);
+            specName=specs.children[k].children[1].getAttribute("specnamereference");
         }
     }
     for (let p = 0; p < difficulty.children.length; p++) {
         if (difficulty.children[p].children[0].checked) {
             data.difficulty = difficulty.children[p].children[0].value;
+            selectedDifficulty = difficulty.children[p].children[0].value;
         }
     }
     for (let t = 0; t < metric.children.length; t++) {
         if (metric.children[t].children[0].checked) {
             data.metric = metric.children[t].children[0].value;
+            selectedMetric = metric.children[t].children[0].value;
         }
     }
     data.pages = document.getElementById("number-of-pages").value;
@@ -345,27 +372,31 @@ function createSpecElement(spec, specName, parent, idNumber) {
     let parentDiv = document.createElement("div");
     parentDiv.className = "custom-control custom-radio custom-control-inline";
     let elmnt1 = createRadioElement("spec", spec, "customRadioInline", idNumber);
-    let label1 = createLabelElement(specName, idNumber);
+    let label1 = createLabelElement(specName, idNumber,specName);
     parentDiv.appendChild(elmnt1);
     parentDiv.appendChild(label1);
     parent.appendChild(parentDiv);
 
 }
 
-function createLabelElement(text, idNumber) {
+function createLabelElement(text, idNumber,specName) {
     let element = document.createElement("label");
     element.className = "custom-control-label";
     element.setAttribute("for", `customRadioInline${idNumber}`);
+    if(specName)
+    element.setAttribute("specNameReference",specName);
     element.innerHTML = text;
     return element;
 }
 
-function createRadioElement(name, value, id, idNumber) {
+function createRadioElement(name, value, id, idNumber,specName) {
     let element = document.createElement("input");
     element.className = "custom-control-input";
     element.type = "radio";
     element.name = name;
     element.value = value;
+    if(specName)
+    element.setAttribute("specNameReference",specName);
     element.id = `${id}${idNumber}`;
     element.addEventListener("click", completeDataTest);
     return element;
@@ -410,7 +441,7 @@ function createWowheadDiv(elements, parentID, type) {
     }
 
     let occurences = Object.values(elements).sort((a, b) => b - a).slice(0, 5);
-    let counterVal=1;
+    let counterVal = 1;
     for (let occurenceCheck of occurences) {
         for (let n = 0; n < Object.keys(elements).length; n++) {
             let occurence = Object.values(elements)[n];
@@ -427,7 +458,7 @@ function createWowheadDiv(elements, parentID, type) {
                         let wowheadLink = document.createElement("a");
                         wowheadLink.href = `https://www.wowhead.com/${checkType}=${value}`;
                         wowheadLink.type = "button";
-                        wowheadLink.className = "btn btn-info";
+                        wowheadLink.className = "btn btn-info mr-1";
                         if (checkType == "spell")
                             wowheadLink.innerHTML = getTalentNameByID(value);
                         else
@@ -501,7 +532,7 @@ window.onload = function () {
                     type: 'linear',
                     position: 'left',
                     type: "linear"
-                },{
+                }, {
                     ticks: {
                         beginAtZero: false, //this will remove only the label
                         fontColor: 'white'
@@ -527,7 +558,7 @@ window.onload = function () {
                     pan: {
                         enabled: false,
                         mode: 'xy',
-                        speed:1
+                        speed: 1
                     },
                     zoom: {
                         enabled: true,
@@ -560,7 +591,7 @@ window.onload = function () {
                     type: 'linear',
                     position: 'left',
                     type: "linear"
-                },{
+                }, {
                     ticks: {
                         beginAtZero: false, //this will remove only the label
                         fontColor: 'white'
@@ -581,7 +612,7 @@ window.onload = function () {
                     pan: {
                         enabled: false,
                         mode: 'y',
-                        speed:1
+                        speed: 1
                     },
                     zoom: {
                         enabled: true,
@@ -620,7 +651,7 @@ window.onload = function () {
                 pan: {
                     enabled: false,
                     mode: 'xy',
-                    speed:1
+                    speed: 1
                 },
                 zoom: {
                     enabled: false,
@@ -701,7 +732,7 @@ window.onload = function () {
                     type: 'linear',
                     position: 'left',
                     type: "linear"
-                },{
+                }, {
                     ticks: {
                         beginAtZero: false, //this will remove only the label
                         fontColor: 'white'
@@ -727,7 +758,7 @@ window.onload = function () {
                     pan: {
                         enabled: false,
                         mode: 'xy',
-                        speed:1
+                        speed: 1
                     },
                     zoom: {
                         enabled: true,
@@ -878,7 +909,7 @@ function showData() {
         borderColor: "rgba(255,0,0,0.6)",
         lineTension: 0.5,
         fill: true
-    };   
+    };
     trinketChart.data.datasets.push(lineDataSet);
     let ilvlTrinketDataSet = {
         label: "ItemLevel",
@@ -895,7 +926,7 @@ function showData() {
     trinketChart.data.datasets.push(ilvlTrinketDataSet);
 
     trinketChart.update();
-    
+
 
     createWowheadDiv(trinketCombinations, "wowhead-item", "item");
     azeriteOccurences = getAzeriteOccurences();
@@ -994,27 +1025,76 @@ function createDataWithTalentsChart() {
 
 }
 function fillTalentSelectionForm() {
-    for (let i = 1; i < talentsSelected.length; i++) {
-        while (talentsSelected[i].firstChild) {
-            talentsSelected[i].removeChild(talentsSelected[i].firstChild);
+    for (let i = 0; i < talentsSelected.children.length; i++) {
+        if(talentsSelected.children[i].nodeName=="DIV" && talentsSelected.children[i].className=="btn-group btn-group-toggle"){
+            while (talentsSelected.children[i].firstChild) {
+                talentsSelected.children[i].removeChild(talentsSelected.children[i].firstChild);
+    
+            }
+        }
 
-        }
     }
-    for (let i = 1; i < talentsSelected.length; i++) {
-        for (talent of talentNames) {
-            let option = document.createElement("option");
-            option.value = talent.id;
-            option.innerText = talent.name;
-            talentsSelected[i].appendChild(option);
+
+    for (let talent of talentNames) {
+        let talentRowDetected;
+        for (let blizzClass of Object.values(talentsFromBlizzard)) {
+            if(blizzClass.spec_name==specName){
+                for (let talentRows of blizzClass.talents) {
+                    for (let singleTalent of talentRows.talents) {
+                        if (talent.name == singleTalent.talent.name) {
+                            switch (talentRows.level) {
+                                case 15:
+                                    talentRowDetected = 1;
+                                    break;
+                                case 30:
+                                    talentRowDetected = 2;
+                                    break;
+                                case 45:
+                                    talentRowDetected = 3;
+                                    break;
+                                case 60:
+                                    talentRowDetected = 4;
+                                    break;
+                                case 75:
+                                    talentRowDetected = 5;
+                                    break;
+                                case 90:
+                                    talentRowDetected = 6;
+                                    break;
+                                case 100:
+                                    talentRowDetected = 7;
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
         }
+        let div = document.getElementById(`talent-row-${talentRowDetected}`);
+        let label = document.createElement("a");
+        label.className = "btn btn-danger  mr-1";
+        let option = document.createElement("input");
+        option.type = "radio";
+        option.autocomplete = "off";
+        option.name = "talent" + talentRowDetected;
+        label.name = "talent" + talentRowDetected;
+        label.href = "#";
+        label.setAttribute("data-wowhead",`spell=${talent.id}`);
+        option.value = talent.id;
+
+        label.innerHTML = talent.name;
+        label.appendChild(option);
+
+        div.appendChild(label);
     }
+
 
 }
 function getTalentCombos() {
     let combos = {};
     let scoreValues = [];
     talentScore = [];
-    ilvlScore=[];
+    ilvlScore = [];
 
     for (let i = 0; i < rankingsData.length; i++) {
         for (let j = 0; j < rankingsData[i].rankings.length; j++) {
@@ -1098,7 +1178,7 @@ function getTrinketCombosWithTalents(talentComboSelected) {
     let combos = {};
     let trinketValuesByTalents = [];
     trinketScoreWithTalents = [];
-    ilvlWithTalents=[];
+    ilvlWithTalents = [];
     for (let i = 0; i < rankingsData.length; i++) {
         for (let j = 0; j < rankingsData[i].rankings.length; j++) {
             let rank = rankingsData[i].rankings[j];
@@ -1405,12 +1485,12 @@ function countInArray(array, what) {
     }
     return count;
 }
-function resetZoom(){
-    if (this.value==1)
-    talentChart.resetZoom();
-    if (this.value==2)
-    trinketChart.resetZoom();
-    if (this.value==3)
-    trinketsWithTalentsChart.resetZoom();
+function resetZoom() {
+    if (this.value == 1)
+        talentChart.resetZoom();
+    if (this.value == 2)
+        trinketChart.resetZoom();
+    if (this.value == 3)
+        trinketsWithTalentsChart.resetZoom();
 }
 // #endregion

@@ -10,7 +10,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js" integrity="sha256-eVNjHw5UeU0jUqPPpZHAkU1z4U+QFBBY488WvueTm88=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"
+        integrity="sha256-eVNjHw5UeU0jUqPPpZHAkU1z4U+QFBBY488WvueTm88=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@0.7.0"></script>
     <script src="https://unpkg.com/moment@2.24.0/moment.js"></script>
 
@@ -19,6 +20,7 @@
     <link href="https://fonts.googleapis.com/css?family=Questrial&amp;display=swap" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/superhero/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-LS4/wo5Z/8SLpOLHs0IbuPAGOWTx30XSoZJ8o7WKH0UJhRpjXXTpODOjfVnNjeHu" crossorigin="anonymous">
+    <script>var wowhead_tooltips = { "colorlinks": true, "iconizelinks": true, "renamelinks": true, "hide": { "droppedby": true, "dropchance": true } }</script>
 </head>
 
 <body>
@@ -147,7 +149,7 @@
                     </div>
                     <br>
 
-                    
+
                     <h5 id="spec-header2" style="visibility: hidden">Spec</h5>
                     <form id="specs">
                     </form>
@@ -169,17 +171,24 @@
                     <br>
                     <h5 for="number-of-pages-header" id="number-of-pages-header">Number of pages: </h5>
                     <input type="range" class="custom-range" min="1" max="20" id="number-of-pages">
-                    <p class="text-warning">Please note that requesting a lot of pages will drastically increase the time it takes to process all the logs (this is done on your machine). If you have a low-end machine or are on mobile you're better off decreasing the number pages</p>
+                    <p class="text-warning">Please note that requesting a lot of pages will drastically increase the
+                        time it takes to process all the logs (this is done on your machine). If you have a low-end
+                        machine or are on mobile you're better off decreasing the number pages</p>
                     <button type="button" id="request" class="btn btn-success btn-lg btn-block"
                         value="request-data">REQUEST DATA</button>
-                        <br>
-                        <div class="alert alert-dismissible alert-danger">
+                    <br>
+                    <div class="alert alert-dismissible alert-danger">
                         <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <p class="lead"><strong>Disclaimer: All the item levels reported on this page are GLOBAL for the WHOLE charater (NOT single items). All the data displayed on this page is not intended to be as the be-all end-all of builds, it may require some thought analysis to truly understand 
-                                what is being played and why it is performing as it is (it may just be player skill!). Some talent builds or trinkets may be very powerful on certain encounters and if you understand why that is the case this data my help you achieve better performance.
+                        <p class="lead"><strong>Disclaimer: All the item levels reported on this page are GLOBAL for the
+                                WHOLE charater (NOT single items). All the data displayed on this page is not intended
+                                to be as the be-all end-all of builds, it may require some thought analysis to truly
+                                understand
+                                what is being played and why it is performing as it is (it may just be player skill!).
+                                Some talent builds or trinkets may be very powerful on certain encounters and if you
+                                understand why that is the case this data my help you achieve better performance.
                             </strong>
-                            </p>
-                        </div>
+                        </p>
+                    </div>
 
                 </div>
 
@@ -199,7 +208,7 @@
                     <p class="lead">These are the most frequent trinket combinations found in the pages of logs you
                         requested:</p>
                     <h1 class="display-3">Trinkets</h1>
-                                        <button type="button" class="btn btn-primary" id="trinketGraphReset" value="2">Reset zoom</button>
+                    <button type="button" class="btn btn-primary" id="trinketGraphReset" value="2">Reset zoom</button>
                     <div class="chart-container" style="position: relative; height:60vh; width:60vw">
                         <canvas id="trinketChart" width="100" height="100"></canvas>
                     </div>
@@ -235,49 +244,83 @@
                 <div class="jumbotron" id="talentSelectionDiv">
                     <form id="talent-selection">
                         <fieldset>
-                            <p class="lead">Selected your talent setup to get stats on that particular setup, alternatively you can choose one of the 5 most used.</p>
+                            <p class="lead">Selected your talent setup to get stats on that particular setup,
+                                alternatively you can choose one of the 5 most used. Note that if the talent you're
+                                looking for isn't here, it means we couldn't find any logs with that speficic talent (in
+                                the pages you requested)</p>
                             <div class="btn-group btn-group-toggle" data-toggle="buttons" id="presetSelection">
-                                    <label class="btn btn-primary">
-                                        <input type="radio" name="options" id="preset1" value=1 autocomplete="off" checked=""> Preset1
-                                    </label>
-                                    <label class="btn btn-primary active">
-                                        <input type="radio" name="options" id="preset2" value=2 autocomplete="off"> Preset2
-                                    </label>
-                                    <label class="btn btn-primary">
-                                        <input type="radio" name="options" id="preset3" value=3 autocomplete="off"> Preset3
-                                    </label>
-                                    <label class="btn btn-primary">
-                                        <input type="radio" name="options" id="preset4" value=4 autocomplete="off"> Preset4
-                                    </label>
-                                    <label class="btn btn-primary">
-                                        <input type="radio" name="options" id="preset5" value=5 autocomplete="off"> Preset5
-                                    </label>
+                                <label class="btn btn-primary">
+                                    <input type="radio" name="options" id="preset1" value=1 autocomplete="off"
+                                        checked=""> Preset1
+                                </label>
+                                <label class="btn btn-primary active">
+                                    <input type="radio" name="options" id="preset2" value=2 autocomplete="off"> Preset2
+                                </label>
+                                <label class="btn btn-primary">
+                                    <input type="radio" name="options" id="preset3" value=3 autocomplete="off"> Preset3
+                                </label>
+                                <label class="btn btn-primary">
+                                    <input type="radio" name="options" id="preset4" value=4 autocomplete="off"> Preset4
+                                </label>
+                                <label class="btn btn-primary">
+                                    <input type="radio" name="options" id="preset5" value=5 autocomplete="off"> Preset5
+                                </label>
                             </div>
-                            <div class="form-group" id="talentSelectFormGroup">
-                                <label for="talent-row-1">Row 1</label>
-                                <select class="form-control" id="talent-row-1">
-                                </select>
+                            <div id="talentSelectFormGroup">
+                                <label>Row 1</label>
+                                <br>
+                                <div class="btn-group" data-toggle="buttons">
+                                    <div id="talent-row-1">
+                                    </div>
+                                </div>
+                                <br>
                                 <label for="talent-row-2">Row 2</label>
-                                <select class="form-control" id="talent-row-2">
-                                </select>
+                                <br>
+                                <div class="btn-group" data-toggle="buttons">
+                                    <div id="talent-row-2">
+                                    </div>
+                                </div>
+                                <br>
                                 <label for="talent-row-3">Row 3</label>
-                                <select class="form-control" id="talent-row-3">
-                                </select>
+                                <br>
+                                <div class="btn-group" data-toggle="buttons">
+                                    <div id="talent-row-3">
+                                    </div>
+                                </div>
+                                <br>
                                 <label for="talent-row-4">Row 4</label>
-                                <select class="form-control" id="talent-row-4">
-                                </select>
+                                <br>
+                                <div class="btn-group" data-toggle="buttons">
+                                    <div id="talent-row-4">
+                                    </div>
+                                </div>
+                                <br>
                                 <label for="talent-row-5">Row 5</label>
-                                <select class="form-control" id="talent-row-5">
-                                </select>
+                                <br>
+                                <div class="btn-group" data-toggle="buttons">
+                                    <div id="talent-row-5">
+                                    </div>
+                                </div>
+                                <br>
                                 <label for="talent-row-6">Row 6</label>
-                                <select class="form-control" id="talent-row-6">
-                                </select>
+                                <br>
+                                <div class="btn-group" data-toggle="buttons">
+                                    <div id="talent-row-6">
+                                    </div>
+                                </div>
+                                <br>
                                 <label for="talent-row-7">Row 7</label>
-                                <select class="form-control" id="talent-row-7">
-                                </select>
+                                <br>
+                                <div class="btn-group" data-toggle="buttons">
+                                    <div id="talent-row-7">
+                                    </div>
+                                </div>
+
+                                <br>
                             </div>
                         </fieldset>
                     </form>
+
                     <button type="button" class="btn btn-primary btn-lg btn-block" id="trinkets-with-talents"
                         value="trinkets-with-talents">Get Trinkets for this talent Combo</button>
                 </div>
@@ -285,7 +328,8 @@
                     <h1 class="display-3">Trinkets used by specified talent setup</h1>
                     <p class="lead">These are the most frequent and high-scoring trinkets combinations found using the
                         specified talent setup.</p>
-                    <button type="button" class="btn btn-primary" id="TrinketWTalentsGraphReset" value="3">Reset zoom</button>
+                    <button type="button" class="btn btn-primary" id="TrinketWTalentsGraphReset" value="3">Reset
+                        zoom</button>
                     <div class="chart-container" style="position: relative; height:40vh; width:60vw">
                         <canvas id="trinketsWithTalentsChart" width="100" height="100"></canvas>
                     </div>
@@ -295,7 +339,8 @@
                 </div>
                 <div class="jumbotron" id="azeriteWithTalentsDiv">
                     <h1 class="display-3">Azerite used by specified talent setup</h1>
-                    <p class="lead">These are the most frequent and high-scoring azerite trait combinations found using the
+                    <p class="lead">These are the most frequent and high-scoring azerite trait combinations found using
+                        the
                         specified talent setup.</p>
                     <div class="chart-container" style="position: relative; height:40vh; width:30vW">
                         <canvas id="azeriteWTalentsThreeChart" width="100" height="100"></canvas>
