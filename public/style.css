@@ -28,3 +28,6 @@ input{
 .btn.btn-danger {
     background-color: #656565;
 }
+#number-of-pages{
+    display:block;
+}
