@@ -92,16 +92,16 @@ for (let individualClass of Array.from(classes.children)) {
 button_4.addEventListener("click", function () {
     talentsSelectedIDs = "";
     for (let i = 0; i < talentsSelected.children.length; i++) {
-        for(let j=0;j<talentsSelected.children[i].children.length;j++){
-            let talentRow=talentsSelected.children[i].children[j];
-            for(let n=0;n<talentRow.children.length;n++){
-                if(talentRow.children[n].children[0].checked){
-                    let idValue=talentRow.children[n].children[0].value;
+        for (let j = 0; j < talentsSelected.children[i].children.length; j++) {
+            let talentRow = talentsSelected.children[i].children[j];
+            for (let n = 0; n < talentRow.children.length; n++) {
+                if (talentRow.children[n].children[0].checked) {
+                    let idValue = talentRow.children[n].children[0].value;
                     talentsSelectedIDs += idValue + (",");
                 }
             }
         }
- 
+
     }
     talentsSelectedIDs = talentsSelectedIDs.slice(0, -1);
     trinketCombosWithTalents = getTrinketCombosWithTalents(talentsSelectedIDs);
@@ -116,19 +116,19 @@ function selectTalentPreset() {
         }
     }
 
-    let formParent = Array.from(document.getElementById("talentSelectFormGroup").children).filter(elt => { return elt.nodeName == "DIV" && elt.className=="btn-group" });
+    let formParent = Array.from(document.getElementById("talentSelectFormGroup").children).filter(elt => { return elt.nodeName == "DIV" && elt.className == "btn-group" });
     for (let k = 0; k < formParent.length; k++) {
         let rowParent = formParent[k];
-        for(let row of Array.from(rowParent.children)){
-            for (let talent of Array.from(row.children)){
-                let talentValue=talent.children[0].value;
-                talent.children[0].checked=false;
-                talent.className="btn btn-danger  mr-1";
-                for(let presetTalent of Array.from(selectedTalents.children)){
-                    let presetTalentValue=presetTalent.href.replace(/\D/g, "");
-                    if(talentValue== presetTalentValue){
-                        talent.children[0].checked=true;
-                        talent.className="btn btn-danger  mr-1 active";
+        for (let row of Array.from(rowParent.children)) {
+            for (let talent of Array.from(row.children)) {
+                let talentValue = talent.children[0].value;
+                talent.children[0].checked = false;
+                talent.className = "btn btn-danger  mr-1";
+                for (let presetTalent of Array.from(selectedTalents.children)) {
+                    let presetTalentValue = presetTalent.href.replace(/\D/g, "");
+                    if (talentValue == presetTalentValue) {
+                        talent.children[0].checked = true;
+                        talent.className = "btn btn-danger  mr-1 active";
                     }
                 }
             }
@@ -345,7 +345,7 @@ function compileRequestData() {
         if (specs.children[k].children[0].checked) {
             data.spec = specs.children[k].children[0].value;
             spec = specs.children[k].children[0].value;
-            specName=specs.children[k].children[1].getAttribute("specnamereference");
+            specName = specs.children[k].children[1].getAttribute("specnamereference");
         }
     }
     for (let p = 0; p < difficulty.children.length; p++) {
@@ -371,31 +371,31 @@ function createSpecElement(spec, specName, parent, idNumber) {
     let parentDiv = document.createElement("div");
     parentDiv.className = "custom-control custom-radio custom-control-inline";
     let elmnt1 = createRadioElement("spec", spec, "customRadioInline", idNumber);
-    let label1 = createLabelElement(specName, idNumber,specName);
+    let label1 = createLabelElement(specName, idNumber, specName);
     parentDiv.appendChild(elmnt1);
     parentDiv.appendChild(label1);
     parent.appendChild(parentDiv);
 
 }
 
-function createLabelElement(text, idNumber,specName) {
+function createLabelElement(text, idNumber, specName) {
     let element = document.createElement("label");
     element.className = "custom-control-label";
     element.setAttribute("for", `customRadioInline${idNumber}`);
-    if(specName)
-    element.setAttribute("specNameReference",specName);
+    if (specName)
+        element.setAttribute("specNameReference", specName);
     element.innerHTML = text;
     return element;
 }
 
-function createRadioElement(name, value, id, idNumber,specName) {
+function createRadioElement(name, value, id, idNumber, specName) {
     let element = document.createElement("input");
     element.className = "custom-control-input";
     element.type = "radio";
     element.name = name;
     element.value = value;
-    if(specName)
-    element.setAttribute("specNameReference",specName);
+    if (specName)
+        element.setAttribute("specNameReference", specName);
     element.id = `${id}${idNumber}`;
     element.addEventListener("click", completeDataTest);
     return element;
@@ -1025,10 +1025,10 @@ function createDataWithTalentsChart() {
 }
 function fillTalentSelectionForm() {
     for (let i = 0; i < talentsSelected.children.length; i++) {
-        if(talentsSelected.children[i].nodeName=="DIV" && talentsSelected.children[i].className=="btn-group"){
+        if (talentsSelected.children[i].nodeName == "DIV" && talentsSelected.children[i].className == "btn-group") {
             while (talentsSelected.children[i].children[0].hasChildNodes()) {
                 talentsSelected.children[i].children[0].removeChild(talentsSelected.children[i].children[0].firstChild);
-              }
+            }
         }
 
     }
@@ -1036,7 +1036,7 @@ function fillTalentSelectionForm() {
     for (let talent of talentNames) {
         let talentRowDetected;
         for (let blizzClass of Object.values(talentsFromBlizzard)) {
-            if(blizzClass.spec_name==specName){
+            if (blizzClass.spec_name == specName) {
                 for (let talentRows of blizzClass.talents) {
                     for (let singleTalent of talentRows.talents) {
                         if (talent.name == singleTalent.talent.name) {
@@ -1077,7 +1077,7 @@ function fillTalentSelectionForm() {
         option.name = "talent" + talentRowDetected;
         label.name = "talent" + talentRowDetected;
         label.href = "#";
-        label.setAttribute("data-wowhead",`spell=${talent.id}`);
+        label.setAttribute("data-wowhead", `spell=${talent.id}`);
         option.value = talent.id;
 
         label.innerHTML = talent.name;
