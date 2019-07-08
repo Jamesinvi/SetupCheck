@@ -11,16 +11,16 @@ var BNET_ID = process.env.BNET_ID
 var BNET_SECRET = process.env.BNET_SECRET
 
 // Use the BnetStrategy within Passport.
-let token;
 passport.use(new BnetStrategy({
     clientID: BNET_ID,
     clientSecret: BNET_SECRET,
     callbackURL: "https://localhost:3000/auth/bnet/callback",
     region: "eu"
 }, function(accessToken, refreshToken, profile, done) {
-    token=accessToken;
     return done(null, profile);
 }));
+
+
 // // Listen for dying workers
 // cluster.on('exit', function (worker) {
 
@@ -49,8 +49,32 @@ passport.use(new BnetStrategy({
     let talentDataToSend=[];
     let key = process.env.API_KEY;
     let port = process.env.PORT || 3000;
+
+    const credentials = {
+        client: {
+          id: BNET_ID,
+          secret: BNET_SECRET
+        },
+        auth: {
+          tokenHost: "https://us.battle.net"
+        }
+      };
+      const oauth2 = require("simple-oauth2").create(credentials);
+    let token = null;
+    async function getToken () {
+        if (token === null) {
+          return oauth2.clientCredentials
+            .getToken()
+            .then(oauth2.accessToken.create)
+            .then(t => {
+              token= t.token.access_token;
+              console.log("got token: ",token);
+            });
+        }
+    }
+    getToken().then(getTalentsData);
     getRaidData();
-    getTalentsData();
+    //getTalentsData();
 
     //fetch raids from warcraftLogs
     async function getRaidData() {
@@ -60,11 +84,11 @@ passport.use(new BnetStrategy({
     }
     //fetch talents from wowAPI
     async function getTalentsData(){
-        let response = await fetch(`https://eu.api.blizzard.com/data/wow/playable-specialization/index?namespace=static-eu&locale=en_GB&access_token=US0Fhz98OuSBdRZI2q9w2agYeBGdmi4EzI`);
+        let response = await fetch(`https://eu.api.blizzard.com/data/wow/playable-specialization/index?namespace=static-eu&locale=en_GB&access_token=${token}`);
         let json= await response.json();
         talentDataToSend.length=0;
         for(let spec of json.character_specializations){
-            let specData=await fetch(`https://eu.api.blizzard.com/data/wow/playable-specialization/${spec.id}?namespace=static-eu&locale=en_GB&access_token=US0Fhz98OuSBdRZI2q9w2agYeBGdmi4EzI`);
+            let specData=await fetch(`https://eu.api.blizzard.com/data/wow/playable-specialization/${spec.id}?namespace=static-eu&locale=en_GB&access_token=${token}`);
             let jsonSpecData=await specData.json();
             talentDataToSend.push({
                 "class_name" : jsonSpecData.playable_class.name,
@@ -73,6 +97,7 @@ passport.use(new BnetStrategy({
                 "talents" : jsonSpecData.talent_tiers
             });
         }
+        console.log("got talent data");
     }
     //put all the raids in a variable
     function getRaids(data) {

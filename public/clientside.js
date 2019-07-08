@@ -1026,7 +1026,6 @@ function createDataWithTalentsChart() {
 function fillTalentSelectionForm() {
     for (let i = 0; i < talentsSelected.children.length; i++) {
         if(talentsSelected.children[i].nodeName=="DIV" && talentsSelected.children[i].className=="btn-group"){
-            console.log(talentsSelected.children[i].children[0].childNodes);
             while (talentsSelected.children[i].children[0].hasChildNodes()) {
                 talentsSelected.children[i].children[0].removeChild(talentsSelected.children[i].children[0].firstChild);
               }
