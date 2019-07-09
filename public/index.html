@@ -20,7 +20,7 @@
     <link href="https://fonts.googleapis.com/css?family=Questrial&amp;display=swap" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/superhero/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-LS4/wo5Z/8SLpOLHs0IbuPAGOWTx30XSoZJ8o7WKH0UJhRpjXXTpODOjfVnNjeHu" crossorigin="anonymous">
-    <script>var wowhead_tooltips = { "colorlinks": true, "iconizelinks": true, "renamelinks": true, "hide": { "droppedby": true, "dropchance": true } }</script>
+    <script>var wowhead_tooltips = { "colorlinks": true, "iconizelinks": true, "renamelinks": true, "hide": { "droppedby": false, "dropchance": false } }</script>
 </head>
 
 <body>
@@ -44,7 +44,7 @@
                         what the best-parsing players are using! <br>
                         All the data is kindly provided by <a href="https://www.warcraftlogs.com/">WarcraftLogs</a>
                     </p>
-                    <h5>Difficulty</h5>
+                    <h4>Difficulty</h4>
 
                     <div id="difficulty">
                         <div class="custom-control custom-radio custom-control-inline">
@@ -70,21 +70,7 @@
                     </div>
 
                     <br>
-                    <h5>Metric</h5>
-                    <div id="metric">
-                        <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" id="customRadioInline5" name="metric" class="custom-control-input"
-                                value="dps">
-                            <label class="custom-control-label" for="customRadioInline5">DPS</label>
-                        </div>
-                        <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" id="customRadioInline6" name="metric" class="custom-control-input"
-                                value="hps">
-                            <label class="custom-control-label" for="customRadioInline6">HPS</label>
-                        </div>
-                    </div>
-                    <br>
-                    <h5>Class</h5>
+                    <h4>Class</h4>
                     <div id="classes">
                         <div class="custom-control custom-radio custom-control-inline">
                             <input type="radio" id="customRadioInline7" name="class" class="custom-control-input"
@@ -149,10 +135,24 @@
                     </div>
                     <br>
 
-
-                    <h5 id="spec-header2" style="visibility: hidden">Spec</h5>
+                    <h4 id="spec-header2" style="visibility: hidden">Spec</h4>
                     <form id="specs">
                     </form>
+                    <br>
+                    <br>
+                    <h4>Metric</h4>
+                    <div id="metric">
+                        <div class="custom-control custom-radio custom-control-inline">
+                            <input type="radio" id="customRadioInline5" name="metric" class="custom-control-input"
+                                value="dps">
+                            <label class="custom-control-label" for="customRadioInline5">DPS</label>
+                        </div>
+                        <div class="custom-control custom-radio custom-control-inline">
+                            <input type="radio" id="customRadioInline6" name="metric" class="custom-control-input"
+                                value="hps">
+                            <label class="custom-control-label" for="customRadioInline6">HPS</label>
+                        </div>
+                    </div>
                     <br>
                     <button type="button" class="btn btn-primary btn-lg btn-block" id="submit-bod"
                         value="battle of dazar'alor">Battle of Dazar'Alor</button>
@@ -170,7 +170,7 @@
 
                     <br>
 
-                    <h5 for="number-of-pages-header" id="number-of-pages-header">Number of pages: </h5>
+                    <h4 for="number-of-pages-header" id="number-of-pages-header">Number of pages: </h4>
                     <input type="range" class="custom-range" min="1" max="20" id="number-of-pages">
                     <p class="text-warning">Please note that requesting a lot of pages will drastically increase the
                         time it takes to process all the logs (this is done on your machine). If you have a low-end
@@ -196,8 +196,9 @@
                 <div class="jumbotron" id="talentsDiv">
                     <h1 class="display-3">Talents</h1>
                     <p class="lead">These are the most frequent talent combinations found in the pages of logs you
-                        requested:</p>
-                    <button type="button" class="btn btn-primary" id="talentGraphReset" value="1">Reset zoom</button>
+                        requested (click on any dataset in the legend to hide/show it):</p>
+                    <button type="button" class="btn btn-primary reset" id="talentGraphReset" value="1">Reset zoom</button>
+                    <br>
                     <div class="chart-container" style="position: relative; height:60vh; width:60vw">
                         <canvas id="talentChart" width="100" height="100"></canvas>
                     </div>
@@ -207,9 +208,10 @@
                 </div>
                 <div class="jumbotron" id="trinketsDiv">
                     <p class="lead">These are the most frequent trinket combinations found in the pages of logs you
-                        requested:</p>
+                        requested (click on any dataset in the legend to hide/show it):</p>
                     <h1 class="display-3">Trinkets</h1>
-                    <button type="button" class="btn btn-primary" id="trinketGraphReset" value="2">Reset zoom</button>
+                    <button type="button" class="btn btn-primary reset" id="trinketGraphReset" value="2">Reset zoom</button>
+                    <br>
                     <div class="chart-container" style="position: relative; height:60vh; width:60vw">
                         <canvas id="trinketChart" width="100" height="100"></canvas>
                     </div>
@@ -245,7 +247,7 @@
                 <div class="jumbotron" id="talentSelectionDiv">
                     <form id="talent-selection">
                         <fieldset>
-                            <p class="lead">Selected your talent setup to get stats on that particular setup,
+                            <p class="lead">Select your talent setup to get stats on that particular setup,
                                 alternatively you can choose one of the 5 most used. Note that if the talent you're
                                 looking for isn't here, it means we couldn't find any logs with that speficic talent (in
                                 the pages you requested)</p>
@@ -330,7 +332,7 @@
                 <div class="jumbotron" id="trinketsWithTalentsDiv">
                     <h1 class="display-3">Trinkets used by specified talent setup</h1>
                     <p class="lead">These are the most frequent and high-scoring trinkets combinations found using the
-                        specified talent setup.</p>
+                        specified talent setup (click on any dataset in the legend to hide/show it).</p>
                     <button type="button" class="btn btn-primary" id="TrinketWTalentsGraphReset" value="3">Reset
                         zoom</button>
                     <div class="chart-container" style="position: relative; height:40vh; width:60vw">

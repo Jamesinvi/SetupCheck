@@ -31,3 +31,11 @@ input{
 #number-of-pages{
     display:block;
 }
+
+.talentSet {
+    border-style: ridge;
+    display: block;
+}
+.reset{
+    margin: 15px
+}

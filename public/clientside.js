@@ -248,7 +248,7 @@ function updateRadioElements(evt) {
     }
     if (gameclass == "8") {
         createSpecElement(1, "Assassination", specRadios, 41);
-        createSpecElement(2, "Combat", specRadios, 42);
+        //createSpecElement(2, "Combat", specRadios, 42);
         createSpecElement(3, "Shadow", specRadios, 43);
         createSpecElement(3, "Outlaw", specRadios, 44);
     }
@@ -385,6 +385,11 @@ function createLabelElement(text, idNumber, specName) {
     if (specName)
         element.setAttribute("specNameReference", specName);
     element.innerHTML = text;
+    if(text=="Shadow" && idNumber==43){
+        element.innerHTML="Subtlety";
+        element.setAttribute("specNameReference", "Subtlety");
+
+    }
     return element;
 }
 
@@ -448,16 +453,18 @@ function createWowheadDiv(elements, parentID, type) {
                 let IDs = Object.keys(elements)[n].split(",");
                 let talentSet = document.createElement("div");
                 if (type != "item") {
-                    talentSet.setAttribute("class", "btn-group");
+                    talentSet.setAttribute("class", "btn-group-vertical mr-3 talentSet");
                     talentSet.setAttribute("id", counterVal);
                     counterVal++;
+                }else{
+                    talentSet.setAttribute("class", "btn-group-vertical mr-2 talentSet");
                 }
                 if (occurences.includes(occurence)) {
                     for (let value of IDs) {
                         let wowheadLink = document.createElement("a");
                         wowheadLink.href = `https://www.wowhead.com/${checkType}=${value}`;
                         wowheadLink.type = "button";
-                        wowheadLink.className = "btn btn-info mr-1";
+                        wowheadLink.className = "btn btn-info";
                         if (checkType == "spell")
                             wowheadLink.innerHTML = getTalentNameByID(value);
                         else
@@ -549,7 +556,8 @@ window.onload = function () {
             },
             legend: {
                 labels: {
-                    fontColor: 'white' //set your desired color
+                    fontColor: 'white', //set your desired color
+                    fontSize: 18
                 }
             },
             plugins: {
@@ -606,6 +614,12 @@ window.onload = function () {
                     type: "category"
                 }]
             },
+            legend: {
+                labels: {
+                    fontColor: 'white', //set your desired color
+                    fontSize: 18
+                }
+            },
             plugins: {
                 zoom: {
                     pan: {
@@ -638,7 +652,8 @@ window.onload = function () {
                     // This more specific font property overrides the global property
                     fontColor: 'white',
                     usePointStyle: true,
-                    padding: 5
+                    padding: 5,
+                    fontSize: 18
                 },
                 position: 'bottom',
             },
@@ -676,7 +691,8 @@ window.onload = function () {
                     // This more specific font property overrides the global property
                     fontColor: 'white',
                     usePointStyle: true,
-                    padding: 5
+                    padding: 5,
+                    fontSize: 18
                 },
                 position: 'bottom',
             },
@@ -700,7 +716,8 @@ window.onload = function () {
                     // This more specific font property overrides the global property
                     fontColor: 'white',
                     usePointStyle: true,
-                    padding: 5
+                    padding: 5,
+                    fontSize: 18
                 },
                 position: 'bottom',
             },
@@ -749,7 +766,8 @@ window.onload = function () {
             },
             legend: {
                 labels: {
-                    fontColor: 'white' //set your desired color
+                    fontColor: 'white', //set your desired color
+                    fontSize: 18
                 }
             },
             plugins: {
@@ -783,7 +801,8 @@ window.onload = function () {
                     // This more specific font property overrides the global property
                     fontColor: 'white',
                     usePointStyle: true,
-                    padding: 5
+                    padding: 5,
+                    fontSize: 18
                 },
                 position: 'bottom',
             },
@@ -831,7 +850,8 @@ window.onload = function () {
                     // This more specific font property overrides the global property
                     fontColor: 'white',
                     usePointStyle: true,
-                    padding: 5
+                    padding: 5,
+                    fontSize: 18
                 },
                 position: 'bottom',
             },
@@ -946,9 +966,11 @@ function showData() {
     azeriteRingOneLabels = getAzeriteLabels(azeriteOccurences, 0);
     azeriteOneChart.data.datasets[0].data = Object.values(azeriteRingOneCombinations).slice(0, 20);
     azeriteOneChart.data.labels = azeriteRingOneLabels.slice(0, 20);;
+
+    azeriteOneChart.ctx.canvas.removeEventListener("wheel",azeriteOneChart.zoom_wheelHandler);
     azeriteOneChart.update();
 
-
+    
 
 
 
@@ -1082,7 +1104,7 @@ function fillTalentSelectionForm() {
 
         label.innerHTML = talent.name;
         label.appendChild(option);
-
+        if(div)
         div.appendChild(label);
     }
 
