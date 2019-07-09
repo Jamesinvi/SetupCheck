@@ -1062,29 +1062,7 @@ function fillTalentSelectionForm() {
                 for (let talentRows of blizzClass.talents) {
                     for (let singleTalent of talentRows.talents) {
                         if (talent.name == singleTalent.talent.name) {
-                            switch (talentRows.level) {
-                                case 15:
-                                    talentRowDetected = 1;
-                                    break;
-                                case 30:
-                                    talentRowDetected = 2;
-                                    break;
-                                case 45:
-                                    talentRowDetected = 3;
-                                    break;
-                                case 60:
-                                    talentRowDetected = 4;
-                                    break;
-                                case 75:
-                                    talentRowDetected = 5;
-                                    break;
-                                case 90:
-                                    talentRowDetected = 6;
-                                    break;
-                                case 100:
-                                    talentRowDetected = 7;
-                                    break;
-                            }
+                            talentRowDetected=getTalentRowByLevel(talentRows.level);
                         }
                     }
                 }
@@ -1109,6 +1087,83 @@ function fillTalentSelectionForm() {
     }
 
 
+}
+function getTalentRowByLevel(level){
+    let row;
+    if(gameClass==12){
+        switch(level){
+            case 99:
+                row = 1;
+                break;
+            case 100:
+                row = 2;
+                break;
+            case 102:
+                row = 3;
+                break;
+            case 104:
+                row = 4;
+                break;
+            case 106:
+                row = 5;
+                break;
+            case 108:
+                row = 6;
+                break;
+            case 110:
+                row = 7;
+                break;
+        }
+    }else if(gameClass==1){
+        switch(level){
+            case 56:
+                row = 1;
+                break;
+            case 57:
+                row = 2;
+                break;
+            case 58:
+                row = 3;
+                break;
+            case 60:
+                row = 4;
+                break;
+            case 75:
+                row = 5;
+                break;
+            case 90:
+                row = 6;
+                break;
+            case 100:
+                row = 7;
+                break;
+        }
+    }else{
+        switch (level) {
+            case 15:
+                row = 1;
+                break;
+            case 30:
+                row = 2;
+                break;
+            case 45:
+                row = 3;
+                break;
+            case 60:
+                row = 4;
+                break;
+            case 75:
+                row = 5;
+                break;
+            case 90:
+                row = 6;
+                break;
+            case 100:
+                row = 7;
+                break;
+        }
+    }
+    return row;
 }
 function getTalentCombos() {
     let combos = {};
