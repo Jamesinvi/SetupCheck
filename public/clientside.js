@@ -49,6 +49,7 @@ let button_3 = document.getElementById("request");
 let button_4 = document.getElementById("trinkets-with-talents");
 button_3.setAttribute("disabled", true);
 
+//DOM elements here
 let specRadios;
 let slider = document.getElementById("number-of-pages");
 let output = document.getElementById("number-of-pages-header");
@@ -94,6 +95,7 @@ for (let metricChild of Array.from(metric.children)) {
 for (let individualClass of Array.from(classes.children)) {
     individualClass.children[0].addEventListener("click", completeDataTest);
 }
+//get the selected talents string and then create data to display
 button_4.addEventListener("click", function () {
     talentsSelectedIDs = "";
     for (let i = 0; i < talentsSelected.children.length; i++) {
@@ -109,10 +111,11 @@ button_4.addEventListener("click", function () {
 
     }
     talentsSelectedIDs = talentsSelectedIDs.slice(0, -1);
-    trinketWithTalentsData=getTrinketCombosWithTalents(talentsSelectedIDs);
+    trinketWithTalentsData = getTrinketCombosWithTalents(talentsSelectedIDs);
 
     createDataWithTalentsChart();
 });
+//presets are available: this makes sure when you click on a preset, the talent div is populated with correct values
 function selectTalentPreset() {
     let talents = document.getElementById("spell");
     let selectedTalents;
@@ -141,7 +144,7 @@ function selectTalentPreset() {
         }
     }
 }
-
+//this makes sure the user has selected all the fields before requesting data
 function completeDataTest() {
     if (this.name == "difficulty") {
         //console.log("difficulty added: ", this.value);
@@ -288,6 +291,8 @@ function submitForm(evt) {
 }
 // #endregion
 // #region request server for data
+
+//request talents as soon as possible
 requestTalents();
 async function requestTalents() {
     const response = await fetch("/talents");
@@ -295,6 +300,7 @@ async function requestTalents() {
     talentsFromBlizzard = json;
 
 }
+//called by the button to request data. does a post/fetch call to the server
 async function requestRankings(data) {
     //timer to prevent spammin the server
     const options = {
@@ -328,6 +334,7 @@ async function requestFights(data) {
     raid = json;
     refreshBossHTML();
 }
+//creates a json request file from the selected radios to send to the server
 function compileRequestData() {
     let data = {};
     const bosses = document.getElementById("bosses");
@@ -373,6 +380,8 @@ function compileRequestData() {
 // #endregion
 
 // #region create HTML elements
+
+//creates a spec radio with all the relevant attributes
 function createSpecElement(spec, specName, parent, idNumber) {
     let parentDiv = document.createElement("div");
     parentDiv.className = "custom-control custom-radio custom-control-inline";
@@ -449,8 +458,8 @@ function createWowheadDiv(elements, parentID, type) {
             child = div.lastElementChild;
         }
     }
-    let occurences=[];
-    Object.values(elements).forEach((elt)=>{occurences.push(elt[0])});
+    let occurences = [];
+    Object.values(elements).forEach((elt) => { occurences.push(elt[0]) });
     occurences = occurences.sort((a, b) => b - a).slice(0, 5);
     let counterVal = 1;
     for (let occurenceCheck of occurences) {
@@ -500,17 +509,18 @@ function createWowheadDiv(elements, parentID, type) {
 
 // #region process & show the data we got
 
+//responsible to collect all the data from the processData.js functions and adding them to the charts
 function showData() {
     talentsDiv.style.display = "block";
     trinketsDiv.style.display = "block";
     azeriteDiv.style.display = "block";
-    talentData=getTalentCombos();
-    talentCombinations=[];
-    talentScore=[];
-    ilvlScore=[];
-    (Object.values(talentData)).forEach((elt)=>{talentCombinations.push(elt[0])});
-    (Object.values(talentData)).forEach((elt)=>{talentScore.push(elt[1])});
-    (Object.values(talentData)).forEach((elt)=>{ilvlScore.push(elt[2])});
+    talentData = getTalentCombos();
+    talentCombinations = [];
+    talentScore = [];
+    ilvlScore = [];
+    (Object.values(talentData)).forEach((elt) => { talentCombinations.push(elt[0]) });
+    (Object.values(talentData)).forEach((elt) => { talentScore.push(elt[1]) });
+    (Object.values(talentData)).forEach((elt) => { ilvlScore.push(elt[2]) });
     talentLabels = getTalentLabels(talentData);
     talentChart.data.labels = talentLabels;
     talentChart.data.datasets = [];
@@ -553,12 +563,12 @@ function showData() {
     talentChart.update();
 
     trinketData = getTrinketCombos();
-    trinketCombinations=[];
-    trinketScore=[];
-    ilvlScore=[];
-    (Object.values(trinketData)).forEach((elt)=>{trinketCombinations.push(elt[0])});
-    (Object.values(trinketData)).forEach((elt)=>{trinketScore.push(elt[1])});
-    (Object.values(trinketData)).forEach((elt)=>{ilvlScore.push(elt[2])});
+    trinketCombinations = [];
+    trinketScore = [];
+    ilvlScore = [];
+    (Object.values(trinketData)).forEach((elt) => { trinketCombinations.push(elt[0]) });
+    (Object.values(trinketData)).forEach((elt) => { trinketScore.push(elt[1]) });
+    (Object.values(trinketData)).forEach((elt) => { ilvlScore.push(elt[2]) });
 
     trinketLabels = getTrinketLabels(trinketData);
     trinketChart.data.labels = trinketLabels;
@@ -628,13 +638,14 @@ function showData() {
     talentSelectionDiv.style.display = "block";
 
 }
+//same as showData but used when the user requests talent-specific data
 function createDataWithTalentsChart() {
-    trinketCombosWithTalents=[];
-    trinketScoreWithTalents=[];
-    ilvlWithTalents=[];
-    (Object.values(trinketWithTalentsData)).forEach((elt)=>{trinketCombosWithTalents.push(elt[0])});
-    (Object.values(trinketWithTalentsData)).forEach((elt)=>{trinketScoreWithTalents.push(elt[1])});
-    (Object.values(trinketWithTalentsData)).forEach((elt)=>{ilvlWithTalents.push(elt[2])});
+    trinketCombosWithTalents = [];
+    trinketScoreWithTalents = [];
+    ilvlWithTalents = [];
+    (Object.values(trinketWithTalentsData)).forEach((elt) => { trinketCombosWithTalents.push(elt[0]) });
+    (Object.values(trinketWithTalentsData)).forEach((elt) => { trinketScoreWithTalents.push(elt[1]) });
+    (Object.values(trinketWithTalentsData)).forEach((elt) => { ilvlWithTalents.push(elt[2]) });
 
     trinketsWithTalentsLabels = getTrinketLabels(trinketWithTalentsData);
     trinketsWithTalentsChart.data.labels = trinketsWithTalentsLabels;
@@ -653,7 +664,7 @@ function createDataWithTalentsChart() {
         data: trinketScoreWithTalents,
         type: "line",
         pointBackgroundColor: barColors,
-        yAxisID:"C",
+        yAxisID: "C",
         pointBorderColor: barColors,
         borderColor: "rgba(255,0,0,0.6)",
         lineTension: 0.5,
@@ -703,6 +714,8 @@ function createDataWithTalentsChart() {
 
 
 }
+
+//create the talent rows from the talents we got from the rankings
 function fillTalentSelectionForm() {
     for (let i = 0; i < talentsSelected.children.length; i++) {
         if (talentsSelected.children[i].nodeName == "DIV" && talentsSelected.children[i].className == "btn-group") {
