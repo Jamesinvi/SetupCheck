@@ -534,7 +534,7 @@ function showData() {
     };
     talentChart.data.datasets.push(barDataSet);
     let lineDataSet = {
-        label: "Score",
+        label: "DPS/HPS",
         data: talentScore,
         yAxisID: "C",
         type: "line",
@@ -583,7 +583,7 @@ function showData() {
     };
     trinketChart.data.datasets.push(barDataSet);
     lineDataSet = {
-        label: "Score",
+        label: "DPS/HPS",
         data: trinketScore,
         yAxisID: "C",
         pointRadius: 1.5,
@@ -660,7 +660,7 @@ function createDataWithTalentsChart() {
     };
     trinketsWithTalentsChart.data.datasets.push(barDataSet);
     lineDataSet = {
-        label: "Score",
+        label: "DPS/HPS",
         data: trinketScoreWithTalents,
         type: "line",
         pointBackgroundColor: barColors,

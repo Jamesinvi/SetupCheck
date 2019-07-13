@@ -1,20 +1,20 @@
-var ctx = document.getElementById('talentChart').getContext('2d');
+const ctx = document.getElementById('talentChart').getContext('2d');
 let talentChart;
-var ctx2 = document.getElementById('trinketChart').getContext('2d');
+const ctx2 = document.getElementById('trinketChart').getContext('2d');
 let trinketChart;
-var ctx3 = document.getElementById('azeriteOneChart').getContext('2d');
+const ctx3 = document.getElementById('azeriteOneChart').getContext('2d');
 let azeriteOneChart;
-var ctx4 = document.getElementById('azeriteTwoChart').getContext('2d');
+const ctx4 = document.getElementById('azeriteTwoChart').getContext('2d');
 let azeriteTwoChart;
-var ctx5 = document.getElementById('azeriteThreeChart').getContext('2d');
+const ctx5 = document.getElementById('azeriteThreeChart').getContext('2d');
 let azeriteThreeChart;
-var ctx6 = document.getElementById('trinketsWithTalentsChart').getContext('2d');
+const ctx6 = document.getElementById('trinketsWithTalentsChart').getContext('2d');
 let trinketsWithTalentsChart;
-var ctx7 = document.getElementById('azeriteWTalentsThreeChart').getContext('2d');
+const ctx7 = document.getElementById('azeriteWTalentsThreeChart').getContext('2d');
 let azeriteWTalentsThreeChart;
-var ctx8 = document.getElementById('azeriteWTalentsTwoChart').getContext('2d');
+const ctx8 = document.getElementById('azeriteWTalentsTwoChart').getContext('2d');
 let azeriteWTalentsTwoChart;
-var ctx9 = document.getElementById('azeriteWTalentsOneChart').getContext('2d');
+const ctx9 = document.getElementById('azeriteWTalentsOneChart').getContext('2d');
 let azeriteWTalentsOneChart;
 
 window.onload = function () {
@@ -390,12 +390,12 @@ window.onload = function () {
 }
 
 function randomBarColors() {
-    for (let i = 0; i < 255; i++) {
+    for (let i = 0; i < 355; i++) {
         let hue = randomColor({
             format: 'rgba',
             alpha: 1
         })
-        var lowAlphaHue = hue.replace(", 1)", ", 0.7)");
+        let lowAlphaHue = hue.replace(", 1)", ", 0.7)");
         barColors.push(hue);
         internalBarColors.push(lowAlphaHue);
     }
