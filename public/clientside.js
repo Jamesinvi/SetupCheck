@@ -1,5 +1,9 @@
+// #region variables
 let raid;
 let rankingsData;
+let talentData;
+let trinketData;
+let trinketWithTalentsData;
 let talentsSelectedIDs = "";
 let talentNames = [];
 let trinketNames = [];
@@ -34,6 +38,7 @@ let spec;
 let selectedDifficulty;
 let selectedMetric;
 let specName;
+// #endregion
 // #region buttons & HTML elements
 //get all buttons by ID
 let button_1 = document.getElementById("submit-cos");
@@ -104,7 +109,8 @@ button_4.addEventListener("click", function () {
 
     }
     talentsSelectedIDs = talentsSelectedIDs.slice(0, -1);
-    trinketCombosWithTalents = getTrinketCombosWithTalents(talentsSelectedIDs);
+    trinketWithTalentsData=getTrinketCombosWithTalents(talentsSelectedIDs);
+
     createDataWithTalentsChart();
 });
 function selectTalentPreset() {
@@ -385,8 +391,8 @@ function createLabelElement(text, idNumber, specName) {
     if (specName)
         element.setAttribute("specNameReference", specName);
     element.innerHTML = text;
-    if(text=="Shadow" && idNumber==43){
-        element.innerHTML="Subtlety";
+    if (text == "Shadow" && idNumber == 43) {
+        element.innerHTML = "Subtlety";
         element.setAttribute("specNameReference", "Subtlety");
 
     }
@@ -443,12 +449,13 @@ function createWowheadDiv(elements, parentID, type) {
             child = div.lastElementChild;
         }
     }
-
-    let occurences = Object.values(elements).sort((a, b) => b - a).slice(0, 5);
+    let occurences=[];
+    Object.values(elements).forEach((elt)=>{occurences.push(elt[0])});
+    occurences = occurences.sort((a, b) => b - a).slice(0, 5);
     let counterVal = 1;
     for (let occurenceCheck of occurences) {
         for (let n = 0; n < Object.keys(elements).length; n++) {
-            let occurence = Object.values(elements)[n];
+            let occurence = Object.values(elements)[n][0];
             if (occurenceCheck == occurence) {
                 let IDs = Object.keys(elements)[n].split(",");
                 let talentSet = document.createElement("div");
@@ -456,7 +463,7 @@ function createWowheadDiv(elements, parentID, type) {
                     talentSet.setAttribute("class", "btn-group-vertical mr-3 talentSet");
                     talentSet.setAttribute("id", counterVal);
                     counterVal++;
-                }else{
+                } else {
                     talentSet.setAttribute("class", "btn-group-vertical mr-2 talentSet");
                 }
                 if (occurences.includes(occurence)) {
@@ -491,388 +498,26 @@ function createWowheadDiv(elements, parentID, type) {
 
 // #endregion
 
-// #region process the data we got
+// #region process & show the data we got
 
-//Object.keys(talentCombinations)
-//Object.values(talentCombinations)
-var ctx = document.getElementById('talentChart').getContext('2d');
-let talentChart;
-var ctx2 = document.getElementById('trinketChart').getContext('2d');
-let trinketChart;
-var ctx3 = document.getElementById('azeriteOneChart').getContext('2d');
-let azeriteOneChart;
-var ctx4 = document.getElementById('azeriteTwoChart').getContext('2d');
-let azeriteTwoChart;
-var ctx5 = document.getElementById('azeriteThreeChart').getContext('2d');
-let azeriteThreeChart;
-var ctx6 = document.getElementById('trinketsWithTalentsChart').getContext('2d');
-let trinketsWithTalentsChart;
-var ctx7 = document.getElementById('azeriteWTalentsThreeChart').getContext('2d');
-let azeriteWTalentsThreeChart;
-var ctx8 = document.getElementById('azeriteWTalentsTwoChart').getContext('2d');
-let azeriteWTalentsTwoChart;
-var ctx9 = document.getElementById('azeriteWTalentsOneChart').getContext('2d');
-let azeriteWTalentsOneChart;
-
-window.onload = function () {
-    randomBarColors();
-    talentChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: [],
-            datasets: []
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            legend: {
-                position: 'top',
-            },
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true, //this will remove only the label
-                        fontColor: 'white'
-                    },
-                    id: 'A',
-                    type: 'linear',
-                    position: 'left',
-                    type: "linear"
-                }, {
-                    ticks: {
-                        beginAtZero: false, //this will remove only the label
-                        fontColor: 'white'
-                    },
-                    id: 'B',
-                    type: 'linear',
-                    position: 'right',
-                }],
-                xAxes: [{
-                    ticks: {
-                        display: false
-                    },
-                    type: "category"
-                }]
-            },
-            legend: {
-                labels: {
-                    fontColor: 'white', //set your desired color
-                    fontSize: 18
-                }
-            },
-            plugins: {
-                zoom: {
-                    pan: {
-                        enabled: false,
-                        mode: 'xy',
-                        speed: 1
-                    },
-                    zoom: {
-                        enabled: true,
-                        mode: 'xy',
-                        drag: true
-                    }
-                }
-            }
-        }
-    });
-    trinketChart = new Chart(ctx2, {
-        type: 'bar',
-        data: {
-            labels: [],
-            datasets: []
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            legend: {
-                position: 'top',
-            },
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true, //this will remove only the label
-                        fontColor: 'white'
-                    },
-                    id: 'A',
-                    type: 'linear',
-                    position: 'left',
-                    type: "linear"
-                }, {
-                    ticks: {
-                        beginAtZero: false, //this will remove only the label
-                        fontColor: 'white'
-                    },
-                    id: 'B',
-                    type: 'linear',
-                    position: 'right',
-                }],
-                xAxes: [{
-                    ticks: {
-                        display: false
-                    },
-                    type: "category"
-                }]
-            },
-            legend: {
-                labels: {
-                    fontColor: 'white', //set your desired color
-                    fontSize: 18
-                }
-            },
-            plugins: {
-                zoom: {
-                    pan: {
-                        enabled: false,
-                        mode: 'y',
-                        speed: 1
-                    },
-                    zoom: {
-                        enabled: true,
-                        mode: 'xy',
-                        drag: true
-                    }
-                }
-            }
-        }
-
-    });
-    azeriteOneChart = new Chart(ctx3, {
-        type: 'pie',
-        data: {
-            datasets: [{
-                data: [],
-                backgroundColor: internalBarColors,
-            }],
-            labels: [],
-        },
-        options: {
-            legend: {
-                labels: {
-                    // This more specific font property overrides the global property
-                    fontColor: 'white',
-                    usePointStyle: true,
-                    padding: 5,
-                    fontSize: 18
-                },
-                position: 'bottom',
-            },
-            responsive: true,
-            maintainAspectRatio: false,
-        },
-        plugins: {
-            zoom: {
-                pan: {
-                    enabled: false,
-                    mode: 'xy',
-                    speed: 1
-                },
-                zoom: {
-                    enabled: false,
-                    mode: 'xy',
-                    drag: true
-                }
-            }
-        }
-
-    });
-    azeriteTwoChart = new Chart(ctx4, {
-        type: 'pie',
-        data: {
-            datasets: [{
-                data: [],
-                backgroundColor: internalBarColors,
-            }],
-            labels: [],
-        },
-        options: {
-            legend: {
-                labels: {
-                    // This more specific font property overrides the global property
-                    fontColor: 'white',
-                    usePointStyle: true,
-                    padding: 5,
-                    fontSize: 18
-                },
-                position: 'bottom',
-            },
-            responsive: true,
-            maintainAspectRatio: false,
-        }
-
-    });
-    azeriteThreeChart = new Chart(ctx5, {
-        type: 'pie',
-        data: {
-            datasets: [{
-                data: [],
-                backgroundColor: internalBarColors,
-            }],
-            labels: [],
-        },
-        options: {
-            legend: {
-                labels: {
-                    // This more specific font property overrides the global property
-                    fontColor: 'white',
-                    usePointStyle: true,
-                    padding: 5,
-                    fontSize: 18
-                },
-                position: 'bottom',
-            },
-            responsive: true,
-            maintainAspectRatio: false,
-        }
-
-    });
-    trinketsWithTalentsChart = new Chart(ctx6, {
-        type: 'bar',
-        data: {
-            labels: [],
-            datasets: []
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            legend: {
-                position: 'top',
-            },
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true, //this will remove only the label
-                        fontColor: 'white'
-                    },
-                    id: 'A',
-                    type: 'linear',
-                    position: 'left',
-                    type: "linear"
-                }, {
-                    ticks: {
-                        beginAtZero: false, //this will remove only the label
-                        fontColor: 'white'
-                    },
-                    id: 'B',
-                    type: 'linear',
-                    position: 'right',
-                }],
-                xAxes: [{
-                    ticks: {
-                        display: false
-                    },
-                    type: "category"
-                }]
-            },
-            legend: {
-                labels: {
-                    fontColor: 'white', //set your desired color
-                    fontSize: 18
-                }
-            },
-            plugins: {
-                zoom: {
-                    pan: {
-                        enabled: false,
-                        mode: 'xy',
-                        speed: 1
-                    },
-                    zoom: {
-                        enabled: true,
-                        mode: 'xy',
-                        drag: true
-                    }
-                }
-            }
-        }
-    });
-    azeriteWTalentsThreeChart = new Chart(ctx7, {
-        type: 'pie',
-        data: {
-            datasets: [{
-                data: [],
-                backgroundColor: internalBarColors,
-            }],
-            labels: [],
-        },
-        options: {
-            legend: {
-                labels: {
-                    // This more specific font property overrides the global property
-                    fontColor: 'white',
-                    usePointStyle: true,
-                    padding: 5,
-                    fontSize: 18
-                },
-                position: 'bottom',
-            },
-            responsive: true,
-            maintainAspectRatio: false,
-        }
-
-    });
-    azeriteWTalentsTwoChart = new Chart(ctx8, {
-        type: 'pie',
-        data: {
-            datasets: [{
-                data: [],
-                backgroundColor: internalBarColors,
-            }],
-            labels: [],
-        },
-        options: {
-            legend: {
-                labels: {
-                    // This more specific font property overrides the global property
-                    fontColor: 'white',
-                    usePointStyle: true,
-                    padding: 5
-                },
-                position: 'bottom',
-            },
-            responsive: true,
-            maintainAspectRatio: false,
-        }
-
-    });
-    azeriteWTalentsOneChart = new Chart(ctx9, {
-        type: 'pie',
-        data: {
-            datasets: [{
-                data: [],
-                backgroundColor: internalBarColors,
-            }],
-            labels: [],
-        },
-        options: {
-            legend: {
-                labels: {
-                    // This more specific font property overrides the global property
-                    fontColor: 'white',
-                    usePointStyle: true,
-                    padding: 5,
-                    fontSize: 18
-                },
-                position: 'bottom',
-            },
-            responsive: true,
-            maintainAspectRatio: false,
-        }
-
-    });
-}
 function showData() {
     talentsDiv.style.display = "block";
     trinketsDiv.style.display = "block";
     azeriteDiv.style.display = "block";
-    talentCombinations = getTalentCombos();
-    talentLabels = getTalentLabels(talentCombinations);
+    talentData=getTalentCombos();
+    talentCombinations=[];
+    talentScore=[];
+    ilvlScore=[];
+    (Object.values(talentData)).forEach((elt)=>{talentCombinations.push(elt[0])});
+    (Object.values(talentData)).forEach((elt)=>{talentScore.push(elt[1])});
+    (Object.values(talentData)).forEach((elt)=>{ilvlScore.push(elt[2])});
+    talentLabels = getTalentLabels(talentData);
     talentChart.data.labels = talentLabels;
     talentChart.data.datasets = [];
     let barDataSet = {
         label: 'Number of Logs',
         yAxisID: 'A',
-        data: Object.values(talentCombinations),
+        data: talentCombinations,
         backgroundColor: internalBarColors,
         borderColor: barColors,
         borderWidth: 1
@@ -881,7 +526,9 @@ function showData() {
     let lineDataSet = {
         label: "Score",
         data: talentScore,
+        yAxisID: "C",
         type: "line",
+        pointRadius: 1.5,
         pointBackgroundColor: barColors,
         pointBorderColor: barColors,
         borderColor: "rgba(255,0,0,0.6)",
@@ -896,24 +543,30 @@ function showData() {
         type: "line",
         pointBackgroundColor: barColors,
         pointBorderColor: barColors,
-        borderColor: "rgba(0,0,255,0.6)",
+        borderColor: "rgba(0,0,255,0.2)",
         lineTension: 0.5,
         pointStyle: "star",
         fill: false
     };
     talentChart.data.datasets.push(ilvlDataSet);
-    createWowheadDiv(talentCombinations, "wowhead-spell", "spell");
+    createWowheadDiv(talentData, "wowhead-spell", "spell");
     talentChart.update();
 
+    trinketData = getTrinketCombos();
+    trinketCombinations=[];
+    trinketScore=[];
+    ilvlScore=[];
+    (Object.values(trinketData)).forEach((elt)=>{trinketCombinations.push(elt[0])});
+    (Object.values(trinketData)).forEach((elt)=>{trinketScore.push(elt[1])});
+    (Object.values(trinketData)).forEach((elt)=>{ilvlScore.push(elt[2])});
 
-    trinketCombinations = getTrinketCombos();
-    trinketLabels = getTrinketLabels(trinketCombinations);
+    trinketLabels = getTrinketLabels(trinketData);
     trinketChart.data.labels = trinketLabels;
     trinketChart.data.datasets = [];
     barDataSet = {
         label: 'Number of Logs',
         yAxisID: 'A',
-        data: Object.values(trinketCombinations),
+        data: trinketCombinations,
         backgroundColor: internalBarColors,
         borderColor: barColors,
         borderWidth: 1
@@ -922,6 +575,8 @@ function showData() {
     lineDataSet = {
         label: "Score",
         data: trinketScore,
+        yAxisID: "C",
+        pointRadius: 1.5,
         type: "line",
         pointBackgroundColor: barColors,
         pointBorderColor: barColors,
@@ -937,7 +592,7 @@ function showData() {
         type: "line",
         pointBackgroundColor: barColors,
         pointBorderColor: barColors,
-        borderColor: "rgba(0,0,255,0.6)",
+        borderColor: "rgba(0,0,255,0.2)",
         lineTension: 0.5,
         pointStyle: "star",
         fill: false
@@ -947,13 +602,13 @@ function showData() {
     trinketChart.update();
 
 
-    createWowheadDiv(trinketCombinations, "wowhead-item", "item");
+    createWowheadDiv(trinketData, "wowhead-item", "item");
     azeriteOccurences = getAzeriteOccurences();
     azeriteRingThreeCombinations = azeriteOccurences[2];
     azeriteRingThreeLabels = getAzeriteLabels(azeriteOccurences, 2);
 
-    azeriteThreeChart.data.datasets[0].data = Object.values(azeriteRingThreeCombinations).slice(0, 25);
-    azeriteThreeChart.data.labels = azeriteRingThreeLabels.slice(0, 25);
+    azeriteThreeChart.data.datasets[0].data = Object.values(azeriteRingThreeCombinations).slice(0, 15);
+    azeriteThreeChart.data.labels = azeriteRingThreeLabels.slice(0, 15);
     azeriteThreeChart.update();
 
     azeriteRingTwoCombinations = azeriteOccurences[1];
@@ -964,13 +619,8 @@ function showData() {
 
     azeriteRingOneCombinations = azeriteOccurences[0];
     azeriteRingOneLabels = getAzeriteLabels(azeriteOccurences, 0);
-    azeriteOneChart.data.datasets[0].data = Object.values(azeriteRingOneCombinations).slice(0, 20);
-    azeriteOneChart.data.labels = azeriteRingOneLabels.slice(0, 20);;
-
-    azeriteOneChart.ctx.canvas.removeEventListener("wheel",azeriteOneChart.zoom_wheelHandler);
-    azeriteOneChart.update();
-
-    
+    azeriteOneChart.data.datasets[0].data = Object.values(azeriteRingOneCombinations).slice(0, 15);
+    azeriteOneChart.data.labels = azeriteRingOneLabels.slice(0, 15);
 
 
 
@@ -979,13 +629,20 @@ function showData() {
 
 }
 function createDataWithTalentsChart() {
-    trinketsWithTalentsLabels = getTrinketLabels(trinketCombosWithTalents);
+    trinketCombosWithTalents=[];
+    trinketScoreWithTalents=[];
+    ilvlWithTalents=[];
+    (Object.values(trinketWithTalentsData)).forEach((elt)=>{trinketCombosWithTalents.push(elt[0])});
+    (Object.values(trinketWithTalentsData)).forEach((elt)=>{trinketScoreWithTalents.push(elt[1])});
+    (Object.values(trinketWithTalentsData)).forEach((elt)=>{ilvlWithTalents.push(elt[2])});
+
+    trinketsWithTalentsLabels = getTrinketLabels(trinketWithTalentsData);
     trinketsWithTalentsChart.data.labels = trinketsWithTalentsLabels;
     trinketsWithTalentsChart.data.datasets = [];
     barDataSet = {
         label: 'Number of Logs',
         yAxisID: 'A',
-        data: Object.values(trinketCombosWithTalents),
+        data: (trinketCombosWithTalents),
         backgroundColor: internalBarColors,
         borderColor: barColors,
         borderWidth: 1
@@ -996,6 +653,7 @@ function createDataWithTalentsChart() {
         data: trinketScoreWithTalents,
         type: "line",
         pointBackgroundColor: barColors,
+        yAxisID:"C",
         pointBorderColor: barColors,
         borderColor: "rgba(255,0,0,0.6)",
         lineTension: 0.5,
@@ -1008,7 +666,7 @@ function createDataWithTalentsChart() {
         type: "line",
         pointBackgroundColor: barColors,
         pointBorderColor: barColors,
-        borderColor: "rgba(0,0,255,0.6)",
+        borderColor: "rgba(0,0,255,0.2)",
         lineTension: 0.5,
         pointStyle: "star",
         fill: false
@@ -1016,28 +674,28 @@ function createDataWithTalentsChart() {
     trinketsWithTalentsChart.data.datasets.push(lineDataSet);
     trinketsWithTalentsChart.data.datasets.push(ilvlTrinketDataSet);
     trinketsWithTalentsChart.update();
-    createWowheadDiv(trinketCombosWithTalents, "wowhead-trinkets-with-talents", "item");
+    createWowheadDiv(trinketWithTalentsData, "wowhead-trinkets-with-talents", "item");
     let azeriteWithTalentsOccurences = getAzeriteOccurencesWithTalents(talentsSelectedIDs);
 
     let azeriteWithTalentsRingThreeCombinations = azeriteWithTalentsOccurences[2];
     let azeriteWithTalentsRingThreeLabels = getAzeriteLabels(azeriteWithTalentsOccurences, 2);
 
-    azeriteWTalentsThreeChart.data.datasets[0].data = Object.values(azeriteWithTalentsRingThreeCombinations).slice(0, 25);
-    azeriteWTalentsThreeChart.data.labels = azeriteWithTalentsRingThreeLabels.slice(0, 25);
+    azeriteWTalentsThreeChart.data.datasets[0].data = Object.values(azeriteWithTalentsRingThreeCombinations).slice(0, 15);
+    azeriteWTalentsThreeChart.data.labels = azeriteWithTalentsRingThreeLabels.slice(0, 15);
     azeriteWTalentsThreeChart.update();
 
     let azeriteWithTalentsRingTwoCombinations = azeriteWithTalentsOccurences[1];
     let azeriteWithTalentsRingTwoLabels = getAzeriteLabels(azeriteWithTalentsOccurences, 1);
 
-    azeriteWTalentsTwoChart.data.datasets[0].data = Object.values(azeriteWithTalentsRingTwoCombinations).slice(0, 25);
-    azeriteWTalentsTwoChart.data.labels = azeriteWithTalentsRingTwoLabels.slice(0, 25);
+    azeriteWTalentsTwoChart.data.datasets[0].data = Object.values(azeriteWithTalentsRingTwoCombinations).slice(0, 15);
+    azeriteWTalentsTwoChart.data.labels = azeriteWithTalentsRingTwoLabels.slice(0, 15);
     azeriteWTalentsTwoChart.update();
 
     let azeriteWithTalentsRingOneCombinations = azeriteWithTalentsOccurences[0];
     let azeriteWithTalentsRingOneLabels = getAzeriteLabels(azeriteWithTalentsOccurences, 0);
 
-    azeriteWTalentsOneChart.data.datasets[0].data = Object.values(azeriteWithTalentsRingOneCombinations).slice(0, 25);
-    azeriteWTalentsOneChart.data.labels = azeriteWithTalentsRingOneLabels.slice(0, 25);
+    azeriteWTalentsOneChart.data.datasets[0].data = Object.values(azeriteWithTalentsRingOneCombinations).slice(0, 15);
+    azeriteWTalentsOneChart.data.labels = azeriteWithTalentsRingOneLabels.slice(0, 15);
     azeriteWTalentsOneChart.update();
 
     trinketsWithTalentsDiv.style.display = "block";
@@ -1062,7 +720,7 @@ function fillTalentSelectionForm() {
                 for (let talentRows of blizzClass.talents) {
                     for (let singleTalent of talentRows.talents) {
                         if (talent.name == singleTalent.talent.name) {
-                            talentRowDetected=getTalentRowByLevel(talentRows.level);
+                            talentRowDetected = getTalentRowByLevel(talentRows.level);
                         }
                     }
                 }
@@ -1082,490 +740,9 @@ function fillTalentSelectionForm() {
 
         label.innerHTML = talent.name;
         label.appendChild(option);
-        if(div)
-        div.appendChild(label);
+        if (div)
+            div.appendChild(label);
     }
 
 
 }
-function getTalentRowByLevel(level){
-    let row;
-    if(gameClass==12){
-        switch(level){
-            case 99:
-                row = 1;
-                break;
-            case 100:
-                row = 2;
-                break;
-            case 102:
-                row = 3;
-                break;
-            case 104:
-                row = 4;
-                break;
-            case 106:
-                row = 5;
-                break;
-            case 108:
-                row = 6;
-                break;
-            case 110:
-                row = 7;
-                break;
-        }
-    }else if(gameClass==1){
-        switch(level){
-            case 56:
-                row = 1;
-                break;
-            case 57:
-                row = 2;
-                break;
-            case 58:
-                row = 3;
-                break;
-            case 60:
-                row = 4;
-                break;
-            case 75:
-                row = 5;
-                break;
-            case 90:
-                row = 6;
-                break;
-            case 100:
-                row = 7;
-                break;
-        }
-    }else{
-        switch (level) {
-            case 15:
-                row = 1;
-                break;
-            case 30:
-                row = 2;
-                break;
-            case 45:
-                row = 3;
-                break;
-            case 60:
-                row = 4;
-                break;
-            case 75:
-                row = 5;
-                break;
-            case 90:
-                row = 6;
-                break;
-            case 100:
-                row = 7;
-                break;
-        }
-    }
-    return row;
-}
-function getTalentCombos() {
-    let combos = {};
-    let scoreValues = [];
-    talentScore = [];
-    ilvlScore = [];
-
-    for (let i = 0; i < rankingsData.length; i++) {
-        for (let j = 0; j < rankingsData[i].rankings.length; j++) {
-            let rank = rankingsData[i].rankings[j];
-            let talentCombo = [];
-            rank.talents.forEach(function (talent) {
-                talentCombo.push(talent.id);
-                if (talent.id != null)
-                    talentNames.push(talent);
-            });
-            ilvlScore.push(rank.itemLevel);
-            if (!(talentCombo in combos)) {
-                combos[talentCombo] = 1;
-                let score = rank.total;
-                scoreValues.push(score);
-            } else {
-                combos[talentCombo]++;
-            }
-        }
-    }
-    let unique = getUnique(talentNames, 'name');
-    talentNames = unique;
-    clean(combos);
-    let max = Math.max(...scoreValues);
-    let min = Math.min(...scoreValues);
-    let newMax = Math.max(...Object.values(combos));
-    for (let value of scoreValues) {
-        let comboRemapped = map_range(value, min, max, 0, newMax);
-        talentScore.push(comboRemapped);
-    }
-    return combos;
-
-}
-function getTrinketCombos() {
-    let combos = {};
-    let trinketValues = [];
-    trinketScore = [];
-    for (let i = 0; i < rankingsData.length; i++) {
-        for (let j = 0; j < rankingsData[i].rankings.length; j++) {
-            let rank = rankingsData[i].rankings[j];
-            let trinketCombo = [];
-            for (let k = 12; k < 14; k++) {
-                trinketCombo.push(rank.gear[k].id);
-                trinketNames.push(rank.gear[k])
-            }
-            trinketComboPermutations = permutations(trinketCombo);
-            let presentFlag = false;
-            for (let permutation of trinketComboPermutations) {
-                if (permutation in combos) {
-                    combos[permutation]++;
-                    presentFlag = true;
-                }
-                // if(!(trinketCombo in combos)){
-                //     combos[trinketCombo]=1;
-                // }else{
-                //     combos[trinketCombo]++;
-                // }
-            }
-            if (presentFlag == false) {
-                combos[trinketComboPermutations[0]] = 1;
-                trinketValues.push(rank.total);
-            }
-
-        }
-
-    }
-    let unique = getUnique(trinketNames, "name");
-    trinketNames = unique;
-    clean(combos);
-    let max = Math.max(...trinketValues);
-    let min = Math.min(...trinketValues);
-    let newMax = Math.max(...Object.values(combos));
-    for (let value of trinketValues) {
-        let comboRemapped = map_range(value, min, max, 0, newMax);
-        trinketScore.push(comboRemapped);
-    }
-    return combos;
-
-}
-function getTrinketCombosWithTalents(talentComboSelected) {
-    let combos = {};
-    let trinketValuesByTalents = [];
-    trinketScoreWithTalents = [];
-    ilvlWithTalents = [];
-    for (let i = 0; i < rankingsData.length; i++) {
-        for (let j = 0; j < rankingsData[i].rankings.length; j++) {
-            let rank = rankingsData[i].rankings[j];
-            let trinketCombo = [];
-            if (checkEqualTalents(talentComboSelected, rank.talents)) {
-                for (let k = 12; k < 14; k++) {
-                    trinketCombo.push(rank.gear[k].id);
-                }
-                trinketComboPermutations = permutations(trinketCombo);
-                let presentFlag = false;
-                for (let permutation of trinketComboPermutations) {
-                    if (permutation in combos) {
-                        combos[permutation]++;
-                        presentFlag = true;
-                    }
-                }
-                if (presentFlag == false) {
-                    combos[trinketComboPermutations[0]] = 1;
-                    trinketValuesByTalents.push(rank.total);
-                }
-                ilvlWithTalents.push(rank.itemLevel);
-            }
-
-
-
-        }
-
-    }
-    let unique = getUnique(trinketNames, "name");
-    trinketNames = unique;
-    clean(combos);
-    let max = Math.max(...trinketValuesByTalents);
-    let min = Math.min(...trinketValuesByTalents);
-    let newMax = Math.max(...Object.values(combos));
-    for (let value of trinketValuesByTalents) {
-        let comboRemapped = map_range(value, min, max, 0, newMax);
-        trinketScoreWithTalents.push(comboRemapped);
-    }
-    return combos;
-
-}
-function getAzeriteOccurences() {
-    let ringOneOccurences = {};
-    let ringTwoOccurences = {};
-    let ringThreeOccurences = {};
-    for (let i = 0; i < rankingsData.length; i++) {
-        for (let j = 0; j < rankingsData[i].rankings.length; j++) {
-            let rank = rankingsData[i].rankings[j];
-            for (let k of rank.azeritePowers) {
-                if (k.ring == 1) {
-                    if (!(k.id in ringOneOccurences)) {
-                        ringOneOccurences[k.id] = 1;
-                    } else {
-                        ringOneOccurences[k.id]++;
-                    }
-                }
-                else if (k.ring == 2) {
-                    if (!(k.id in ringTwoOccurences)) {
-                        ringTwoOccurences[k.id] = 1;
-                    } else {
-                        ringTwoOccurences[k.id]++;
-                    }
-                }
-                else if (k.ring == 3) {
-                    let stackCount = countInArray(rank.azeritePowers, k);
-                    if (!(k.id in ringThreeOccurences) && stackCount == 1) {
-                        ringThreeOccurences[k.id] = 1;
-                    } else if (!(k.id in ringThreeOccurences) && stackCount == 2) {
-                        let testString = Number(k.id.toString().concat("222222"));
-                        ringThreeOccurences[testString] = 1;
-                    } else if (!(k.id in ringThreeOccurences) && stackCount == 3) {
-                        let testString = Number(k.id.toString().concat("333333"));
-                        ringThreeOccurences[testString] = 1;
-                    }
-                    else if ((k.id in ringThreeOccurences) && stackCount == 1) {
-                        ringThreeOccurences[k.id] += 1;
-                    } else if ((Number(k.id.toString().concat("222222")) in ringThreeOccurences) && stackCount == 2) {
-                        let testString = Number(k.id.toString().concat("222222"));
-                        ringThreeOccurences[testString] += 1;
-                    } else if ((Number(k.id.toString().concat("333333")) in ringThreeOccurences) && stackCount == 3) {
-                        let testString = Number(k.id.toString().concat("333333"));
-                        ringThreeOccurences[testString] += 1;
-                    }
-                }
-
-                azeriteNames.push(k);
-            }
-        }
-
-    }
-    const unique = getUnique(azeriteNames, "name");
-    azeriteNames = unique;
-    clean(ringOneOccurences);
-    clean(ringTwoOccurences);
-    clean(ringTwoOccurences);
-    const occurences = [ringOneOccurences, ringTwoOccurences, ringThreeOccurences];
-    return occurences;
-
-}
-function getAzeriteOccurencesWithTalents() {
-    let ringOneOccurences = {};
-    let ringTwoOccurences = {};
-    let ringThreeOccurences = {};
-    for (let i = 0; i < rankingsData.length; i++) {
-        for (let j = 0; j < rankingsData[i].rankings.length; j++) {
-            let rank = rankingsData[i].rankings[j];
-            if (checkEqualTalents(talentsSelectedIDs, rank.talents)) {
-                for (let k of rank.azeritePowers) {
-                    if (k.ring == 1) {
-                        if (!(k.id in ringOneOccurences)) {
-                            ringOneOccurences[k.id] = 1;
-                        } else {
-                            ringOneOccurences[k.id]++;
-                        }
-                    }
-                    else if (k.ring == 2) {
-                        if (!(k.id in ringTwoOccurences)) {
-                            ringTwoOccurences[k.id] = 1;
-                        } else {
-                            ringTwoOccurences[k.id]++;
-                        }
-                    }
-                    else if (k.ring == 3) {
-                        let stackCount = countInArray(rank.azeritePowers, k);
-                        if (!(k.id in ringThreeOccurences) && stackCount == 1) {
-                            ringThreeOccurences[k.id] = 1;
-                        } else if (!(k.id in ringThreeOccurences) && stackCount == 2) {
-                            let testString = Number(k.id.toString().concat("222222"));
-                            ringThreeOccurences[testString] = 1;
-                        } else if (!(k.id in ringThreeOccurences) && stackCount == 3) {
-                            let testString = Number(k.id.toString().concat("333333"));
-                            ringThreeOccurences[testString] = 1;
-                        }
-                        else if ((k.id in ringThreeOccurences) && stackCount == 1) {
-                            ringThreeOccurences[k.id] += 1;
-                        } else if ((Number(k.id.toString().concat("222222")) in ringThreeOccurences) && stackCount == 2) {
-                            let testString = Number(k.id.toString().concat("222222"));
-                            ringThreeOccurences[testString] += 1;
-                        } else if ((Number(k.id.toString().concat("333333")) in ringThreeOccurences) && stackCount == 3) {
-                            let testString = Number(k.id.toString().concat("333333"));
-                            ringThreeOccurences[testString] += 1;
-                        }
-                    }
-
-                    azeriteNames.push(k);
-                }
-            }
-        }
-
-    }
-    const unique = getUnique(azeriteNames, "name");
-    azeriteNames = unique;
-    clean(ringOneOccurences);
-    clean(ringTwoOccurences);
-    clean(ringTwoOccurences);
-    const occurences = [ringOneOccurences, ringTwoOccurences, ringThreeOccurences];
-    return occurences;
-
-}
-
-function getAzeriteLabels(toCheck, ring) {
-    let privateLabels = [];
-    for (let occurence of Object.entries(toCheck[ring])) {
-        for (let nameRef of azeriteNames) {
-            if (occurence[0] == nameRef.id) {
-                privateLabels.push(nameRef.name.concat(" x1"));
-            } else if (occurence[0] == (Number(nameRef.id.toString().concat("222222")))) {
-                privateLabels.push(nameRef.name.concat(" x2"));
-            } else if (occurence[0] == (Number(nameRef.id.toString().concat("333333")))) {
-                privateLabels.push(nameRef.name.concat(" x3"));
-            }
-        }
-    }
-    return privateLabels;
-}
-
-function getTalentLabels(combos) {
-    let privateLabels = [];
-    for (let combo of Object.keys(combos)) {
-        let individualTalents = combo.split(",");
-        let individualLabel = [];
-        for (let talent of individualTalents) {
-            individualLabel.push(getTalentNameByID(talent));
-        }
-        privateLabels.push(individualLabel);
-    }
-    privateLabels = privateLabels.filter(n => n)
-    return privateLabels;
-}
-function getTrinketLabels(combos) {
-    let privateLabels = [];
-
-    for (let combo of Object.keys(combos)) {
-        let individualTrinkets = combo.split(",");
-        let individualLabel = [];
-        for (let trinket of individualTrinkets) {
-            individualLabel.push(getTrinketNameByID(trinket));
-        }
-        privateLabels.push(individualLabel);
-    }
-    return privateLabels;
-}
-function getTalentNameByID(id) {
-    for (let name of Object.values(talentNames)) {
-        if (name.id == id) {
-            return name.name;
-        }
-    }
-    return null;
-}
-function getTrinketNameByID(id) {
-    for (let name of Object.values(trinketNames)) {
-        if (name.id == id) {
-            return name.name;
-        }
-    }
-    return null;
-}
-function checkEqualTalents(talentIDs, talentObject) {
-    let talentsOne = talentIDs.split(",");
-    let talentsTwo = [];
-    talentObject.forEach((element) => {
-        let elementValue = Object.values(element)[1];
-        if (elementValue != null)
-            talentsTwo.push(elementValue.toString());
-    });
-    for (let i = 0; i < talentsOne.length; i++) {
-        if (!(talentsOne[i] == talentsTwo[i]))
-            return false;
-    }
-    return true;
-}
-function randomBarColors() {
-    for (let i = 0; i < 255; i++) {
-        let hue = randomColor({
-            format: 'rgba',
-            alpha: 1
-        })
-        var lowAlphaHue = hue.replace(", 1)", ", 0.7)");
-        barColors.push(hue);
-        internalBarColors.push(lowAlphaHue);
-    }
-}
-function getUnique(arr, comp) {
-
-    const unique = arr
-        .map(e => e[comp])
-
-        // store the keys of the unique objects
-        .map((e, i, final) => final.indexOf(e) === i && i)
-
-        // eliminate the dead keys & store unique objects
-        .filter(e => arr[e]).map(e => arr[e]);
-
-    return unique;
-}
-function removeNull(elt) {
-    return elt != null;
-}
-function permutations(list) {
-    // Empty list has one permutation
-    if (list.length == 0)
-        return [[]];
-
-
-    var result = [];
-
-    for (var i = 0; i < list.length; i++) {
-        // Clone list (kind of)
-        var copy = Object.create(list);
-
-        // Cut one element from list
-        var head = copy.splice(i, 1);
-
-        // Permute rest of list
-        var rest = permutations(copy);
-
-        // Add head to each permutation of rest of list
-        for (var j = 0; j < rest.length; j++) {
-            var next = head.concat(rest[j]);
-            result.push(next);
-        }
-    }
-
-    return result;
-}
-function clean(obj) {
-    for (var propName in obj) {
-        if (propName === null || propName === undefined || propName == ",,,,,," || propName == "," || propName == "" || propName == "Unknown Ability") {
-            delete obj[propName];
-        }
-    }
-}
-function map_range(value, low1, high1, low2, high2) {
-    let remapped = low2 + (high2 - low2) * (value - low1) / (high1 - low1);
-    return remapped;
-}
-function countInArray(array, what) {
-    var count = 0;
-    for (var i = 0; i < array.length; i++) {
-        if (array[i].name == what.name) {
-            count++;
-        }
-    }
-    return count;
-}
-function resetZoom() {
-    if (this.value == 1)
-        talentChart.resetZoom();
-    if (this.value == 2)
-        trinketChart.resetZoom();
-    if (this.value == 3)
-        trinketsWithTalentsChart.resetZoom();
-}
-// #endregion
