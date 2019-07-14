@@ -3,17 +3,21 @@ let raid;
 let rankingsData;
 let talentData;
 let trinketData;
+let essenceData;
 let trinketWithTalentsData;
 let talentsSelectedIDs = "";
 let talentNames = [];
 let trinketNames = [];
 let azeriteNames = [];
+let essenceNames=[];
 let talentScore = [];
 let ilvlScore = [];
 let ilvlWithTalents = [];
 let trinketScoreWithTalents = [];
 let trinketScore = [];
 let talentCombinations;
+let majorEssenceCombinations;
+let minorEssenceCombinations;
 let trinketCombinations;
 let trinketCombosWithTalents;
 let azeriteOccurences;
@@ -25,6 +29,8 @@ let barColors = [];
 let internalBarColors = [];
 let talentLabels = [];
 let trinketsWithTalentsLabels = [];
+let majorEssenceLabels=[];
+let minorEssenceLabels=[];
 let debug = false;
 let difficultyFlag = false;
 let classFlag = false;
@@ -41,30 +47,31 @@ let specName;
 // #endregion
 // #region buttons & HTML elements
 //get all buttons by ID
-let button_1 = document.getElementById("submit-cos");
-let button_2 = document.getElementById("submit-bod");
-let button_5 = document.getElementById("submit-ep");
-let button_3 = document.getElementById("request");
+const button_1 = document.getElementById("submit-cos");
+const button_2 = document.getElementById("submit-bod");
+const button_5 = document.getElementById("submit-ep");
+const button_3 = document.getElementById("request");
 
-let button_4 = document.getElementById("trinkets-with-talents");
+const button_4 = document.getElementById("trinkets-with-talents");
 button_3.setAttribute("disabled", true);
 
 //DOM elements here
 let specRadios;
-let slider = document.getElementById("number-of-pages");
-let output = document.getElementById("number-of-pages-header");
-let talentsDiv = document.getElementById("talentsDiv");
-let trinketsDiv = document.getElementById("trinketsDiv");
-let azeriteDiv = document.getElementById("azeriteDiv");
+const slider = document.getElementById("number-of-pages");
+const output = document.getElementById("number-of-pages-header");
+const talentsDiv = document.getElementById("talentsDiv");
+const trinketsDiv = document.getElementById("trinketsDiv");
+const azeriteDiv = document.getElementById("azeriteDiv");
 let classes = document.getElementById("classes");
-let talentsSelected = document.getElementById("talentSelectFormGroup");
-let talentSelectionDiv = document.getElementById("talentSelectionDiv");
-let trinketsWithTalentsDiv = document.getElementById("trinketsWithTalentsDiv");
-let azeriteWithTalentsDiv = document.getElementById("azeriteWithTalentsDiv");
-let talentPresetSelection = document.getElementById("presetSelection");
-let talentGraphResetZoom = document.getElementById("talentGraphReset");
-let trinketGraphResetZoom = document.getElementById("trinketGraphReset");
-let trinketWTalentsGraphResetZoom = document.getElementById("TrinketWTalentsGraphReset");
+const talentsSelected = document.getElementById("talentSelectFormGroup");
+const talentSelectionDiv = document.getElementById("talentSelectionDiv");
+const trinketsWithTalentsDiv = document.getElementById("trinketsWithTalentsDiv");
+const azeriteWithTalentsDiv = document.getElementById("azeriteWithTalentsDiv");
+const essenceDiv = document.getElementById("essenceDiv");
+const talentPresetSelection = document.getElementById("presetSelection");
+const talentGraphResetZoom = document.getElementById("talentGraphReset");
+const trinketGraphResetZoom = document.getElementById("trinketGraphReset");
+const trinketWTalentsGraphResetZoom = document.getElementById("TrinketWTalentsGraphReset");
 talentGraphResetZoom.addEventListener("click", resetZoom);
 trinketGraphResetZoom.addEventListener("click", resetZoom);
 trinketWTalentsGraphResetZoom.addEventListener("click", resetZoom);
@@ -75,6 +82,8 @@ azeriteDiv.style.display = "none";
 talentSelectionDiv.style.display = "none";
 trinketsWithTalentsDiv.style.display = "none";
 azeriteWithTalentsDiv.style.display = "none";
+essenceDiv.style.display="none";
+
 output.innerHTML = `Number of pages: ${slider.value}`; // Display the default slider value
 button_3.disabled = true;
 
@@ -514,6 +523,7 @@ function showData() {
     talentsDiv.style.display = "block";
     trinketsDiv.style.display = "block";
     azeriteDiv.style.display = "block";
+    essenceDiv.style.display = "block";
     talentData = getTalentCombos();
     talentCombinations = [];
     talentScore = [];
@@ -617,22 +627,33 @@ function showData() {
     azeriteRingThreeCombinations = azeriteOccurences[2];
     azeriteRingThreeLabels = getAzeriteLabels(azeriteOccurences, 2);
 
-    azeriteThreeChart.data.datasets[0].data = Object.values(azeriteRingThreeCombinations).slice(0, 15);
-    azeriteThreeChart.data.labels = azeriteRingThreeLabels.slice(0, 15);
+    azeriteThreeChart.data.datasets[0].data = Object.values(azeriteRingThreeCombinations).slice(0, 10);
+    azeriteThreeChart.data.labels = azeriteRingThreeLabels.slice(0, 10);
     azeriteThreeChart.update();
 
     azeriteRingTwoCombinations = azeriteOccurences[1];
     azeriteRingTwoLabels = getAzeriteLabels(azeriteOccurences, 1);
-    azeriteTwoChart.data.datasets[0].data = Object.values(azeriteRingTwoCombinations).slice(0, 15);
-    azeriteTwoChart.data.labels = azeriteRingTwoLabels.slice(0, 15);
+    azeriteTwoChart.data.datasets[0].data = Object.values(azeriteRingTwoCombinations).slice(0, 10);
+    azeriteTwoChart.data.labels = azeriteRingTwoLabels.slice(0, 10);
     azeriteTwoChart.update();
 
     azeriteRingOneCombinations = azeriteOccurences[0];
     azeriteRingOneLabels = getAzeriteLabels(azeriteOccurences, 0);
-    azeriteOneChart.data.datasets[0].data = Object.values(azeriteRingOneCombinations).slice(0, 15);
-    azeriteOneChart.data.labels = azeriteRingOneLabels.slice(0, 15);
+    azeriteOneChart.data.datasets[0].data = Object.values(azeriteRingOneCombinations).slice(0, 10);
+    azeriteOneChart.data.labels = azeriteRingOneLabels.slice(0, 10);
 
+    essenceData=getEssenceData();
+    majorEssenceCombinations=essenceData[0];
+    majorEssenceLabels=getEssenceLabels(essenceData,0);
+    majorEssenceChart.data.datasets[0].data=Object.values(majorEssenceCombinations);
+    majorEssenceChart.data.labels=majorEssenceLabels;
+    majorEssenceChart.update();
 
+    minorEssenceCombinations=essenceData[1];
+    minorEssenceLabels=getEssenceLabels(essenceData,1);
+    minorEssenceChart.data.datasets[0].data=Object.values(minorEssenceCombinations);
+    minorEssenceChart.data.labels=minorEssenceLabels;
+    minorEssenceChart.update();
 
     fillTalentSelectionForm();
     talentSelectionDiv.style.display = "block";
@@ -691,22 +712,22 @@ function createDataWithTalentsChart() {
     let azeriteWithTalentsRingThreeCombinations = azeriteWithTalentsOccurences[2];
     let azeriteWithTalentsRingThreeLabels = getAzeriteLabels(azeriteWithTalentsOccurences, 2);
 
-    azeriteWTalentsThreeChart.data.datasets[0].data = Object.values(azeriteWithTalentsRingThreeCombinations).slice(0, 15);
-    azeriteWTalentsThreeChart.data.labels = azeriteWithTalentsRingThreeLabels.slice(0, 15);
+    azeriteWTalentsThreeChart.data.datasets[0].data = Object.values(azeriteWithTalentsRingThreeCombinations).slice(0, 10);
+    azeriteWTalentsThreeChart.data.labels = azeriteWithTalentsRingThreeLabels.slice(0, 10);
     azeriteWTalentsThreeChart.update();
 
     let azeriteWithTalentsRingTwoCombinations = azeriteWithTalentsOccurences[1];
     let azeriteWithTalentsRingTwoLabels = getAzeriteLabels(azeriteWithTalentsOccurences, 1);
 
-    azeriteWTalentsTwoChart.data.datasets[0].data = Object.values(azeriteWithTalentsRingTwoCombinations).slice(0, 15);
-    azeriteWTalentsTwoChart.data.labels = azeriteWithTalentsRingTwoLabels.slice(0, 15);
+    azeriteWTalentsTwoChart.data.datasets[0].data = Object.values(azeriteWithTalentsRingTwoCombinations).slice(0, 10);
+    azeriteWTalentsTwoChart.data.labels = azeriteWithTalentsRingTwoLabels.slice(0, 10);
     azeriteWTalentsTwoChart.update();
 
     let azeriteWithTalentsRingOneCombinations = azeriteWithTalentsOccurences[0];
     let azeriteWithTalentsRingOneLabels = getAzeriteLabels(azeriteWithTalentsOccurences, 0);
 
-    azeriteWTalentsOneChart.data.datasets[0].data = Object.values(azeriteWithTalentsRingOneCombinations).slice(0, 15);
-    azeriteWTalentsOneChart.data.labels = azeriteWithTalentsRingOneLabels.slice(0, 15);
+    azeriteWTalentsOneChart.data.datasets[0].data = Object.values(azeriteWithTalentsRingOneCombinations).slice(0, 10);
+    azeriteWTalentsOneChart.data.labels = azeriteWithTalentsRingOneLabels.slice(0, 10);
     azeriteWTalentsOneChart.update();
 
     trinketsWithTalentsDiv.style.display = "block";

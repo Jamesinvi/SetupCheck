@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script>var whTooltips = { colorLinks: true, iconizeLinks: true, renameLinks: true };</script>
-    
+
     <script src="//wow.zamimg.com/widgets/power.js"></script>
     <script src="https://unpkg.com/moment@2.24.0/moment.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -15,6 +15,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"
         integrity="sha256-eVNjHw5UeU0jUqPPpZHAkU1z4U+QFBBY488WvueTm88=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@0.7.0"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+
 
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -199,10 +201,11 @@
                     <h1 class="display-3">Talents</h1>
                     <p class="lead">These are the most frequent talent combinations found in the pages of logs you
                         requested (click on any dataset in the legend to hide/show it):</p>
-                    <button type="button" class="btn btn-primary reset" id="talentGraphReset" value="1">Reset zoom</button>
+                    <button type="button" class="btn btn-primary reset" id="talentGraphReset" value="1">Reset
+                        zoom</button>
                     <br>
                     <div class="chart-container" style="position: relative; height:60vh; width:60vw">
-                        <canvas id="talentChart" width="100" height="100"></canvas>
+                        <canvas id="talentChart" width="599" height="599"></canvas>
                     </div>
                     <div id="wowhead-spell">
                         <h3> TOP 5 Talent Combos found</h3>
@@ -212,7 +215,8 @@
                     <p class="lead">These are the most frequent trinket combinations found in the pages of logs you
                         requested (click on any dataset in the legend to hide/show it):</p>
                     <h1 class="display-3">Trinkets</h1>
-                    <button type="button" class="btn btn-primary reset" id="trinketGraphReset" value="2">Reset zoom</button>
+                    <button type="button" class="btn btn-primary reset" id="trinketGraphReset" value="2">Reset
+                        zoom</button>
                     <br>
                     <div class="chart-container" style="position: relative; height:60vh; width:60vw">
                         <canvas id="trinketChart" width="100" height="100"></canvas>
@@ -224,7 +228,8 @@
                 </div>
                 <div class="jumbotron" id="azeriteDiv">
                     <h1 class="display-3">Azerite</h1>
-                    <p class="lead">These are the  15 most frequent azerite traits found in the pages of logs you requested
+                    <p class="lead">These are the 10 most frequent azerite traits found in the pages of logs you
+                        requested
                         (this shows how many peaple used any given trait including double or triple versions of it):</p>
 
                     <div class="d-inline-block">
@@ -245,6 +250,32 @@
                             <canvas id="azeriteThreeChart" width="50" height="100"></canvas>
                         </div>
                     </div>
+                </div>
+                <div class="jumbotron" id="essenceDiv">
+                    <h1 class="display-3">Essences</h1>
+                    <p class="lead">These are the most frequent essences found in the pages of logs you requested:</p>
+
+                    <div class="d-inline-block">
+                        <h3>Major</h3>
+                        <div class="chart-container" style="position: relative; height:45vh; width:60vw">
+                            <canvas id="majorEssenceChart" width="50" height="100"></canvas>
+                        </div>
+                    </div>
+                    <h3>Minor</h3>
+                    <div class="d-inline-block">
+                        <div class="chart-container" style="position: relative; height:45vh; width:60vw">
+                            <canvas id="minorEssenceChart" width="50" height="100"></canvas>
+                        </div>
+                    </div>
+                    <div class="alert alert-dismissible alert-danger">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        <p class="lead"><strong>Note that we do not have information on what slot the essences are in.
+                                Therefore the most frequent minor power will ALWAYS
+                                be the minor power granted by the most frequest major power (because it grants you both).
+                            </strong>
+                        </p>
+                    </div>
+
                 </div>
                 <div class="jumbotron" id="talentSelectionDiv">
                     <form id="talent-selection">
@@ -346,7 +377,8 @@
                 </div>
                 <div class="jumbotron" id="azeriteWithTalentsDiv">
                     <h1 class="display-3">Azerite used by specified talent setup</h1>
-                    <p class="lead">These are the 15 most frequent and high-scoring azerite trait combinations found using
+                    <p class="lead">These are the 15 most frequent and high-scoring azerite trait combinations found
+                        using
                         the
                         specified talent setup.</p>
                     <div class="chart-container" style="position: relative; height:40vh; width:30vW">

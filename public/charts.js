@@ -16,6 +16,10 @@ const ctx8 = document.getElementById('azeriteWTalentsTwoChart').getContext('2d')
 let azeriteWTalentsTwoChart;
 const ctx9 = document.getElementById('azeriteWTalentsOneChart').getContext('2d');
 let azeriteWTalentsOneChart;
+const ctx10 = document.getElementById('majorEssenceChart').getContext('2d');
+let majorEssenceChart;
+const ctx11 = document.getElementById('minorEssenceChart').getContext('2d');
+let minorEssenceChart;
 
 window.onload = function () {
     randomBarColors();
@@ -67,7 +71,7 @@ window.onload = function () {
             legend: {
                 labels: {
                     fontColor: 'white', //set your desired color
-                    fontSize: 18
+                    fontSize: 14
                 }
             },
             plugins: {
@@ -136,7 +140,7 @@ window.onload = function () {
             legend: {
                 labels: {
                     fontColor: 'white', //set your desired color
-                    fontSize: 18
+                    fontSize: 14
                 }
             },
             plugins: {
@@ -172,7 +176,7 @@ window.onload = function () {
                     fontColor: 'white',
                     usePointStyle: true,
                     padding: 5,
-                    fontSize: 18
+                    fontSize: 14
                 },
                 position: 'bottom',
             },
@@ -183,13 +187,9 @@ window.onload = function () {
             zoom: {
                 pan: {
                     enabled: false,
-                    mode: 'xy',
-                    speed: 1
                 },
                 zoom: {
                     enabled: false,
-                    mode: 'xy',
-                    drag: true
                 }
             }
         }
@@ -211,7 +211,7 @@ window.onload = function () {
                     fontColor: 'white',
                     usePointStyle: true,
                     padding: 5,
-                    fontSize: 18
+                    fontSize: 14
                 },
                 position: 'bottom',
             },
@@ -236,7 +236,7 @@ window.onload = function () {
                     fontColor: 'white',
                     usePointStyle: true,
                     padding: 5,
-                    fontSize: 18
+                    fontSize: 14
                 },
                 position: 'bottom',
             },
@@ -294,7 +294,7 @@ window.onload = function () {
             legend: {
                 labels: {
                     fontColor: 'white', //set your desired color
-                    fontSize: 18
+                    fontSize: 14
                 }
             },
             plugins: {
@@ -329,7 +329,7 @@ window.onload = function () {
                     fontColor: 'white',
                     usePointStyle: true,
                     padding: 5,
-                    fontSize: 18
+                    fontSize: 14
                 },
                 position: 'bottom',
             },
@@ -378,7 +378,7 @@ window.onload = function () {
                     fontColor: 'white',
                     usePointStyle: true,
                     padding: 5,
-                    fontSize: 18
+                    fontSize: 14
                 },
                 position: 'bottom',
             },
@@ -387,6 +387,59 @@ window.onload = function () {
         }
 
     });
+    majorEssenceChart = new Chart(ctx10, {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: [],
+                backgroundColor: internalBarColors,
+            }],
+            labels: [],
+        },
+        options: {
+            legend: {
+                labels: {
+                    // This more specific font property overrides the global property
+                    fontColor: 'white',
+                    usePointStyle: true,
+                    padding: 5,
+                    fontSize: 14
+                },
+                position: 'bottom',
+            },
+            responsive: true,
+            maintainAspectRatio: false,
+        }
+
+    });
+    minorEssenceChart = new Chart(ctx11, {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: [],
+                backgroundColor: internalBarColors,
+            }],
+            labels: [],
+        },
+        options: {
+            legend: {
+                labels: {
+                    // This more specific font property overrides the global property
+                    fontColor: 'white',
+                    usePointStyle: true,
+                    padding: 5,
+                    fontSize: 14
+                },
+                position: 'bottom',
+            },
+            responsive: true,
+            maintainAspectRatio: false,
+        }
+
+    });
+    $("canvas").off("scroll");
+    azeriteOneChart.ctx.canvas.removeEventListener('wheel', azeriteOneChart._wheelHandler,true);
+
 }
 
 function randomBarColors() {

@@ -80,7 +80,7 @@ function getTalentCombos() {
 
     for (let i = 0; i < rankingsData.length; i++) {
         for (let j = 0; j < rankingsData[i].rankings.length; j++) {
-            let rank = rankingsData[i].rankings[j];
+            const rank = rankingsData[i].rankings[j];
             let talentCombo = [];
             rank.talents.forEach(function (talent) {
                 talentCombo.push(talent.id);
@@ -118,7 +118,7 @@ function getTrinketCombos() {
             for (let permutation of trinketComboPermutations) {
                 if (permutation in combos) {
                     combos[permutation][0]++;
-                    combos[permutation][2]=(combos[permutation][2]+rank.itemLevel)/2;
+                    combos[permutation][2] = (combos[permutation][2] + rank.itemLevel) / 2;
                     presentFlag = true;
                 }
                 // if(!(trinketCombo in combos)){
@@ -128,7 +128,7 @@ function getTrinketCombos() {
                 // }
             }
             if (presentFlag == false) {
-                combos[trinketComboPermutations[0]] = [1,rank.total,rank.itemLevel];
+                combos[trinketComboPermutations[0]] = [1, rank.total, rank.itemLevel];
             }
 
         }
@@ -140,11 +140,45 @@ function getTrinketCombos() {
     return combos;
 
 }
+function getEssenceData() {
+    majorEssences = {};
+    minorEssences = {};
+
+    for (let i = 0; i < rankingsData.length; i++) {
+        for (let j = 0; j < rankingsData[i].rankings.length; j++) {
+            let rank = rankingsData[i].rankings[j];
+            const essences = rank.essencePowers;
+            if (essences) {
+                essences.forEach((essence) => {
+                    if (essence.id != null)
+                        essenceNames.push(essence);
+                });
+                if (!(essences[0].name in majorEssences)) {
+                    majorEssences[essences[0].name] = 1;
+                } else if ((essences[0].name in majorEssences)) {
+                    majorEssences[essences[0].name] += 1;
+                }
+                if (!(essences[1].name in minorEssences)) {
+                    minorEssences[essences[1].name] = 1;
+                } else if ((essences[1].name in minorEssences)) {
+                    minorEssences[essences[1].name] += 1;
+                }
+            }
+        }
+    }
+    let unique = getUnique(essenceNames, 'name');
+    essenceNames = unique;
+    clean(majorEssences);
+    clean(minorEssences);
+    const occurences = [majorEssences, minorEssences]
+    return occurences;
+
+}
 function getTrinketCombosWithTalents(talentComboSelected) {
     let combos = {};
     for (let i = 0; i < rankingsData.length; i++) {
         for (let j = 0; j < rankingsData[i].rankings.length; j++) {
-            let rank = rankingsData[i].rankings[j];
+            const rank = rankingsData[i].rankings[j];
             let trinketCombo = [];
             if (checkEqualTalents(talentComboSelected, rank.talents)) {
                 for (let k = 12; k < 14; k++) {
@@ -155,12 +189,12 @@ function getTrinketCombosWithTalents(talentComboSelected) {
                 for (let permutation of trinketComboPermutations) {
                     if (permutation in combos) {
                         combos[permutation][0]++;
-                        combos[permutation][2]=(combos[permutation][2]+rank.itemLevel)/2;
+                        combos[permutation][2] = (combos[permutation][2] + rank.itemLevel) / 2;
                         presentFlag = true;
                     }
                 }
                 if (presentFlag == false) {
-                    combos[trinketComboPermutations[0]] = [1,rank.total,rank.itemLevel];
+                    combos[trinketComboPermutations[0]] = [1, rank.total, rank.itemLevel];
                 }
             }
 
@@ -181,7 +215,7 @@ function getAzeriteOccurences() {
     let ringThreeOccurences = {};
     for (let i = 0; i < rankingsData.length; i++) {
         for (let j = 0; j < rankingsData[i].rankings.length; j++) {
-            let rank = rankingsData[i].rankings[j];
+            const rank = rankingsData[i].rankings[j];
             for (let k of rank.azeritePowers) {
                 if (k.ring == 1) {
                     if (!(k.id in ringOneOccurences)) {
@@ -198,7 +232,7 @@ function getAzeriteOccurences() {
                     }
                 }
                 else if (k.ring == 3) {
-                    let stackCount = countInArray(rank.azeritePowers, k);
+                    const stackCount = countInArray(rank.azeritePowers, k);
                     if (!(k.id in ringThreeOccurences) && stackCount == 1) {
                         ringThreeOccurences[k.id] = 1;
                     } else if (!(k.id in ringThreeOccurences) && stackCount == 2) {
@@ -239,7 +273,7 @@ function getAzeriteOccurencesWithTalents() {
     let ringThreeOccurences = {};
     for (let i = 0; i < rankingsData.length; i++) {
         for (let j = 0; j < rankingsData[i].rankings.length; j++) {
-            let rank = rankingsData[i].rankings[j];
+            const rank = rankingsData[i].rankings[j];
             if (checkEqualTalents(talentsSelectedIDs, rank.talents)) {
                 for (let k of rank.azeritePowers) {
                     if (k.ring == 1) {
@@ -257,7 +291,7 @@ function getAzeriteOccurencesWithTalents() {
                         }
                     }
                     else if (k.ring == 3) {
-                        let stackCount = countInArray(rank.azeritePowers, k);
+                        const stackCount = countInArray(rank.azeritePowers, k);
                         if (!(k.id in ringThreeOccurences) && stackCount == 1) {
                             ringThreeOccurences[k.id] = 1;
                         } else if (!(k.id in ringThreeOccurences) && stackCount == 2) {
@@ -313,13 +347,25 @@ function getAzeriteLabels(toCheck, ring) {
 function getTalentLabels(combos) {
     let privateLabels = [];
     for (let combo of Object.keys(combos)) {
-        let individualTalents = combo.split(",");
+        const individualTalents = combo.split(",");
         let individualLabel = [];
         for (let talent of individualTalents) {
             individualLabel.push(getTalentNameByID(talent));
         }
-        individualLabel=individualLabel.join();
+        individualLabel = individualLabel.join();
         privateLabels.push(individualLabel);
+    }
+    privateLabels = privateLabels.filter(n => n);
+    return privateLabels;
+}
+function getEssenceLabels(toCheck, type) {
+    let privateLabels = [];
+    for (let indvidualEssences of Object.keys(toCheck[type])) {
+        for (let essenceRef of essenceNames) {
+            if (indvidualEssences == essenceRef.name) {
+                privateLabels.push(essenceRef.name);
+            }
+        }
     }
     privateLabels = privateLabels.filter(n => n);
     return privateLabels;
@@ -328,12 +374,12 @@ function getTrinketLabels(combos) {
     let privateLabels = [];
 
     for (let combo of Object.keys(combos)) {
-        let individualTrinkets = combo.split(",");
+        const individualTrinkets = combo.split(",");
         let individualLabel = [];
         for (let trinket of individualTrinkets) {
             individualLabel.push(getTrinketNameByID(trinket));
         }
-        individualLabel=individualLabel.join();
+        individualLabel = individualLabel.join();
         privateLabels.push(individualLabel);
     }
     return privateLabels;
