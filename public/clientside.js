@@ -649,11 +649,11 @@ function showData() {
     majorEssenceChart.data.labels=majorEssenceLabels;
     majorEssenceChart.update();
 
-    minorEssenceCombinations=essenceData[1];
-    minorEssenceLabels=getEssenceLabels(essenceData,1);
-    minorEssenceChart.data.datasets[0].data=Object.values(minorEssenceCombinations);
-    minorEssenceChart.data.labels=minorEssenceLabels;
-    minorEssenceChart.update();
+    // minorEssenceCombinations=essenceData[1];
+    // minorEssenceLabels=getEssenceLabels(essenceData,1);
+    // minorEssenceChart.data.datasets[0].data=Object.values(minorEssenceCombinations);
+    // minorEssenceChart.data.labels=minorEssenceLabels;
+    // minorEssenceChart.update();
 
     fillTalentSelectionForm();
     talentSelectionDiv.style.display = "block";

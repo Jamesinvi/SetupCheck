@@ -18,8 +18,8 @@ const ctx9 = document.getElementById('azeriteWTalentsOneChart').getContext('2d')
 let azeriteWTalentsOneChart;
 const ctx10 = document.getElementById('majorEssenceChart').getContext('2d');
 let majorEssenceChart;
-const ctx11 = document.getElementById('minorEssenceChart').getContext('2d');
-let minorEssenceChart;
+// const ctx11 = document.getElementById('minorEssenceChart').getContext('2d');
+// let minorEssenceChart;
 
 window.onload = function () {
     randomBarColors();
@@ -412,34 +412,31 @@ window.onload = function () {
         }
 
     });
-    minorEssenceChart = new Chart(ctx11, {
-        type: 'pie',
-        data: {
-            datasets: [{
-                data: [],
-                backgroundColor: internalBarColors,
-            }],
-            labels: [],
-        },
-        options: {
-            legend: {
-                labels: {
-                    // This more specific font property overrides the global property
-                    fontColor: 'white',
-                    usePointStyle: true,
-                    padding: 5,
-                    fontSize: 14
-                },
-                position: 'bottom',
-            },
-            responsive: true,
-            maintainAspectRatio: false,
-        }
+    // minorEssenceChart = new Chart(ctx11, {
+    //     type: 'pie',
+    //     data: {
+    //         datasets: [{
+    //             data: [],
+    //             backgroundColor: internalBarColors,
+    //         }],
+    //         labels: [],
+    //     },
+    //     options: {
+    //         legend: {
+    //             labels: {
+    //                 // This more specific font property overrides the global property
+    //                 fontColor: 'white',
+    //                 usePointStyle: true,
+    //                 padding: 5,
+    //                 fontSize: 14
+    //             },
+    //             position: 'bottom',
+    //         },
+    //         responsive: true,
+    //         maintainAspectRatio: false,
+    //     }
 
-    });
-    $("canvas").off("scroll");
-    azeriteOneChart.ctx.canvas.removeEventListener('wheel', azeriteOneChart._wheelHandler,true);
-
+    // });
 }
 
 function randomBarColors() {
