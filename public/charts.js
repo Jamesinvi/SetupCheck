@@ -20,6 +20,8 @@ const ctx10 = document.getElementById('majorEssenceChart').getContext('2d');
 let majorEssenceChart;
 // const ctx11 = document.getElementById('minorEssenceChart').getContext('2d');
 // let minorEssenceChart;
+ const ctx12 = document.getElementById('majorEssenceWithTalentsChart').getContext('2d');
+ let majorEssenceWithTalentsChart;
 
 window.onload = function () {
     randomBarColors();
@@ -388,6 +390,31 @@ window.onload = function () {
 
     });
     majorEssenceChart = new Chart(ctx10, {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: [],
+                backgroundColor: internalBarColors,
+            }],
+            labels: [],
+        },
+        options: {
+            legend: {
+                labels: {
+                    // This more specific font property overrides the global property
+                    fontColor: 'white',
+                    usePointStyle: true,
+                    padding: 5,
+                    fontSize: 14
+                },
+                position: 'bottom',
+            },
+            responsive: true,
+            maintainAspectRatio: false,
+        }
+
+    });
+    majorEssenceWithTalentsChart = new Chart(ctx12, {
         type: 'pie',
         data: {
             datasets: [{

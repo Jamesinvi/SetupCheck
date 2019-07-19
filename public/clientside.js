@@ -5,6 +5,7 @@ let talentData;
 let trinketData;
 let essenceData;
 let trinketWithTalentsData;
+let essencesWithTalentsData;
 let talentsSelectedIDs = "";
 let talentNames = [];
 let trinketNames = [];
@@ -67,6 +68,7 @@ const talentsSelected = document.getElementById("talentSelectFormGroup");
 const talentSelectionDiv = document.getElementById("talentSelectionDiv");
 const trinketsWithTalentsDiv = document.getElementById("trinketsWithTalentsDiv");
 const azeriteWithTalentsDiv = document.getElementById("azeriteWithTalentsDiv");
+const essencesWithTalentsDiv = document.getElementById("essencesWithTalentsDiv");
 const essenceDiv = document.getElementById("essenceDiv");
 const talentPresetSelection = document.getElementById("presetSelection");
 const talentGraphResetZoom = document.getElementById("talentGraphReset");
@@ -83,6 +85,7 @@ talentSelectionDiv.style.display = "none";
 trinketsWithTalentsDiv.style.display = "none";
 azeriteWithTalentsDiv.style.display = "none";
 essenceDiv.style.display="none";
+essencesWithTalentsDiv.style.display="none";
 
 output.innerHTML = `Number of pages: ${slider.value}`; // Display the default slider value
 button_3.disabled = true;
@@ -121,6 +124,7 @@ button_4.addEventListener("click", function () {
     }
     talentsSelectedIDs = talentsSelectedIDs.slice(0, -1);
     trinketWithTalentsData = getTrinketCombosWithTalents(talentsSelectedIDs);
+    essencesWithTalentsData = getEssencesWithTalents(talentsSelectedIDs);
 
     createDataWithTalentsChart();
 });
@@ -730,8 +734,14 @@ function createDataWithTalentsChart() {
     azeriteWTalentsOneChart.data.labels = azeriteWithTalentsRingOneLabels.slice(0, 10);
     azeriteWTalentsOneChart.update();
 
+
+    majorEssenceWithTalentsChart.data.datasets[0].data=Object.values(essencesWithTalentsData[0]).slice(0,10);
+    majorEssenceWithTalentsChart.data.labels=getEssenceLabels(essencesWithTalentsData,0).slice(0,10);
+    majorEssenceWithTalentsChart.update();
+
     trinketsWithTalentsDiv.style.display = "block";
     azeriteWithTalentsDiv.style.display = "block";
+    essencesWithTalentsDiv.style.display="block";
 
 
 }

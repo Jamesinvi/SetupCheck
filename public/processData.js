@@ -197,17 +197,39 @@ function getTrinketCombosWithTalents(talentComboSelected) {
                     combos[trinketComboPermutations[0]] = [1, rank.total, rank.itemLevel];
                 }
             }
-
-
-
         }
-
     }
     let unique = getUnique(trinketNames, "name");
     trinketNames = unique;
     clean(combos);
     return combos;
 
+}
+function getEssencesWithTalents(talentComboSelected) {
+    let majorEssences = {};
+    let minorEssences = {};
+    for (let i = 0; i < rankingsData.length; i++) {
+        for (let j = 0; j < rankingsData[i].rankings.length; j++) {
+            const rank = rankingsData[i].rankings[j];
+            const essences = rank.essencePowers;
+            if (checkEqualTalents(talentComboSelected, rank.talents)) {
+                if (!(essences[0].name in majorEssences)) {
+                    majorEssences[essences[0].name] = 1;
+                } else if ((essences[0].name in majorEssences)) {
+                    majorEssences[essences[0].name] += 1;
+                }
+                if (!(essences[1].name in minorEssences)) {
+                    minorEssences[essences[1].name] = 1;
+                } else if ((essences[1].name in minorEssences)) {
+                    minorEssences[essences[1].name] += 1;
+                }
+            }
+        }
+    }
+    clean(majorEssences);
+    clean(minorEssences);
+    const occurences = [majorEssences, minorEssences]
+    return occurences;
 }
 function getAzeriteOccurences() {
     let ringOneOccurences = {};
