@@ -158,10 +158,17 @@ function getEssenceData() {
                 } else if ((essences[0].name in majorEssences)) {
                     majorEssences[essences[0].name] += 1;
                 }
-                if (!(essences[1].name in minorEssences)) {
-                    minorEssences[essences[1].name] = 1;
-                } else if ((essences[1].name in minorEssences)) {
-                    minorEssences[essences[1].name] += 1;
+                if (!(essences[2].name in minorEssences)) {
+                    minorEssences[essences[2].name] = 1;
+                } else if ((essences[2].name in minorEssences)) {
+                    minorEssences[essences[2].name] += 1;
+                }
+                if(essences[3]!=null){
+                    if (!(essences[3].name in minorEssences)) {
+                        minorEssences[essences[3].name] = 1;
+                    } else if ((essences[3].name in minorEssences)) {
+                        minorEssences[essences[3].name] += 1;
+                    }
                 }
             }
         }
