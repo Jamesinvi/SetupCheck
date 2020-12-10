@@ -1,0 +1,46 @@
+body{
+    /* background-color: #cccccc; */
+    margin: auto;
+    text-align: center;
+    font-family: 'Questrial', sans-serif;
+    font-size: 125%;
+}
+button{
+    font-family: 'Questrial', sans-serif;
+    font-size: 125%
+}
+canvas{
+    background: #858e97;
+}
+div{
+    margin: auto;
+}
+form{
+    display: inline-block;
+}
+h1{
+    margin: auto;
+    text-align: center;
+}
+input{
+    display:none;
+}
+
+.btn.btn-danger {
+    background-color: #656565;
+}
+#number-of-pages{
+    display:block;
+}
+.chartContainer{
+    display:block;
+}
+.talentSet {
+    border-style: ridge;
+    display: block;
+}
+.reset{
+    margin: 15px
+}
+.apexcharts-canvas{
+}

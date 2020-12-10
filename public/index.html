@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Warcraft-Data</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script>var whTooltips = { colorLinks: true, iconizeLinks: true, renameLinks: true };</script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+    <script src="//wow.zamimg.com/widgets/power.js"></script>
+    <script src="https://unpkg.com/moment@2.24.0/moment.js"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-151105072-1"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-151105072-1');
+    </script>
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=Questrial&amp;display=swap" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/superhero/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-LS4/wo5Z/8SLpOLHs0IbuPAGOWTx30XSoZJ8o7WKH0UJhRpjXXTpODOjfVnNjeHu" crossorigin="anonymous">
+    <script>var wowhead_tooltips = { "colorlinks": true, "iconizelinks": true, "renamelinks": true, "hide": { "droppedby": false, "dropchance": false } }</script>
+</head>
+
+<body>
+    <div class="container-fluid text-center">
+        <div class="row content">
+            <div class="navbar/header">
+                <h1 class="display-3">WARCRAFT-DATA</h1>
+                <br>
+                <br>
+            </div>
+        </div>
+        <div class="row content">
+            <div class="col-md-2">
+                <div class="well">
+
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="jumbotron">
+                    <p class="lead">Insert the difficulty, metric, class, spec, boss and raid to get information on
+                        what the best-parsing players are using! <br>
+                        All the data is kindly provided by <a href="https://www.warcraftlogs.com/">WarcraftLogs</a>
+                    </p>
+
+                    <form action="">
+                        <h4>Difficulty</h4>
+                        <select id="difficulty" onchange="checkFormComplete()" required>
+                            <!--<option value="1">LFR</option>-->
+                            <option value="3">Normal</option>
+                            <option value="4">Heroic</option>
+                            <option value="5">Mythic</option>
+                        </select>
+                        <br>
+                        <br>
+                        <h4>Class</h4>
+                        <select id="classes" onchange="showSpecs(this)" required>
+                            <option value="1">Death Knight</option>
+                            <option value="2">Druid</option>
+                            <option value="3">Hunter</option>
+                            <option value="4">Mage</option>
+                            <option value="5">Monk</option>
+                            <option value="6">Paladin</option>
+                            <option value="7">Priest</option>
+                            <option value="8">Rogue</option>
+                            <option value="9">Shaman</option>
+                            <option value="10">Warlock</option>
+                            <option value="11">Warrior</option>
+                            <option value="12">Demon Hunter</option>
+                        </select>
+                        <br>
+                        <br>
+                        <h4 id="specs-header">Spec</h4>
+                        <select id="specs" required>
+                            <option value="1">Blood</option>
+                            <option value="2">Frost</option>
+                            <option value="3">Unholy</option>
+                        </select>
+                        <br>
+                        <br>
+                        <h4>Metric</h4>
+                        <select id="metric" required>
+                            <option value="dps">DPS</option>
+                            <option value="hps">HPS</option>
+                            <option value="tankhps">Tank Healing</option>
+                            <option value="bossdps">Damage to Boss</option>
+                        </select>
+                        <br>
+                        <br>
+                        <button onclick="requestFights(this)" type="button" class="btn btn-primary btn-lg" id="submit-cn" value="castle nathria">Castle Nathria</button>
+                        <h4>Boss</h4>
+                        <select id="bosses" required>
+                        </select>
+                    <br>
+                    <br>
+
+
+                    </form>
+                    <h4 for="number-of-pages-header" id="number-of-pages-header">Number of pages: </h4>
+                    <input type="range" class="custom-range" min="1" max="20" id="number-of-pages">
+                    <br>
+                    <submit type="button" id="request" class="btn btn-success btn-lg btn-block" value="request-data">REQUEST DATA</submit>
+                    <br>
+                    <p class="text-warning">Please note that requesting a lot of pages will drastically increase the
+                        time it takes to process all the logs (this is done on your machine). If you have a low-end
+                        machine or are on mobile you're better off decreasing the number of pages
+                    </p>
+                    <br>
+                    <div class="alert alert-dismissible alert-danger">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        <p class="lead"><strong>Disclaimer: All the item levels reported on this page are GLOBAL for the
+                                WHOLE charater (NOT single items). All the data displayed on this page is not intended
+                                to be as the be-all end-all of builds, it may require some thought analysis to truly
+                                understand
+                                what is being played and why it is performing as it is (it may just be player skill!).
+                                Some talent builds or trinkets may be very powerful on certain encounters and if you
+                                understand why that is the case this data my help you achieve better performance.
+                            </strong>
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="jumbotron" id="talentsDiv">
+                    <h1 class="display-3">Talents</h1>
+                    <p class="lead">These are the most frequent talent combinations found in the pages of logs you
+                        requested (click on any dataset in the legend to hide/show it):</p>
+                    <br>
+                    <div id="talentChart"></div>
+                    <div id="wowhead-spell">
+                        <h3> TOP 5 Talent Combos found</h3>
+                    </div>
+                </div>
+                <div class="jumbotron" id="trinketsDiv">
+                    <p class="lead">These are the most frequent trinket combinations found in the pages of logs you
+                        requested (click on any dataset in the legend to hide/show it):</p>
+                    <h1 class="display-3">Trinkets</h1>
+                    <br>
+                    <div id="trinketChart"></div>
+                    <div id="wowhead-item">
+                        <h3>TOP 5 Trinket Combos found</h3>
+                    </div>
+
+                </div>
+                <div class="jumbotron" id="legendariesDiv">
+                    <p class="lead">These are the most frequent legendary items found in the pages of logs you
+                        requested (click on any dataset in the legend to hide/show it):</p>
+                    <h1 class="display-3">Legendary Effects</h1>
+                    <br>
+                    <div id="legendaryChart"></div>
+                    <div id="wowhead-legendary-spell">
+                        <h3>TOP 5 Legendaries found</h3>
+                    </div>
+                </div>
+                <div class="jumbotron" id="covenantDiv">
+                    <h1 class="display-3">Covenants</h1>
+                    <p class="lead">These are the most frequent covenant choice found in the pages of logs you requested:</p>
+                    <div id="covenantChart"></div>                
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="well">
+                </div>
+                <div class="well">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <h2 class="display-6">Made by James-Invi</h2>
+                <p class="display-7">Special thanks to Lisayne and Selinde for helping with debugging and improving this
+                    web-page</p>
+            </div>
+        </div>
+
+    </div>
+
+
+
+    <footer>
+
+
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+        <script src="charts.js"></script>
+        <script src="processData.js"></script>
+        <script src="clientside.js"></script>
+
+    </footer>
+</body>
+
+</html>
